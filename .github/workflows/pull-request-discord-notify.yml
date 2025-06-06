@@ -19,10 +19,29 @@ jobs:
             const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
 
             // PR 본문 최대 1024자까지, 없을 경우 대체 문구
+            const cleanMarkdown = (text) => {
+              return text
+              // 체크박스 처리
+              .replace(/^[-*+] \[ \] ?(.*)$/gim, '⬜ $1')
+              .replace(/^[-*+] \[(x|X)\] ?(.*)$/gim, '✅ $2')
+            
+              // ## 헤더 강조 (강조용으로만 적용)
+              .replace(/^##\s+(.*)$/gm, '**$1**')
+            
+              // 일반 리스트 들여쓰기 표현 (탭 + •)
+              .replace(/^[-*+] (.*)$/gm, '\t• $1')
+            
+              // 인용 블록 제거
+              .replace(/^>\s+/gm, '')
+            
+              // 강조 마크다운 제거
+              .replace(/[*_~`]/g, '')
+            
+              .trim();
+            };
             const body = pull_request.body
-              ? pull_request.body.substring(0, 1024)
+              ? cleanMarkdown(pull_request.body).substring(0, 1024)
               : "*내용 없음*";
-
             const payload = {
               username: "GitHub Actions",
               avatar_url: "https://github.githubassets.com/assets/github-icon-white-c051b8096319.png",
