@@ -1,0 +1,80 @@
+package ddd.darayo.festival.domain.entity;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+@Builder
+@Entity
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+public class Performance {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
+    private String placeName;
+
+    @Column(nullable = false, length = 512)
+    private String placeAddress;
+
+    @Column(nullable = false)
+    private LocalDate startDate;
+
+    @Column(nullable = false)
+    private LocalDate endDate;
+
+    @Column(nullable = false, length = 512)
+    private String posterUrl;
+
+    @Lob
+    @Column(nullable = true)
+    private String banGoods;
+
+    @Lob
+    @Column(nullable = true)
+    private String transportationInfo;
+
+    @Lob
+    @Column(nullable = true)
+    private String remark;
+
+    // TODO: 추후에 각각의 도메인으로 분리하면 좋아 보임.
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "performance")
+    @Builder.Default
+    private List<Timetable> timetables = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "performance")
+    @Builder.Default
+    private List<ReservationInfo> reservationInfos = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy= "performance")
+    @Builder.Default
+    private List<PerformanceArtist> artists = new ArrayList<>();
+
+    public void addTimetable(Timetable timetable) {
+        this.timetables.add(timetable);
+        timetable.setPerformance(this);
+    }
+
+    public void addReservationInfo(ReservationInfo reservationInfo) {
+        this.reservationInfos.add(reservationInfo);
+        reservationInfo.setPerformance(this);
+    }
+
+    public void addArtist(PerformanceArtist artist) {
+        this.artists.add(artist);
+        artist.setPerformance(this);
+    }
+}
