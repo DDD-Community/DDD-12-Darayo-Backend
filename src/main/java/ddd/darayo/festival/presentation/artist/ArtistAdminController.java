@@ -1,0 +1,30 @@
+package ddd.darayo.festival.presentation.artist;
+
+import ddd.darayo.festival.domain.entity.Artist;
+import ddd.darayo.festival.domain.service.ArtistManagement;
+import ddd.darayo.festival.domain.service.AuthService;
+import ddd.darayo.festival.presentation.artist.exchanges.SaveArtistReq;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api/admin/artist")
+@RequiredArgsConstructor
+public class ArtistAdminController {
+    private final AuthService authService;
+    private final ArtistManagement artistManagement;
+
+    @PostMapping
+    public ResponseEntity<Long> createArtist(@RequestBody SaveArtistReq req) {
+        if (!authService.authenticate(req.getPassword())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        Artist artist = artistManagement.createArtist(req);
+        return ResponseEntity.ok(artist.getId());
+    }
+}

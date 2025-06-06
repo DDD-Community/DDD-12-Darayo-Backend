@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class SaveArtistReq {
+    private String password;
     private String name;
     private String description;
 }
