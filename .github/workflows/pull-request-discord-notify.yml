@@ -1,0 +1,75 @@
+name: Discord PR Notification
+
+on:
+  pull_request:
+    types: [opened, reopened]  # PR이 생성되거나 다시 열릴 때만 실행
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send PR info to Discord
+        uses: actions/github-script@v6
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        with:
+          script: |
+            const { action, pull_request, repository } = context.payload;
+            const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
+
+            // PR 본문 최대 1024자까지, 없을 경우 대체 문구
+            const body = pull_request.body
+              ? pull_request.body.substring(0, 1024)
+              : "*내용 없음*";
+
+            const payload = {
+              username: "GitHub Actions",
+              avatar_url: "https://github.githubassets.com/assets/github-icon-white-c051b8096319.png",
+              embeds: [
+                {
+                  title: pull_request.title,
+                  url: pull_request.html_url,
+                  author: {
+                    name: pull_request.user.login,
+                    icon_url: pull_request.user.avatar_url,
+                    url: pull_request.user.html_url
+                  },
+                  description: `📣 **PR이 \`${action}\` 상태로 변경되었습니다.**`,
+                  color: 0x5865F2,  // Discord 블루 계열 색상
+                  fields: [
+                    {
+                      name: "📄 본문",
+                      value: body
+                    },
+                    {
+                      name: "🔀 브랜치",
+                      value: `\`${pull_request.head.ref}\` → \`${pull_request.base.ref}\``,
+                      inline: true
+                    },
+                    {
+                      name: "📌 커밋 수",
+                      value: `${pull_request.commits} commits`,
+                      inline: true
+                    },
+                    {
+                      name: "👤 작성자",
+                      value: `[${pull_request.user.login}](${pull_request.user.html_url})`,
+                      inline: true
+                    }
+                  ],
+                  footer: {
+                    text: repository.full_name,
+                    icon_url: "https://github.githubassets.com/favicons/favicon.png"
+                  },
+                  timestamp: new Date().toISOString()
+                }
+              ]
+            };
+
+            // Discord Webhook 호출
+            await fetch(webhookUrl, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload),
+            });
