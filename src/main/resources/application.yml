@@ -12,3 +12,6 @@ spring:
       ddl-auto: update
     show-sql: false
     database-platform: org.hibernate.dialect.MySQL8Dialect
+
+auth:
+  password: ${ADMIN_PASSWORD}
