@@ -8,6 +8,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class SaveArtistAliasesReq {
+    private String password;
     private Long artistId;
     private List<String> aliases;
 }
