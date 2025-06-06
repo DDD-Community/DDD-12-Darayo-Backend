@@ -5,6 +5,8 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -30,10 +32,18 @@ public class Timetable {
     @ManyToOne
     private Performance performance;
 
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "timetable")
+    private List<TimetableArtist> artists = new ArrayList<>();
+
     public Timetable(LocalDate performanceDate, LocalTime startTime, LocalTime endTime, String performanceHall) {
         this.performanceDate = performanceDate;
         this.startTime = startTime;
         this.endTime = endTime;
         this.performanceHall = performanceHall;
+    }
+
+    public void addArtist(TimetableArtist artist) {
+        this.artists.add(artist);
+        artist.setTimetable(this);
     }
 }
