@@ -16,8 +16,5 @@ import java.util.List;
 public class ArtistController {
     private final ArtistManagement artistManagement;
 
-    @GetMapping
-    public ResponseEntity<List<ArtistDetailRes>> getArtists() {
-        return ResponseEntity.ok(artistManagement.findAllArtists());
-    }
+
 }

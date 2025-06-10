@@ -4,6 +4,7 @@ import ddd.darayo.festival.domain.entity.Artist;
 import ddd.darayo.festival.domain.exception.DomainException;
 import ddd.darayo.festival.domain.service.ArtistManagement;
 import ddd.darayo.festival.domain.service.AuthService;
+import ddd.darayo.festival.presentation.artist.exchanges.ArtistDetailRes;
 import ddd.darayo.festival.presentation.artist.exchanges.EditArtistReq;
 import ddd.darayo.festival.presentation.artist.exchanges.SaveArtistAliasesReq;
 import ddd.darayo.festival.presentation.artist.exchanges.SaveArtistReq;
@@ -12,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin/artist")
@@ -64,5 +67,10 @@ public class ArtistAdminController {
         } catch (DomainException e) {
             throw APIException.from(e, HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ArtistDetailRes>> getArtists() {
+        return ResponseEntity.ok(artistManagement.findAllArtists());
     }
 }

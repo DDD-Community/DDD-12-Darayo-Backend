@@ -16,8 +16,4 @@ import java.util.List;
 public class PerformanceController {
     private final PerformanceManagement performanceManagement;
 
-    @GetMapping("/all/detail")
-    public ResponseEntity<List<PerformanceDetailRes>> getAllPerformanceDetails() {
-        return ResponseEntity.ok(performanceManagement.findAllDetail());
-    }
 }
