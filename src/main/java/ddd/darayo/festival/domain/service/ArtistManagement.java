@@ -6,6 +6,7 @@ import ddd.darayo.festival.domain.repository.ArtistAliasRepository;
 import ddd.darayo.festival.domain.repository.ArtistRepository;
 import ddd.darayo.festival.domain.repository.projection.ArtistDetailProjection;
 import ddd.darayo.festival.presentation.artist.exchanges.ArtistDetailRes;
+import ddd.darayo.festival.presentation.artist.exchanges.EditArtistReq;
 import ddd.darayo.festival.presentation.artist.exchanges.SaveArtistAliasesReq;
 import ddd.darayo.festival.presentation.artist.exchanges.SaveArtistReq;
 import jakarta.transaction.Transactional;
@@ -40,6 +41,14 @@ public class ArtistManagement {
         for (String alias : dto.getAliases()) {
             artist.addAlias(new ArtistAlias(null, alias, null));
         }
+    }
+
+    public void editArtist(EditArtistReq req, long artistId) {
+        if (!artistRepository.existsById(artistId)) {
+            throw ARTIST_NOT_EXISTS.toException();
+        }
+        Artist newArtist = new Artist(artistId, req.name(), req.description(), new ArrayList<>());
+        artistRepository.save(newArtist);
     }
 
     public List<ArtistDetailRes> findAllArtists() {
