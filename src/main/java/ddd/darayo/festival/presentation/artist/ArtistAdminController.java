@@ -10,10 +10,7 @@ import ddd.darayo.festival.presentation.exception.APIException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/admin/artist")
@@ -42,5 +39,16 @@ public class ArtistAdminController {
             throw APIException.from(e, HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok().build();
+    }
+    @DeleteMapping("/aliases/{aliasId}")
+    public ResponseEntity<Void> deleteArtistAlias(
+            @PathVariable Long aliasId
+    ) {
+        try {
+            artistManagement.deleteArtistAlias(aliasId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (DomainException e) {
+            throw APIException.from(e, HttpStatus.NOT_FOUND);
+        }
     }
 }

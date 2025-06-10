@@ -2,7 +2,7 @@ package ddd.darayo.festival.domain.service;
 
 import ddd.darayo.festival.domain.entity.Artist;
 import ddd.darayo.festival.domain.entity.ArtistAlias;
-import ddd.darayo.festival.domain.exception.constant.ArtistError;
+import ddd.darayo.festival.domain.repository.ArtistAliasRepository;
 import ddd.darayo.festival.domain.repository.ArtistRepository;
 import ddd.darayo.festival.domain.repository.projection.ArtistDetailProjection;
 import ddd.darayo.festival.presentation.artist.exchanges.ArtistDetailRes;
@@ -17,12 +17,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static ddd.darayo.festival.domain.exception.constant.ArtistError.ARTIST_ALIAS_NOT_EXISTS;
+import static ddd.darayo.festival.domain.exception.constant.ArtistError.ARTIST_NOT_EXISTS;
+
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class ArtistManagement {
     private final ArtistRepository artistRepository;
+    private final ArtistAliasRepository artistAliasRepository;
 
     public Artist createArtist(SaveArtistReq dto) {
         Artist artist = new Artist(dto.getName(), dto.getDescription());
@@ -32,7 +36,7 @@ public class ArtistManagement {
 
     public void createArtistAlias(SaveArtistAliasesReq dto) {
         Artist artist = artistRepository.findById(dto.getArtistId())
-                .orElseThrow(ArtistError.ARTIST_NOT_EXISTS::toException);
+                .orElseThrow(ARTIST_NOT_EXISTS::toException);
         for (String alias : dto.getAliases()) {
             artist.addAlias(new ArtistAlias(null, alias, null));
         }
@@ -56,5 +60,12 @@ public class ArtistManagement {
             .add(new ArtistDetailRes.AliasDetail(artist.getAliasId(), artist.getAlias()));
         }
         return artistsMap.values().stream().toList();
+    }
+
+    public void deleteArtistAlias(long aliasId) {
+        if (!artistAliasRepository.existsById(aliasId)) {
+            throw ARTIST_ALIAS_NOT_EXISTS.toException();
+        }
+        artistAliasRepository.deleteById(aliasId);
     }
 }
