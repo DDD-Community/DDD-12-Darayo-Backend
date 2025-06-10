@@ -4,6 +4,7 @@ import ddd.darayo.festival.domain.entity.Artist;
 import ddd.darayo.festival.domain.exception.DomainException;
 import ddd.darayo.festival.domain.service.ArtistManagement;
 import ddd.darayo.festival.domain.service.AuthService;
+import ddd.darayo.festival.presentation.artist.exchanges.EditArtistReq;
 import ddd.darayo.festival.presentation.artist.exchanges.SaveArtistAliasesReq;
 import ddd.darayo.festival.presentation.artist.exchanges.SaveArtistReq;
 import ddd.darayo.festival.presentation.exception.APIException;
@@ -40,6 +41,19 @@ public class ArtistAdminController {
         }
         return ResponseEntity.ok().build();
     }
+
+    @PutMapping("/{artistId}")
+    public ResponseEntity<Void> editArtist(
+            @RequestBody EditArtistReq req, @PathVariable Long artistId
+    ) {
+        try {
+            artistManagement.editArtist(req, artistId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (DomainException e) {
+            throw APIException.from(e, HttpStatus.NOT_FOUND);
+        }
+    }
+
     @DeleteMapping("/aliases/{aliasId}")
     public ResponseEntity<Void> deleteArtistAlias(
             @PathVariable Long aliasId
