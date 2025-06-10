@@ -15,3 +15,6 @@ spring:
 
 auth:
   password: ${ADMIN_PASSWORD}
+
+springdoc:
+  use-fqn: true
