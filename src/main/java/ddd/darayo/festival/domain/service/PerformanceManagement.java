@@ -10,11 +10,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Service
@@ -38,7 +34,12 @@ public class PerformanceManagement {
                 .build();
     }
 
-    private Timetable from(SavePerformanceReq.TimeTableDTO dto) {
+    private Timetable from(
+            SavePerformanceReq.TimeTableDTO dto,
+            Performance performance
+    ) {
+        Map<Long, PerformanceArtist> artistMap = new HashMap<>();
+
         Timetable timetable = new Timetable(
             dto.getPerformanceDate(),
             dto.getStartTime(),
@@ -46,20 +47,17 @@ public class PerformanceManagement {
             dto.getPerformanceHall()
         );
         dto.getArtists().forEach(artist -> {
-            Artist artistEntity = new Artist(artist.getArtistId());
-            TimetableArtist timetableArtist = new TimetableArtist(null, artist.getType(), artistEntity, null);
+            PerformanceArtist performanceArtist = artistMap.computeIfAbsent(artist.getArtistId(), id -> {
+                PerformanceArtist pa = new PerformanceArtist(id);
+                performance.addArtist(pa);
+                return pa;
+            });
+            TimetableArtist timetableArtist = new TimetableArtist(null, artist.getType(), performanceArtist, null);
             timetable.addArtist(timetableArtist);
         });
         return timetable;
     }
 
-    private PerformanceArtist from(SavePerformanceReq.PerformanceArtistDTO dto) {
-        Artist artist = new Artist(dto.getId()); // displayName은 null로 설정
-        return new PerformanceArtist(
-                dto.getDate() == null ? LocalDate.of(0, 1, 1)  : dto.getDate(),
-                artist
-        );
-    }
 
     private ReservationInfo from(SavePerformanceReq.ReservationInfoDTO dto) {
         return new ReservationInfo(
@@ -77,16 +75,8 @@ public class PerformanceManagement {
         // 타임테이블 추가
         if (dto.getTimeTables() != null) {
             dto.getTimeTables().forEach(timeTableDTO -> {
-                Timetable timetable = from(timeTableDTO);
+                Timetable timetable = from(timeTableDTO, performance);
                 performance.addTimetable(timetable);
-            });
-        }
-
-        // 아티스트 정보 추가
-        if (dto.getArtists() != null) {
-            dto.getArtists().forEach(artistDTO -> {
-                PerformanceArtist performanceArtist = from(artistDTO);
-                performance.addArtist(performanceArtist);
             });
         }
 
@@ -132,7 +122,7 @@ public class PerformanceManagement {
                         .orElseGet(() -> {
                             PerformanceDetailRes.TimeTableDetailRes newTt = new PerformanceDetailRes.TimeTableDetailRes(
                                     row.getTimetableId(),
-                                    row.getTimetablePerformanceDate(),
+                                    row.getPerformanceDate(),
                                     row.getTimetableStartTime(),
                                     row.getTimetableEndTime(),
                                     row.getTimetablePerformanceHall(),
@@ -176,7 +166,7 @@ public class PerformanceManagement {
                 PerformanceDetailRes.ArtistDetailRes pArtistRes = new PerformanceDetailRes.ArtistDetailRes(
                         row.getPerformanceArtistId(),
                         row.getPerformanceArtistDisplayName(),
-                        row.getPerformanceArtistDate()
+                        row.getPerformanceDate()
                 );
                 if (pRes.getArtists().stream().noneMatch(a -> a.getId().equals(pArtistRes.getId()))) {
                     pRes.getArtists().add(pArtistRes);

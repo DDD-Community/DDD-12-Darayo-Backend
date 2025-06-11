@@ -19,10 +19,10 @@ public class Timetable {
     @Column(nullable = false)
     private LocalDate performanceDate;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private LocalTime startTime;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private LocalTime endTime;
 
     @Column(length = 512)

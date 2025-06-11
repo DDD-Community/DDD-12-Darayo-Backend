@@ -3,8 +3,6 @@ package ddd.darayo.festival.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
-
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -12,9 +10,6 @@ public class PerformanceArtist {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false)
-    private LocalDate performanceDate;
 
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
@@ -24,8 +19,11 @@ public class PerformanceArtist {
     @ManyToOne(fetch = FetchType.LAZY)
     private Performance performance;
 
-    public PerformanceArtist(LocalDate performanceDate, Artist artist) {
-        this.performanceDate = performanceDate;
+    public PerformanceArtist(Artist artist) {
         this.artist = artist;
+    }
+
+    public PerformanceArtist(Long artistId) {
+        this.artist = new Artist(artistId);
     }
 }

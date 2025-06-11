@@ -38,6 +38,7 @@ public class SavePerformanceReq {
     @AllArgsConstructor
     public static class ArtistParticipateDTO {
         private Long artistId;
+        @JsonInclude(JsonInclude.Include.NON_NULL)
         private ParticipationType type;
     }
 
@@ -45,8 +46,11 @@ public class SavePerformanceReq {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class TimeTableDTO {
+        @JsonInclude(JsonInclude.Include.NON_NULL)
         private LocalDate performanceDate;
+        @JsonInclude(JsonInclude.Include.NON_NULL)
         private LocalTime startTime;
+        @JsonInclude(JsonInclude.Include.NON_NULL)
         private LocalTime endTime;
         private String performanceHall;
         private List<ArtistParticipateDTO> artists;
@@ -76,5 +80,4 @@ public class SavePerformanceReq {
     private PerformanceDTO performance;
     private List<TimeTableDTO> timeTables;
     private List<ReservationInfoDTO> reservationInfos;
-    private List<PerformanceArtistDTO> artists;
 }

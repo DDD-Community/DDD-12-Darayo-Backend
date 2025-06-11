@@ -22,7 +22,7 @@ public interface PerformanceDetailProjection {
 
     // Timetable fields (nullable)
     Long getTimetableId();
-    LocalDate getTimetablePerformanceDate();
+    LocalDate getPerformanceDate();
     LocalTime getTimetableStartTime();
     LocalTime getTimetableEndTime();
     String getTimetablePerformanceHall();
@@ -44,5 +44,4 @@ public interface PerformanceDetailProjection {
     // PerformanceArtist fields (nullable, Performance에 직접 연결된 아티스트)
     Long getPerformanceArtistId();
     String getPerformanceArtistDisplayName();
-    LocalDate getPerformanceArtistDate();
-} 
+}
