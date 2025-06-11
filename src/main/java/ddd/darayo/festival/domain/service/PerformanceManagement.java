@@ -1,6 +1,5 @@
 package ddd.darayo.festival.domain.service;
 
-import ddd.darayo.festival.domain.constant.ReservationType;
 import ddd.darayo.festival.domain.entity.*;
 import ddd.darayo.festival.domain.repository.PerformanceRepository;
 import ddd.darayo.festival.domain.repository.projection.PerformanceDetailProjection;
@@ -10,6 +9,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -55,7 +55,7 @@ public class PerformanceManagement {
     private PerformanceArtist from(SavePerformanceReq.PerformanceArtistDTO dto) {
         Artist artist = new Artist(dto.getId()); // displayName은 null로 설정
         return new PerformanceArtist(
-                dto.getDate(),
+                dto.getDate() == null ? LocalDate.of(0, 1, 1)  : dto.getDate(),
                 artist
         );
     }
