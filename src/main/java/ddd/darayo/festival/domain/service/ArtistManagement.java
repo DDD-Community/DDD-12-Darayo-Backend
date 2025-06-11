@@ -44,11 +44,10 @@ public class ArtistManagement {
     }
 
     public void editArtist(EditArtistReq req, long artistId) {
-        if (!artistRepository.existsById(artistId)) {
+        int result = artistRepository.updateArtistById(artistId, req.name(), req.description());
+        if (result < 1) {
             throw ARTIST_NOT_EXISTS.toException();
         }
-        Artist newArtist = new Artist(artistId, req.name(), req.description(), new ArrayList<>());
-        artistRepository.save(newArtist);
     }
 
     public List<ArtistDetailRes> findAllArtists() {
