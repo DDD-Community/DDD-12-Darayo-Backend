@@ -1,6 +1,7 @@
 package ddd.darayo.festival.domain.service;
 
 import ddd.darayo.festival.domain.entity.*;
+import ddd.darayo.festival.domain.exception.constant.PerformanceError;
 import ddd.darayo.festival.domain.repository.PerformanceRepository;
 import ddd.darayo.festival.domain.repository.projection.PerformanceDetailProjection;
 import ddd.darayo.festival.presentation.performance.exchanges.PerformanceDetailRes;
@@ -183,5 +184,12 @@ public class PerformanceManagement {
             }
         }
         return new ArrayList<>(performanceMap.values());
+    }
+
+    public void delete(Long performanceId) {
+        Performance performance = performanceRepository.findById(performanceId)
+                .orElseThrow(PerformanceError.PERFORMANCE_NOT_EXIST::toException);
+
+        performanceRepository.delete(performance);
     }
 }

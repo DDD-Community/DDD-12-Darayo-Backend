@@ -33,4 +33,10 @@ public class PerformanceAdminController {
     public ResponseEntity<List<PerformanceDetailRes>> getAllPerformanceDetails() {
         return ResponseEntity.ok(performanceManagement.findAllDetail());
     }
+
+    @DeleteMapping("/{performanceId}")
+    public ResponseEntity<Void> deletePerformance(@PathVariable Long performanceId) {
+        performanceManagement.delete(performanceId);
+        return ResponseEntity.noContent().build();
+    }
 }
