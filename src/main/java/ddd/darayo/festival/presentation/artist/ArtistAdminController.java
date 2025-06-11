@@ -4,10 +4,7 @@ import ddd.darayo.festival.domain.entity.Artist;
 import ddd.darayo.festival.domain.exception.DomainException;
 import ddd.darayo.festival.domain.service.ArtistManagement;
 import ddd.darayo.festival.domain.service.AuthService;
-import ddd.darayo.festival.presentation.artist.exchanges.ArtistDetailRes;
-import ddd.darayo.festival.presentation.artist.exchanges.EditArtistReq;
-import ddd.darayo.festival.presentation.artist.exchanges.SaveArtistAliasesReq;
-import ddd.darayo.festival.presentation.artist.exchanges.SaveArtistReq;
+import ddd.darayo.festival.presentation.artist.exchanges.*;
 import ddd.darayo.festival.presentation.exception.APIException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -51,6 +48,18 @@ public class ArtistAdminController {
     ) {
         try {
             artistManagement.editArtist(req, artistId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (DomainException e) {
+            throw APIException.from(e, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PutMapping("/aliases/{aliasId}")
+    public ResponseEntity<Void> editArtistAlias(
+            @PathVariable Long aliasId, @RequestBody EditArtistAliasReq req
+    ) {
+        try {
+            artistManagement.editArtistAlias(req, aliasId);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (DomainException e) {
             throw APIException.from(e, HttpStatus.NOT_FOUND);
