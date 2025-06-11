@@ -5,10 +5,7 @@ import ddd.darayo.festival.domain.entity.ArtistAlias;
 import ddd.darayo.festival.domain.repository.ArtistAliasRepository;
 import ddd.darayo.festival.domain.repository.ArtistRepository;
 import ddd.darayo.festival.domain.repository.projection.ArtistDetailProjection;
-import ddd.darayo.festival.presentation.artist.exchanges.ArtistDetailRes;
-import ddd.darayo.festival.presentation.artist.exchanges.EditArtistReq;
-import ddd.darayo.festival.presentation.artist.exchanges.SaveArtistAliasesReq;
-import ddd.darayo.festival.presentation.artist.exchanges.SaveArtistReq;
+import ddd.darayo.festival.presentation.artist.exchanges.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -47,6 +44,13 @@ public class ArtistManagement {
         int result = artistRepository.updateArtistById(artistId, req.name(), req.description());
         if (result < 1) {
             throw ARTIST_NOT_EXISTS.toException();
+        }
+    }
+
+    public void editArtistAlias(EditArtistAliasReq req, long aliasId) {
+        int result = artistAliasRepository.updateArtistAlias(req.alias(), aliasId);
+        if (result < 1) {
+            throw ARTIST_ALIAS_NOT_EXISTS.toException();
         }
     }
 
