@@ -13,6 +13,10 @@ java {
     }
 }
 
+bootJar {
+    archiveFileName = 'app.jar'
+}
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
