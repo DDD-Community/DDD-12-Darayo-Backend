@@ -34,18 +34,24 @@ dependencies {
     // Swagger 문서
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.8'
 
+    // MapStruct
+    implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+
+
     // GCP CloudSQL 프록시
     implementation 'com.google.cloud.sql:mysql-socket-factory-connector-j-8:1.25.1'
 
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     // Test Container
     testImplementation "org.testcontainers:testcontainers"
     testImplementation 'org.testcontainers:mysql'
 
+    testAnnotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
 
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
