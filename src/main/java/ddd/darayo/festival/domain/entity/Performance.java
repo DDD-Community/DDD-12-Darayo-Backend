@@ -7,8 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Builder
 @Entity
@@ -57,15 +56,15 @@ public class Performance {
     // TODO: 추후에 각각의 도메인으로 분리하면 좋아 보임.
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "performance")
     @Builder.Default
-    private List<Timetable> timetables = new ArrayList<>();
+    private Set<Timetable> timetables = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "performance")
     @Builder.Default
-    private List<ReservationInfo> reservationInfos = new ArrayList<>();
+    private Set<ReservationInfo> reservationInfos = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy= "performance")
     @Builder.Default
-    private List<PerformanceArtist> artists = new ArrayList<>();
+    private Set<PerformanceArtist> artists = new HashSet<>();
 
     public void addTimetable(Timetable timetable) {
         this.timetables.add(timetable);

@@ -4,6 +4,7 @@ import ddd.darayo.festival.domain.entity.*;
 import ddd.darayo.festival.domain.exception.constant.PerformanceError;
 import ddd.darayo.festival.domain.repository.PerformanceRepository;
 import ddd.darayo.festival.domain.repository.projection.PerformanceDetailProjection;
+import ddd.darayo.festival.domain.service.mapper.PerformanceMapper;
 import ddd.darayo.festival.presentation.performance.exchanges.PerformanceDetailRes;
 import ddd.darayo.festival.presentation.performance.exchanges.SavePerformanceReq;
 import jakarta.transaction.Transactional;
@@ -18,7 +19,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class PerformanceManagement {
     private final PerformanceRepository performanceRepository;
-
+    private final PerformanceMapper performanceMapper;
 
     private Performance from(SavePerformanceReq.PerformanceDTO dto) {
         return Performance.builder()
@@ -93,87 +94,11 @@ public class PerformanceManagement {
 
 
     public List<PerformanceDetailRes> findAllDetail() {
-        List<PerformanceDetailProjection> flatResults = performanceRepository.findAllDetail();
-
-        Map<Long, PerformanceDetailRes> performanceMap = new LinkedHashMap<>();
-
-        for (PerformanceDetailProjection row : flatResults) {
-            PerformanceDetailRes pRes = performanceMap.computeIfAbsent(row.getPerformanceId(), performanceId -> new PerformanceDetailRes(
-                    performanceId,
-                    row.getPerformanceName(),
-                    row.getPlaceName(),
-                    row.getPlaceAddress(),
-                    row.getStartDate(),
-                    row.getEndDate(),
-                    row.getPosterUrl(),
-                    row.getBanGoods(),
-                    row.getTransportationInfo(),
-                    row.getPerformanceRemark(),
-                    new ArrayList<>(), // timeTables
-                    new ArrayList<>(), // reservationInfos
-                    new ArrayList<>()  // artists
-            ));
-
-            // Timetable 정보 조립
-            if (row.getTimetableId() != null) {
-                PerformanceDetailRes.TimeTableDetailRes ttRes = pRes.getTimeTables().stream()
-                        .filter(tt -> tt.getId().equals(row.getTimetableId()))
-                        .findFirst()
-                        .orElseGet(() -> {
-                            PerformanceDetailRes.TimeTableDetailRes newTt = new PerformanceDetailRes.TimeTableDetailRes(
-                                    row.getTimetableId(),
-                                    row.getPerformanceDate(),
-                                    row.getTimetableStartTime(),
-                                    row.getTimetableEndTime(),
-                                    row.getTimetablePerformanceHall(),
-                                    new ArrayList<>()
-                            );
-                            pRes.getTimeTables().add(newTt);
-                            return newTt;
-                        });
-
-                // Timetable에 참여하는 Artist 정보 조립
-                if (row.getTimetableArtistId() != null) {
-                    PerformanceDetailRes.ArtistParticipateDetailRes ttArtist = new PerformanceDetailRes.ArtistParticipateDetailRes(
-                            row.getTimetableArtistId(),
-                            row.getTimetableArtistArtistId(),
-                            row.getTimetableArtistName(),
-                            row.getTimetableArtistType()
-                    );
-                    if (ttRes.getArtists().stream().noneMatch(a -> a.getTimetableArtistId().equals(ttArtist.getTimetableArtistId()) && a.getArtistId().equals(ttArtist.getArtistId()) && a.getType() == ttArtist.getType())) {
-                        ttRes.getArtists().add(ttArtist);
-                    }
-                }
-            }
-
-            // ReservationInfo 정보 조립
-            if (row.getReservationInfoId() != null) {
-                PerformanceDetailRes.ReservationInfoDetailRes rInfoRes = new PerformanceDetailRes.ReservationInfoDetailRes(
-                        row.getReservationInfoId(),
-                        row.getReservationInfoOpenDateTime(),
-                        row.getReservationInfoCloseDateTime(),
-                        row.getReservationInfoTicketURL(),
-                        row.getReservationInfoType() != null ? row.getReservationInfoType().name() : null,
-                        row.getReservationInfoRemark()
-                );
-                if (pRes.getReservationInfos().stream().noneMatch(r -> r.getId().equals(rInfoRes.getId()))) {
-                    pRes.getReservationInfos().add(rInfoRes);
-                }
-            }
-
-            // Performance-level Artist 정보 조립
-            if (row.getPerformanceArtistId() != null) {
-                PerformanceDetailRes.ArtistDetailRes pArtistRes = new PerformanceDetailRes.ArtistDetailRes(
-                        row.getPerformanceArtistId(),
-                        row.getPerformanceArtistDisplayName(),
-                        row.getPerformanceDate()
-                );
-                if (pRes.getArtists().stream().noneMatch(a -> a.getId().equals(pArtistRes.getId()))) {
-                    pRes.getArtists().add(pArtistRes);
-                }
-            }
-        }
-        return new ArrayList<>(performanceMap.values());
+        List<Performance> performances = performanceRepository.findAllDetail();
+        return performances
+                .stream()
+                .map(performanceMapper::toPerformanceDetailRes)
+                .toList();
     }
 
     public void delete(Long performanceId) {
