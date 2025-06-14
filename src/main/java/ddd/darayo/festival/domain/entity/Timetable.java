@@ -46,4 +46,11 @@ public class Timetable {
         this.artists.add(artist);
         artist.setTimetable(this);
     }
+
+    public void update(LocalDate performanceDate, LocalTime startTime, LocalTime endTime, String performanceHall) {
+        this.performanceDate = performanceDate;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.performanceHall = performanceHall;
+    }
 }
