@@ -5,6 +5,7 @@ import ddd.darayo.festival.domain.entity.Timetable;
 import ddd.darayo.festival.domain.service.AuthService;
 import ddd.darayo.festival.domain.service.PerformanceManagement;
 import ddd.darayo.festival.domain.service.TimetableManagement;
+import ddd.darayo.festival.presentation.performance.exchanges.AddPerformanceArtistReq;
 import ddd.darayo.festival.presentation.performance.exchanges.AddTimetableReq;
 import ddd.darayo.festival.presentation.performance.exchanges.PerformanceDetailRes;
 import ddd.darayo.festival.presentation.performance.exchanges.SavePerformanceReq;
@@ -42,6 +43,15 @@ public class PerformanceAdminController {
     public ResponseEntity<Void> deletePerformance(@PathVariable Long performanceId) {
         performanceManagement.delete(performanceId);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("{performanceId}/artist")
+    public ResponseEntity<Void> addArtist(
+            @PathVariable Long performanceId,
+            @RequestBody AddPerformanceArtistReq req
+    ) {
+        timetableManagement.addArtist(performanceId, req);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/{performanceId}/timetable")

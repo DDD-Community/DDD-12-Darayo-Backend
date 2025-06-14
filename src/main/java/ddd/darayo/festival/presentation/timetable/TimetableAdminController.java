@@ -20,6 +20,4 @@ public class TimetableAdminController {
         timetableManagement.editTimetable(timetableId, req);
         return ResponseEntity.ok().build();
     }
-
-
 }
