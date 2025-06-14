@@ -16,6 +16,7 @@ public class TimetableArtist {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ParticipationType participationType;

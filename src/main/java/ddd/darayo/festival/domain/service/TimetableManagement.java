@@ -1,7 +1,9 @@
 package ddd.darayo.festival.domain.service;
 
+import ddd.darayo.festival.domain.constant.ParticipationType;
 import ddd.darayo.festival.domain.entity.PerformanceArtist;
 import ddd.darayo.festival.domain.entity.Timetable;
+import ddd.darayo.festival.domain.entity.TimetableArtist;
 import ddd.darayo.festival.domain.exception.constant.PerformanceError;
 import ddd.darayo.festival.domain.exception.constant.TimetableError;
 import ddd.darayo.festival.domain.repository.PerformanceArtistRepository;
@@ -24,6 +26,7 @@ public class TimetableManagement {
     private final PerformanceRepository performanceRepository;
     private final PerformanceArtistRepository performanceArtistRepository;
     private final TimetableRepository timetableRepository;
+    private final TimetableArtistRepository timetableArtistRepository;
 
     public Timetable addTimetable(Long performanceId, AddTimetableReq req) {
         if (!performanceRepository.existsById(performanceId)) {
@@ -44,6 +47,21 @@ public class TimetableManagement {
         }
         PerformanceArtist artist = new PerformanceArtist(performanceId, req.artistId());
         performanceArtistRepository.save(artist);
+    }
+
+    public void putTimetableArtist(Long timetableId, Long artistId, ParticipationType type) {
+        Timetable timetable = timetableRepository.findById(timetableId)
+                .orElseThrow(TimetableError.TIMETABLE_NOT_EXISTS::toException);
+        PerformanceArtist pa = performanceArtistRepository.findParticipatingArtist(timetable.getPerformance().getId(), artistId)
+                .orElseThrow(PerformanceError.PERFORMANCE_ARTIST_NOT_EXIST::toException);
+        Optional<TimetableArtist> ota = timetableArtistRepository.findParticipatingArtist(timetableId, artistId);
+        if (ota.isPresent()) {
+            TimetableArtist artist = ota.get();
+            artist.setParticipationType(type);
+        } else {
+            TimetableArtist ta = new TimetableArtist(null, type, pa, timetable);
+            timetableArtistRepository.save(ta);
+        }
     }
 
     public void editTimetable(Long timetableId, EditTimetableReq req) {
