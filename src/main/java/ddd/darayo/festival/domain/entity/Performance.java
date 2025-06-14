@@ -50,6 +50,10 @@ public class Performance {
     @Column(nullable = true)
     private String remark;
 
+    public Performance(Long performanceId) {
+        this.id = performanceId;
+    }
+
     // TODO: 추후에 각각의 도메인으로 분리하면 좋아 보임.
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "performance")
     @Builder.Default

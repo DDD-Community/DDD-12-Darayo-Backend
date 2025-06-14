@@ -26,4 +26,9 @@ public class PerformanceArtist {
     public PerformanceArtist(Long artistId) {
         this.artist = new Artist(artistId);
     }
+
+    public PerformanceArtist(Long artistId, Long performanceId) {
+        this.artist = new Artist(artistId);
+        this.performance = new Performance(performanceId);
+    }
 }
