@@ -21,8 +21,7 @@ public class SavePerformanceReq {
     @AllArgsConstructor
     public static class PerformanceDTO {
         private String name;
-        private String placeName;
-        private String placeAddress;
+        private Long placeId;
         private LocalDate startDate;
         private LocalDate endDate;
         private String posterUrl;
@@ -52,7 +51,7 @@ public class SavePerformanceReq {
         private LocalTime startTime;
         @JsonInclude(JsonInclude.Include.NON_NULL)
         private LocalTime endTime;
-        private String performanceHall;
+        private Long hallId;
         private List<ArtistParticipateDTO> artists;
     }
 

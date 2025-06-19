@@ -3,7 +3,6 @@ package ddd.darayo.festival.domain.service;
 import ddd.darayo.festival.domain.entity.*;
 import ddd.darayo.festival.domain.exception.constant.PerformanceError;
 import ddd.darayo.festival.domain.repository.PerformanceRepository;
-import ddd.darayo.festival.domain.repository.projection.PerformanceDetailProjection;
 import ddd.darayo.festival.domain.service.mapper.PerformanceMapper;
 import ddd.darayo.festival.presentation.performance.exchanges.PerformanceDetailRes;
 import ddd.darayo.festival.presentation.performance.exchanges.SavePerformanceReq;
@@ -24,8 +23,7 @@ public class PerformanceManagement {
     private Performance from(SavePerformanceReq.PerformanceDTO dto) {
         return Performance.builder()
                 .name(dto.getName())
-                .placeName(dto.getPlaceName())
-                .placeAddress(dto.getPlaceAddress())
+                .place(new PerformancePlace(dto.getPlaceId()))
                 .startDate(dto.getStartDate())
                 .endDate(dto.getEndDate())
                 .posterUrl(dto.getPosterUrl())
@@ -45,7 +43,7 @@ public class PerformanceManagement {
             dto.getPerformanceDate(),
             dto.getStartTime(),
             dto.getEndTime(),
-            dto.getPerformanceHall()
+            dto.getHallId()
         );
         dto.getArtists().forEach(artist -> {
             PerformanceArtist performanceArtist = artistMap.computeIfAbsent(artist.getArtistId(), id -> {

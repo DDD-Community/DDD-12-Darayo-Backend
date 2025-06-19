@@ -25,8 +25,8 @@ public class Timetable {
     @Column(nullable = true)
     private LocalTime endTime;
 
-    @Column(length = 512)
-    private String performanceHall;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private PerformanceHall hall;
 
     @Setter
     @ManyToOne
@@ -35,11 +35,11 @@ public class Timetable {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "timetable")
     private List<TimetableArtist> artists = new ArrayList<>();
 
-    public Timetable(LocalDate performanceDate, LocalTime startTime, LocalTime endTime, String performanceHall) {
+    public Timetable(LocalDate performanceDate, LocalTime startTime, LocalTime endTime, Long hallId) {
         this.performanceDate = performanceDate;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.performanceHall = performanceHall;
+        this.hall = new PerformanceHall(hallId);
     }
 
     public void addArtist(TimetableArtist artist) {
@@ -47,10 +47,9 @@ public class Timetable {
         artist.setTimetable(this);
     }
 
-    public void update(LocalDate performanceDate, LocalTime startTime, LocalTime endTime, String performanceHall) {
+    public void update(LocalDate performanceDate, LocalTime startTime, LocalTime endTime) {
         this.performanceDate = performanceDate;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.performanceHall = performanceHall;
     }
 }

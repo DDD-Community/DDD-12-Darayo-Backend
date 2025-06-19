@@ -33,7 +33,7 @@ public class TimetableManagement {
             throw PerformanceError.PERFORMANCE_NOT_EXIST.toException();
         }
         // TODO: 같은 홀, 같은 시간 겹치는 경우
-        Timetable timetable = new Timetable(req.performanceDate(), req.startTime(), req.endTime(), req.performanceHall());
+        Timetable timetable = new Timetable(req.performanceDate(), req.startTime(), req.endTime(), req.hallId());
         return timetableRepository.save(timetable);
     }
 
@@ -67,7 +67,7 @@ public class TimetableManagement {
     public void editTimetable(Long timetableId, EditTimetableReq req) {
         Timetable timetable = timetableRepository.findById(timetableId)
                 .orElseThrow(TimetableError.TIMETABLE_NOT_EXISTS::toException);
-        timetable.update(req.performanceDate(), req.startTime(), req.endTime(), req.performanceHall());
+        timetable.update(req.performanceDate(), req.startTime(), req.endTime());
     }
 
 }

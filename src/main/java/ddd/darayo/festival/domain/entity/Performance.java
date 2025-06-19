@@ -22,19 +22,13 @@ public class Performance {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private String placeName;
-
-    @Column(nullable = false, length = 512)
-    private String placeAddress;
-
-    @Column(nullable = false)
+    @Column(nullable = true)
     private LocalDate startDate;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private LocalDate endDate;
 
-    @Column(nullable = false, length = 512)
+    @Column(nullable = true, length = 512)
     private String posterUrl;
 
     @Lob
@@ -49,10 +43,12 @@ public class Performance {
     @Column(nullable = true)
     private String remark;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private PerformancePlace place;
+
     public Performance(Long performanceId) {
         this.id = performanceId;
     }
-
     // TODO: 추후에 각각의 도메인으로 분리하면 좋아 보임.
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "performance")
     @Builder.Default
