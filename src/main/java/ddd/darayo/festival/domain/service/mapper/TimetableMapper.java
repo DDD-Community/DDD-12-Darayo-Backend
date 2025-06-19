@@ -14,8 +14,8 @@ public interface TimetableMapper {
     interface TimetableDetailMapper {
         @Mapping(target = "timetableArtistId", source = "id")
         @Mapping(target = "type", source = "participationType")
-        @Mapping(target = "artistId", source = "artist.artist.id") // PerformanceArtist → Artist
-        @Mapping(target = "artistName", source = "artist.artist.displayName")
+        @Mapping(target = "artistId", source = "artist.id") // PerformanceArtist → Artist
+        @Mapping(target = "artistName", source = "artist.displayName")
         PerformanceDetailRes.ArtistParticipateDetailRes toArtistParticipateDetail(TimetableArtist timetableArtist);
     }
 }

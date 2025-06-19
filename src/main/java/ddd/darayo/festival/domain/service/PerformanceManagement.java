@@ -37,8 +37,6 @@ public class PerformanceManagement {
             SavePerformanceReq.TimeTableDTO dto,
             Performance performance
     ) {
-        Map<Long, PerformanceArtist> artistMap = new HashMap<>();
-
         Timetable timetable = new Timetable(
             dto.getPerformanceDate(),
             dto.getStartTime(),
@@ -46,12 +44,7 @@ public class PerformanceManagement {
             dto.getHallId()
         );
         dto.getArtists().forEach(artist -> {
-            PerformanceArtist performanceArtist = artistMap.computeIfAbsent(artist.getArtistId(), id -> {
-                PerformanceArtist pa = new PerformanceArtist(id);
-                performance.addArtist(pa);
-                return pa;
-            });
-            TimetableArtist timetableArtist = new TimetableArtist(null, artist.getType(), performanceArtist, null);
+            TimetableArtist timetableArtist = new TimetableArtist(null, artist.getType(), new Artist(artist.getArtistId()), null);
             timetable.addArtist(timetableArtist);
         });
         return timetable;

@@ -23,7 +23,7 @@ public class TimetableArtist {
 
     @Setter
     @ManyToOne
-    private PerformanceArtist artist;
+    private Artist artist;
 
     @Setter
     @ManyToOne

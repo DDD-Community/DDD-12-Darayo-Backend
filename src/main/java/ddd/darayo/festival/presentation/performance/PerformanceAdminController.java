@@ -45,15 +45,6 @@ public class PerformanceAdminController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("{performanceId}/artist")
-    public ResponseEntity<Void> addArtist(
-            @PathVariable Long performanceId,
-            @RequestBody AddPerformanceArtistReq req
-    ) {
-        timetableManagement.addArtist(performanceId, req);
-        return ResponseEntity.ok().build();
-    }
-
     @PostMapping("/{performanceId}/timetable")
     public ResponseEntity<Long> createTimetable(
             @PathVariable Long performanceId,

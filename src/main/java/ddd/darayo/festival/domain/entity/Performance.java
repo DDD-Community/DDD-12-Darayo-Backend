@@ -58,10 +58,6 @@ public class Performance {
     @Builder.Default
     private Set<ReservationInfo> reservationInfos = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy= "performance")
-    @Builder.Default
-    private Set<PerformanceArtist> artists = new HashSet<>();
-
     public void addTimetable(Timetable timetable) {
         this.timetables.add(timetable);
         timetable.setPerformance(this);
@@ -70,10 +66,5 @@ public class Performance {
     public void addReservationInfo(ReservationInfo reservationInfo) {
         this.reservationInfos.add(reservationInfo);
         reservationInfo.setPerformance(this);
-    }
-
-    public void addArtist(PerformanceArtist artist) {
-        this.artists.add(artist);
-        artist.setPerformance(this);
     }
 }
