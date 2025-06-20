@@ -9,6 +9,7 @@ import ddd.darayo.festival.domain.exception.constant.PerformanceError;
 import ddd.darayo.festival.domain.exception.constant.PlaceError;
 import ddd.darayo.festival.domain.exception.constant.TimetableError;
 import ddd.darayo.festival.domain.repository.PerformanceRepository;
+import ddd.darayo.festival.domain.repository.TimetableArtistRepository;
 import ddd.darayo.festival.domain.repository.TimetableRepository;
 import ddd.darayo.festival.presentation.performance.exchanges.AddTimetableReq;
 import ddd.darayo.festival.presentation.timetable.exchanges.EditTimetableReq;
@@ -58,6 +59,13 @@ public class TimetableManagement {
             throw PlaceError.PLACE_HALL_NOT_EXIST.toException();
         }
         timetable.update(req.performanceDate(), req.startTime(), req.endTime(), new PerformanceHall(req.hallId()));
+    }
+
+    public void deleteTimetableArtist(Long timetableId, Long artistId) {
+        int result = timetableArtistRepository.deleteTimetableArtist(timetableId, artistId);
+        if (result < 1) {
+            throw TimetableError.TIMETABLE_ARTIST_NOT_EXISTS.toException();
+        }
     }
 
 }

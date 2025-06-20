@@ -30,4 +30,13 @@ public class TimetableAdminController {
         timetableManagement.putTimetableArtist(timetableId, req.artistId(), req.participationType());
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping("/{timetableId}/artist/{artistId}")
+    public ResponseEntity<Void> deleteTimetableArtist(
+            @PathVariable("timetableId") Long timetableId,
+            @PathVariable("artistId") Long artistId
+    ) {
+        timetableManagement.deleteTimetableArtist(timetableId, artistId);
+        return ResponseEntity.ok().build();
+    }
 }
