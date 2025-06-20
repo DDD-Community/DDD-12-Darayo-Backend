@@ -12,5 +12,5 @@ public record EditTimetableReq(
         @JsonInclude(JsonInclude.Include.NON_NULL)
         LocalTime endTime,
         @JsonInclude(JsonInclude.Include.NON_NULL)
-        String performanceHall
+        Long hallId
 ) { }
