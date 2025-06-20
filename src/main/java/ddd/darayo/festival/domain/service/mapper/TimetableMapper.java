@@ -8,6 +8,7 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring", uses = {TimetableMapper.TimetableDetailMapper.class})
 public interface TimetableMapper {
+    @Mapping(target = "performanceHall", source = "timetable.hall.name")
     PerformanceDetailRes.TimeTableDetailRes toTimetableDetail(Timetable timetable);
 
     @Mapper(componentModel = "spring")
