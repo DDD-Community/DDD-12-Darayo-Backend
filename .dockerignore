@@ -1,0 +1,10 @@
+.gradle
+.idea
+build/
+
+HELP.md
+readme.md
+.gitattributes
+
+.env
+.env.local

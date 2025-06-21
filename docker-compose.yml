@@ -1,0 +1,11 @@
+services:
+  app:
+    image: asia-northeast3-docker.pkg.dev/carbon-web-461709-v3/backend-docker-image-registry/festival-app:latest
+    platform: linux/arm64
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
