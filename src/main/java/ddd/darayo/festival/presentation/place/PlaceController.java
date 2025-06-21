@@ -3,12 +3,12 @@ package ddd.darayo.festival.presentation.place;
 import ddd.darayo.festival.domain.entity.PerformancePlace;
 import ddd.darayo.festival.domain.service.PlaceManagement;
 import ddd.darayo.festival.presentation.place.exchanges.AddPlaceReq;
+import ddd.darayo.festival.presentation.place.exchanges.GetAllPlaceRes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,5 +22,10 @@ public class PlaceController {
     ) {
         PerformancePlace newPlace = placeManagement.createNewPlace(addPlaceReq);
         return ResponseEntity.ok(newPlace.getId());
+    }
+//
+    @GetMapping
+    public ResponseEntity<List<GetAllPlaceRes>> getPlaces() {
+        return ResponseEntity.ok(placeManagement.getAllPlaces());
     }
 }

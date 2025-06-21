@@ -6,6 +6,7 @@ import ddd.darayo.festival.domain.repository.PerformancePlaceRepository;
 import ddd.darayo.festival.domain.service.mapper.MapperUtil;
 import ddd.darayo.festival.domain.service.mapper.PlaceMapper;
 import ddd.darayo.festival.presentation.place.exchanges.AddPlaceReq;
+import ddd.darayo.festival.presentation.place.exchanges.GetAllPlaceRes;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,12 @@ public class PlaceManagement {
         return performancePlaceRepository.save(placeEntity);
     }
 
+    public List<GetAllPlaceRes> getAllPlaces() {
+        return performancePlaceRepository.findAllPlacesFetched()
+                .stream()
+                .map(placeMapper::toGetAllPlaces)
+                .toList();
+    }
 
 
 }
