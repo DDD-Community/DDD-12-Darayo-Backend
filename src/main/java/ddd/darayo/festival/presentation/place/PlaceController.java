@@ -1,7 +1,9 @@
 package ddd.darayo.festival.presentation.place;
 
+import ddd.darayo.festival.domain.entity.PerformanceHall;
 import ddd.darayo.festival.domain.entity.PerformancePlace;
 import ddd.darayo.festival.domain.service.PlaceManagement;
+import ddd.darayo.festival.presentation.place.exchanges.AddPlaceHallReq;
 import ddd.darayo.festival.presentation.place.exchanges.AddPlaceReq;
 import ddd.darayo.festival.presentation.place.exchanges.EditPlaceReq;
 import ddd.darayo.festival.presentation.place.exchanges.GetAllPlaceRes;
@@ -32,10 +34,19 @@ public class PlaceController {
 
     @PutMapping("/{placeId}")
     public ResponseEntity<Void> deletePlace(
-        @PathVariable long placeId,
-        @RequestBody EditPlaceReq editPlaceReq
+            @PathVariable long placeId,
+            @RequestBody EditPlaceReq editPlaceReq
     ) {
         placeManagement.editPlace(placeId, editPlaceReq);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{placeId}/hall")
+    public ResponseEntity<Long> addHall(
+            @PathVariable Long placeId,
+            @RequestBody AddPlaceHallReq addPlaceHallReq
+    ) {
+        PerformanceHall hall = placeManagement.addHall(placeId, addPlaceHallReq);
+        return ResponseEntity.ok(hall.getId());
     }
 }
