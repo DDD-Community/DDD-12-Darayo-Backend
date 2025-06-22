@@ -24,4 +24,8 @@ public interface PerformanceMapper {
     @Mapping(target = "reservationInfos", source = "reservationInfos")
     @Mapping(target = "artists", source = "timetables", qualifiedByName = "toArtistDetailRes")
     PerformanceDetailRes toPerformanceDetailRes(Performance performance);
+
+    @Mapping(target = "place", source = "placeId", qualifiedByName = "fromIdToPerformancePlace")
+    Performance toPerformanceEntity(SavePerformanceReq.PerformanceDTO performanceDTO);
+
 }

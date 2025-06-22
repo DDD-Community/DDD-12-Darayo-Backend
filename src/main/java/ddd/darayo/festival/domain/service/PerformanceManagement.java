@@ -4,6 +4,8 @@ import ddd.darayo.festival.domain.entity.*;
 import ddd.darayo.festival.domain.exception.constant.PerformanceError;
 import ddd.darayo.festival.domain.repository.PerformanceRepository;
 import ddd.darayo.festival.domain.service.mapper.PerformanceMapper;
+import ddd.darayo.festival.domain.service.mapper.ReservationInfoMapper;
+import ddd.darayo.festival.domain.service.mapper.TimetableMapper;
 import ddd.darayo.festival.presentation.performance.exchanges.PerformanceDetailRes;
 import ddd.darayo.festival.presentation.performance.exchanges.SavePerformanceReq;
 import jakarta.transaction.Transactional;
@@ -20,65 +22,28 @@ public class PerformanceManagement {
     private final PerformanceRepository performanceRepository;
     private final PerformanceMapper performanceMapper;
 
-    private Performance from(SavePerformanceReq.PerformanceDTO dto) {
-        return Performance.builder()
-                .name(dto.getName())
-                .place(new PerformancePlace(dto.getPlaceId()))
-                .startDate(dto.getStartDate())
-                .endDate(dto.getEndDate())
-                .posterUrl(dto.getPosterUrl())
-                .remark(dto.getRemark())
-                .transportationInfo(dto.getTransportationInfo())
-                .banGoods(dto.getBanGoods())
-                .build();
-    }
-
-    private Timetable from(
-            SavePerformanceReq.TimeTableDTO dto,
-            Performance performance
-    ) {
-        Timetable timetable = new Timetable(
-            dto.getPerformanceDate(),
-            dto.getStartTime(),
-            dto.getEndTime(),
-            dto.getHallId()
-        );
-        dto.getArtists().forEach(artist -> {
-            TimetableArtist timetableArtist = new TimetableArtist(null, artist.getType(), new Artist(artist.getArtistId()), null);
-            timetable.addArtist(timetableArtist);
-        });
-        return timetable;
-    }
-
-
-    private ReservationInfo from(SavePerformanceReq.ReservationInfoDTO dto) {
-        return new ReservationInfo(
-                dto.getOpenDateTime(),
-                dto.getCloseDateTime(),
-                dto.getTicketURL(),
-                dto.getType(),
-                dto.getRemark()
-        );
-    }
+    private final TimetableMapper timetableMapper;
+    private final ReservationInfoMapper reservationInfoMapper;
+    private final TimetableMapper.TimetableDetailMapper timetableDetailMapper;
 
     public Performance save(SavePerformanceReq dto) {
-        Performance performance = from(dto.getPerformance());
+        Performance performance = this.performanceMapper.toPerformanceEntity(dto.getPerformance());
 
         // 타임테이블 추가
-        if (dto.getTimeTables() != null) {
-            dto.getTimeTables().forEach(timeTableDTO -> {
-                Timetable timetable = from(timeTableDTO, performance);
-                performance.addTimetable(timetable);
+        dto.getTimeTables().forEach(timeTableDTO -> {
+            Timetable timetable = timetableMapper.toTimetableEntity(timeTableDTO);
+            timeTableDTO.getArtists().forEach(artist -> {
+                TimetableArtist timetableArtist = timetableDetailMapper.toTimetableArtist(artist);
+                timetable.addArtist(timetableArtist);
             });
-        }
+            performance.addTimetable(timetable);
+        });
 
         // 예약 정보 추가
-        if (dto.getReservationInfos() != null) {
-            dto.getReservationInfos().forEach(reservationInfoDTO -> {
-                ReservationInfo reservationInfo = from(reservationInfoDTO);
-                performance.addReservationInfo(reservationInfo);
-            });
-        }
+        dto.getReservationInfos().forEach(reservationInfoDTO -> {
+            ReservationInfo reservationInfo = reservationInfoMapper.toReservationEntity(reservationInfoDTO);
+            performance.addReservationInfo(reservationInfo);
+        });
 
         return performanceRepository.save(performance);
     }

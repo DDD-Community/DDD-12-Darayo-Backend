@@ -1,9 +1,6 @@
 package ddd.darayo.festival.domain.service.mapper;
 
-import ddd.darayo.festival.domain.entity.PerformanceHall;
-import ddd.darayo.festival.domain.entity.PerformancePlace;
-import ddd.darayo.festival.domain.entity.Timetable;
-import ddd.darayo.festival.domain.entity.TimetableArtist;
+import ddd.darayo.festival.domain.entity.*;
 import ddd.darayo.festival.presentation.performance.exchanges.PerformanceDetailRes;
 import org.mapstruct.Named;
 
@@ -35,5 +32,20 @@ public class MapperUtil {
 
     public static List<PerformanceHall> toPlaceHallEntity(List<String> hallNames) {
         return hallNames.stream().map(PerformanceHall::new).toList();
+    }
+
+    @Named("fromIdToPerformanceHall")
+    public static PerformanceHall fromIdToPerformanceHall(Long hallId) {
+        return new PerformanceHall(hallId);
+    }
+
+    @Named("fromIdToArtistEntity")
+    public static Artist fromIdToArtistEntity(Long artistId) {
+        return new Artist(artistId);
+    }
+
+    @Named("fromIdToPerformancePlace")
+    public static PerformancePlace fromIdToPerformancePlace(Long placeId) {
+        return new PerformancePlace(placeId);
     }
 }
