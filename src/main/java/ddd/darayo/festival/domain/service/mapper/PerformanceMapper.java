@@ -1,7 +1,9 @@
 package ddd.darayo.festival.domain.service.mapper;
 
 import ddd.darayo.festival.domain.entity.Performance;
+import ddd.darayo.festival.domain.entity.PerformanceURL;
 import ddd.darayo.festival.presentation.performance.exchanges.PerformanceDetailRes;
+import ddd.darayo.festival.presentation.performance.exchanges.SavePerformanceReq;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -10,6 +12,7 @@ import org.mapstruct.Mapping;
         uses = {
                 TimetableMapper.class,
                 ReservationInfoMapper.class,
+                URLMapper.class,
                 ArtistMapper.class,
                 MapperUtil.class
         }

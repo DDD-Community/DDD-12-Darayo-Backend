@@ -3,6 +3,7 @@ package ddd.darayo.festival.presentation.performance.exchanges;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import ddd.darayo.festival.domain.constant.ParticipationType;
 import ddd.darayo.festival.domain.constant.ReservationType;
+import ddd.darayo.festival.domain.constant.URLType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +12,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Map;
 
 @Getter
 @NoArgsConstructor
@@ -37,7 +37,6 @@ public class SavePerformanceReq {
     @AllArgsConstructor
     public static class ArtistParticipateDTO {
         private Long artistId;
-        @JsonInclude(JsonInclude.Include.NON_NULL)
         private ParticipationType type;
     }
 
@@ -66,17 +65,14 @@ public class SavePerformanceReq {
         private String remark;
     }
 
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class PerformanceArtistDTO {
-        private Long id;
-        @JsonInclude(JsonInclude.Include.NON_NULL)
-        private LocalDate date;
-    }
+    public record PerformanceURLDTO(
+            String url,
+            URLType type
+    ) { }
 
     private String password;
     private PerformanceDTO performance;
     private List<TimeTableDTO> timeTables;
     private List<ReservationInfoDTO> reservationInfos;
+    private List<PerformanceURLDTO> urlInfos;
 }

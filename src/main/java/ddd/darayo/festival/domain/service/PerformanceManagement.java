@@ -6,6 +6,7 @@ import ddd.darayo.festival.domain.repository.PerformanceRepository;
 import ddd.darayo.festival.domain.service.mapper.PerformanceMapper;
 import ddd.darayo.festival.domain.service.mapper.ReservationInfoMapper;
 import ddd.darayo.festival.domain.service.mapper.TimetableMapper;
+import ddd.darayo.festival.domain.service.mapper.URLMapper;
 import ddd.darayo.festival.presentation.performance.exchanges.PerformanceDetailRes;
 import ddd.darayo.festival.presentation.performance.exchanges.SavePerformanceReq;
 import jakarta.transaction.Transactional;
@@ -21,6 +22,7 @@ import java.util.*;
 public class PerformanceManagement {
     private final PerformanceRepository performanceRepository;
     private final PerformanceMapper performanceMapper;
+    private final URLMapper urlMapper;
 
     private final TimetableMapper timetableMapper;
     private final ReservationInfoMapper reservationInfoMapper;
@@ -43,6 +45,11 @@ public class PerformanceManagement {
         dto.getReservationInfos().forEach(reservationInfoDTO -> {
             ReservationInfo reservationInfo = reservationInfoMapper.toReservationEntity(reservationInfoDTO);
             performance.addReservationInfo(reservationInfo);
+        });
+
+        dto.getUrlInfos().forEach(urlDTO -> {
+            PerformanceURL url = urlMapper.toPerformanceURL(urlDTO);
+            performance.addUrl(url);
         });
 
         return performanceRepository.save(performance);
