@@ -27,4 +27,8 @@ public class PerformanceHall {
     public PerformanceHall(String name) {
         this.name = name;
     }
+
+    public void updateName(String name) {
+        this.name = name;
+    }
 }

@@ -7,10 +7,7 @@ import ddd.darayo.festival.domain.repository.PerformanceHallRepository;
 import ddd.darayo.festival.domain.repository.PerformancePlaceRepository;
 import ddd.darayo.festival.domain.service.mapper.MapperUtil;
 import ddd.darayo.festival.domain.service.mapper.PlaceMapper;
-import ddd.darayo.festival.presentation.place.exchanges.AddPlaceHallReq;
-import ddd.darayo.festival.presentation.place.exchanges.AddPlaceReq;
-import ddd.darayo.festival.presentation.place.exchanges.EditPlaceReq;
-import ddd.darayo.festival.presentation.place.exchanges.GetAllPlaceRes;
+import ddd.darayo.festival.presentation.place.exchanges.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -53,5 +50,9 @@ public class PlaceManagement {
         return performanceHallRepository.save(newHall);
     }
 
-
+    public void editHall(Long hallId, EditHallReq req) {
+        PerformanceHall hall = performanceHallRepository.findById(hallId)
+                .orElseThrow(PlaceError.PLACE_HALL_NOT_EXIST::toException);
+        hall.updateName(req.name());
+    }
 }

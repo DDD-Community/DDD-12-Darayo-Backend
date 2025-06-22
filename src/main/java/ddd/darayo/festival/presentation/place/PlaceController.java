@@ -3,10 +3,7 @@ package ddd.darayo.festival.presentation.place;
 import ddd.darayo.festival.domain.entity.PerformanceHall;
 import ddd.darayo.festival.domain.entity.PerformancePlace;
 import ddd.darayo.festival.domain.service.PlaceManagement;
-import ddd.darayo.festival.presentation.place.exchanges.AddPlaceHallReq;
-import ddd.darayo.festival.presentation.place.exchanges.AddPlaceReq;
-import ddd.darayo.festival.presentation.place.exchanges.EditPlaceReq;
-import ddd.darayo.festival.presentation.place.exchanges.GetAllPlaceRes;
+import ddd.darayo.festival.presentation.place.exchanges.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -48,5 +45,14 @@ public class PlaceController {
     ) {
         PerformanceHall hall = placeManagement.addHall(placeId, addPlaceHallReq);
         return ResponseEntity.ok(hall.getId());
+    }
+
+    @PutMapping("/hall/{hallId}")
+    public ResponseEntity<Void> editHall(
+            @PathVariable Long hallId,
+            @RequestBody EditHallReq editHallReq
+    ) {
+        placeManagement.editHall(hallId, editHallReq);
+        return ResponseEntity.ok().build();
     }
 }
