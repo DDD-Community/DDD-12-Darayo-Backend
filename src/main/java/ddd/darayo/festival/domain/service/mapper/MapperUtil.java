@@ -1,5 +1,6 @@
 package ddd.darayo.festival.domain.service.mapper;
 
+import ddd.darayo.festival.domain.entity.PerformanceHall;
 import ddd.darayo.festival.domain.entity.PerformancePlace;
 import ddd.darayo.festival.domain.entity.Timetable;
 import ddd.darayo.festival.domain.entity.TimetableArtist;
@@ -30,5 +31,9 @@ public class MapperUtil {
     @Named("toPlaceAddress")
     public static String toPlaceAddress(PerformancePlace performancePlace) {
         return performancePlace.getAddress();
+    }
+
+    public static List<PerformanceHall> toPlaceHallEntity(List<String> hallNames) {
+        return hallNames.stream().map(PerformanceHall::new).toList();
     }
 }
