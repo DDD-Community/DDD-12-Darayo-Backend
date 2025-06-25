@@ -9,8 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Builder
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class Timetable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -42,4 +42,9 @@ public class PerformancePlace {
         halls.add(hall);
         hall.setPlace(this);
     }
+
+    public void update(String name, String address) {
+        this.name = name;
+        this.address = address;
+    }
 }

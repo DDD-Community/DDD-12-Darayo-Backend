@@ -1,13 +1,11 @@
 package ddd.darayo.festival.domain.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class PerformanceHall {
@@ -27,6 +25,10 @@ public class PerformanceHall {
     }
 
     public PerformanceHall(String name) {
+        this.name = name;
+    }
+
+    public void updateName(String name) {
         this.name = name;
     }
 }
