@@ -4,8 +4,11 @@ import ddd.darayo.festival.domain.entity.Timetable;
 import ddd.darayo.festival.domain.entity.TimetableArtist;
 import ddd.darayo.festival.presentation.performance.exchanges.PerformanceDetailRes;
 import ddd.darayo.festival.presentation.performance.exchanges.SavePerformanceReq;
+import ddd.darayo.festival.presentation.performance.exchanges.UserGetPerformanceInfo;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+
+import java.util.List;
 
 @Mapper(
     componentModel = "spring",
@@ -27,6 +30,11 @@ public interface TimetableMapper {
         @Mapping(target = "artistId", source = "artist.id")
         @Mapping(target = "artistName", source = "artist.displayName")
         PerformanceDetailRes.ArtistParticipateDetailRes toArtistParticipateDetail(TimetableArtist timetableArtist);
+
+        @Mapping(target = "artistId", source = "artist.id")
+        @Mapping(target = "artistDisplayName", source = "artist.displayName")
+        @Mapping(target = "performanceDate", source = "timetable.performanceDate")
+        UserGetPerformanceInfo.ArtistDetailRes toArtistDetail(TimetableArtist timetableArtist);
 
         @Mapping(target = "participationType", source = "type")
         @Mapping(target = "artist", source = "artistId", qualifiedByName = "fromIdToArtistEntity")
