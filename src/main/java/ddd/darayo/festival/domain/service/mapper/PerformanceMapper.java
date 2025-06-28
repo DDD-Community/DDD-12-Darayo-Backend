@@ -25,6 +25,7 @@ public interface PerformanceMapper {
 
     @Mapping(target = "performance", source = ".")
     @Mapping(target = "timeTables", source = "timetables")
+    @Mapping(target = "urlInfos", source = "urls")
     @Mapping(target = "reservationInfos", source = "reservationInfos")
     @Mapping(target = "artists", source = "timetables", qualifiedByName = "toArtistDetailRes")
     PerformanceDetailRes toPerformanceDetailRes(Performance performance);

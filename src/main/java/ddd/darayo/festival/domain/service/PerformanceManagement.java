@@ -1,20 +1,26 @@
 package ddd.darayo.festival.domain.service;
 
+import ddd.darayo.festival.domain.constant.ParticipationType;
 import ddd.darayo.festival.domain.entity.*;
 import ddd.darayo.festival.domain.exception.constant.PerformanceError;
+import ddd.darayo.festival.domain.exception.constant.TimetableError;
 import ddd.darayo.festival.domain.repository.PerformanceRepository;
 import ddd.darayo.festival.domain.service.mapper.PerformanceMapper;
 import ddd.darayo.festival.domain.service.mapper.ReservationInfoMapper;
 import ddd.darayo.festival.domain.service.mapper.TimetableMapper;
 import ddd.darayo.festival.domain.service.mapper.URLMapper;
+import ddd.darayo.festival.presentation.performance.exchanges.EditReservationInfoReq;
 import ddd.darayo.festival.presentation.performance.exchanges.PerformanceDetailRes;
 import ddd.darayo.festival.presentation.performance.exchanges.SavePerformanceReq;
 import ddd.darayo.festival.presentation.performance.exchanges.UserGetPerformanceInfo;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -48,10 +54,10 @@ public class PerformanceManagement {
             performance.addReservationInfo(reservationInfo);
         });
 
-//        dto.getUrlInfos().forEach(urlDTO -> {
-//            PerformanceURL url = urlMapper.toPerformanceURL(urlDTO);
-//            performance.addUrl(url);
-//        });
+        dto.getUrlInfos().forEach(urlDTO -> {
+            PerformanceURL url = urlMapper.toPerformanceURL(urlDTO);
+            performance.addUrl(url);
+        });
 
         return performanceRepository.save(performance);
     }
@@ -87,5 +93,37 @@ public class PerformanceManagement {
                 .orElseThrow(PerformanceError.PERFORMANCE_NOT_EXIST::toException);
 
         performanceRepository.delete(performance);
+    }
+
+    public void updateReservationInfo(Long performanceId, List<EditReservationInfoReq> reqList) {
+        val performance = performanceRepository.findById(performanceId)
+                .orElseThrow(PerformanceError.PERFORMANCE_NOT_EXIST::toException);
+
+        Map<Long, ReservationInfo> existingMap = performance.getReservationInfos().stream()
+                .filter(info -> info.getId() != null)
+                .collect(Collectors.toMap(ReservationInfo::getId, Function.identity()));
+
+        Set<ReservationInfo> newReservationInfos = new HashSet<>();
+
+        for (val req : reqList) {
+            if (req.id() != null && existingMap.containsKey(req.id())) {
+                ReservationInfo existing = existingMap.get(req.id());
+                existing.updateWith(req); // 아래에 정의
+                newReservationInfos.add(existing);
+            } else {
+                ReservationInfo newInfo = new ReservationInfo(
+                        req.openDateTime(),
+                        req.closeDateTime(),
+                        req.ticketURL(),
+                        req.type(),
+                        req.remark()
+                );
+                newInfo.setPerformance(performance);
+                newReservationInfos.add(newInfo);
+            }
+        }
+
+        performance.getReservationInfos().clear();
+        performance.getReservationInfos().addAll(newReservationInfos);
     }
 }

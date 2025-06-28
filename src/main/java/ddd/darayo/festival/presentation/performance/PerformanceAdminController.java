@@ -5,10 +5,7 @@ import ddd.darayo.festival.domain.entity.Timetable;
 import ddd.darayo.festival.domain.service.AuthService;
 import ddd.darayo.festival.domain.service.PerformanceManagement;
 import ddd.darayo.festival.domain.service.TimetableManagement;
-import ddd.darayo.festival.presentation.performance.exchanges.AddPerformanceArtistReq;
-import ddd.darayo.festival.presentation.performance.exchanges.AddTimetableReq;
-import ddd.darayo.festival.presentation.performance.exchanges.PerformanceDetailRes;
-import ddd.darayo.festival.presentation.performance.exchanges.SavePerformanceReq;
+import ddd.darayo.festival.presentation.performance.exchanges.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +34,15 @@ public class PerformanceAdminController {
     @GetMapping
     public ResponseEntity<List<PerformanceDetailRes>> getAllPerformanceDetails() {
         return ResponseEntity.ok(performanceManagement.findAllDetail());
+    }
+
+    @PutMapping("/{performanceId}/reservation")
+    public ResponseEntity<Void> updateReservationInfo(
+            @PathVariable Long performanceId,
+            @RequestBody List<EditReservationInfoReq> reqList
+    ) {
+        performanceManagement.updateReservationInfo(performanceId, reqList);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{performanceId}")

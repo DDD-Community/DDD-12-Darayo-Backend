@@ -2,6 +2,7 @@ package ddd.darayo.festival.presentation.performance.exchanges;
 
 import ddd.darayo.festival.domain.constant.ParticipationType;
 import ddd.darayo.festival.domain.constant.ReservationType;
+import ddd.darayo.festival.domain.constant.URLType;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,7 +13,9 @@ public record PerformanceDetailRes(
     PerformanceDetail performance,
     List<TimeTableDetailRes> timeTables,
     List<ReservationInfoDetailRes> reservationInfos,
-    List<ArtistDetailRes> artists
+    List<ArtistDetailRes> artists,
+    List<UrlDetailRes> urlInfos
+
 ) {
 
     public record PerformanceDetail(
@@ -56,5 +59,12 @@ public record PerformanceDetailRes(
             Long artistId,
             String artistName,
             ParticipationType type
+    ) { }
+
+    public record UrlDetailRes(
+            Long id,
+            String url,
+            URLType type
+
     ) { }
 }
