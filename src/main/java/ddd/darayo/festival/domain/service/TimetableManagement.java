@@ -6,12 +6,15 @@ import ddd.darayo.festival.domain.exception.constant.PerformanceError;
 import ddd.darayo.festival.domain.exception.constant.PlaceError;
 import ddd.darayo.festival.domain.exception.constant.TimetableError;
 import ddd.darayo.festival.domain.repository.*;
+import ddd.darayo.festival.domain.service.mapper.TimetableMapper;
 import ddd.darayo.festival.presentation.performance.exchanges.AddTimetableReq;
+import ddd.darayo.festival.presentation.performance.exchanges.UserGetTimetableRes;
 import ddd.darayo.festival.presentation.timetable.exchanges.EditTimetableReq;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -23,6 +26,8 @@ public class TimetableManagement {
     private final TimetableRepository timetableRepository;
     private final TimetableArtistRepository timetableArtistRepository;
     private final PerformanceHallRepository performanceHallRepository;
+
+    private final TimetableMapper timetableMapper;
 
     public Timetable addTimetable(Long performanceId, AddTimetableReq req) {
         Performance performance = performanceRepository.findById(performanceId)
@@ -64,6 +69,11 @@ public class TimetableManagement {
         if (result < 1) {
             throw TimetableError.TIMETABLE_ARTIST_NOT_EXISTS.toException();
         }
+    }
+
+    public List<UserGetTimetableRes> getUserGetTimetables(Long festivalId) {
+        List<Timetable> timetables = timetableRepository.findByFestivalId(festivalId);
+        return timetables.stream().map(timetableMapper::toUserGetTimetable).toList();
     }
 
 }
