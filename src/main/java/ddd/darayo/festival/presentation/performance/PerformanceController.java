@@ -2,6 +2,7 @@ package ddd.darayo.festival.presentation.performance;
 
 import ddd.darayo.festival.domain.service.PerformanceManagement;
 import ddd.darayo.festival.domain.service.TimetableManagement;
+import ddd.darayo.festival.presentation.common.BaseResponse;
 import ddd.darayo.festival.presentation.performance.exchanges.UserGetPerformanceInfo;
 import ddd.darayo.festival.presentation.performance.exchanges.UserGetTimetableRes;
 import lombok.RequiredArgsConstructor;
@@ -21,14 +22,16 @@ public class PerformanceController {
     private final TimetableManagement timetableManagement;
 
     @GetMapping
-    public ResponseEntity<List<UserGetPerformanceInfo>> getPerformances() {
-        return ResponseEntity.ok(performanceManagement.findUserPerformance());
+    public ResponseEntity<BaseResponse<List<UserGetPerformanceInfo>>> getPerformances() {
+        List<UserGetPerformanceInfo> data = performanceManagement.findUserPerformance();
+        return ResponseEntity.ok(BaseResponse.success(data));
     }
 
     @GetMapping("/{festivalId}/timetable")
-    public ResponseEntity<List<UserGetTimetableRes>> getPerformancesForFestival(
+    public ResponseEntity<BaseResponse<List<UserGetTimetableRes>>> getPerformancesForFestival(
             @PathVariable Long festivalId
     ) {
-        return ResponseEntity.ok(timetableManagement.getUserGetTimetables(festivalId));
+        List<UserGetTimetableRes> data = timetableManagement.getUserGetTimetables(festivalId);
+        return ResponseEntity.ok(BaseResponse.success(data));
     }
 }
