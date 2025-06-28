@@ -47,10 +47,10 @@ public class PerformanceManagement {
             performance.addReservationInfo(reservationInfo);
         });
 
-        dto.getUrlInfos().forEach(urlDTO -> {
-            PerformanceURL url = urlMapper.toPerformanceURL(urlDTO);
-            performance.addUrl(url);
-        });
+//        dto.getUrlInfos().forEach(urlDTO -> {
+//            PerformanceURL url = urlMapper.toPerformanceURL(urlDTO);
+//            performance.addUrl(url);
+//        });
 
         return performanceRepository.save(performance);
     }

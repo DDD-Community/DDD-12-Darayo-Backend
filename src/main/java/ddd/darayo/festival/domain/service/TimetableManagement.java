@@ -1,10 +1,7 @@
 package ddd.darayo.festival.domain.service;
 
 import ddd.darayo.festival.domain.constant.ParticipationType;
-import ddd.darayo.festival.domain.entity.Artist;
-import ddd.darayo.festival.domain.entity.PerformanceHall;
-import ddd.darayo.festival.domain.entity.Timetable;
-import ddd.darayo.festival.domain.entity.TimetableArtist;
+import ddd.darayo.festival.domain.entity.*;
 import ddd.darayo.festival.domain.exception.constant.PerformanceError;
 import ddd.darayo.festival.domain.exception.constant.PlaceError;
 import ddd.darayo.festival.domain.exception.constant.TimetableError;
@@ -28,11 +25,14 @@ public class TimetableManagement {
     private final PerformanceHallRepository performanceHallRepository;
 
     public Timetable addTimetable(Long performanceId, AddTimetableReq req) {
-        if (!performanceRepository.existsById(performanceId)) {
-            throw PerformanceError.PERFORMANCE_NOT_EXIST.toException();
-        }
+        Performance performance = performanceRepository.findById(performanceId)
+                .orElseThrow(PerformanceError.PERFORMANCE_NOT_EXIST::toException);
+
         // TODO: 같은 홀, 같은 시간 겹치는 경우
         Timetable timetable = new Timetable(req.performanceDate(), req.startTime(), req.endTime(), req.hallId());
+
+        timetable.setPerformance(performance);
+
         return timetableRepository.save(timetable);
     }
 
