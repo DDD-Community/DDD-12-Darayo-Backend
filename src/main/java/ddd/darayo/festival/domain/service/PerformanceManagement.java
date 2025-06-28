@@ -9,6 +9,7 @@ import ddd.darayo.festival.domain.service.mapper.TimetableMapper;
 import ddd.darayo.festival.domain.service.mapper.URLMapper;
 import ddd.darayo.festival.presentation.performance.exchanges.PerformanceDetailRes;
 import ddd.darayo.festival.presentation.performance.exchanges.SavePerformanceReq;
+import ddd.darayo.festival.presentation.performance.exchanges.UserGetPerformanceInfo;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -62,6 +63,23 @@ public class PerformanceManagement {
                 .stream()
                 .map(performanceMapper::toPerformanceDetailRes)
                 .toList();
+    }
+
+    public List<UserGetPerformanceInfo> findUserPerformance() {
+        List<Performance> performances = performanceRepository.findAllDetail();
+        List<UserGetPerformanceInfo> userGetPerformanceInfos = new ArrayList<>();
+        for (Performance performance : performances) {
+            UserGetPerformanceInfo dto = performanceMapper.toUserGetPerformanceInfo(performance);
+            Set<Timetable> timetables = performance.getTimetables();
+            for (Timetable timetable : timetables) {
+                for (TimetableArtist timetableArtist : timetable.getArtists()) {
+                    UserGetPerformanceInfo.ArtistDetailRes artist = timetableDetailMapper.toArtistDetail(timetableArtist);
+                    dto.artists().add(artist);
+                }
+            }
+            userGetPerformanceInfos.add(dto);
+        }
+        return userGetPerformanceInfos;
     }
 
     public void delete(Long performanceId) {
