@@ -35,7 +35,7 @@ public class WebMvcExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<BaseResponse<Void>> handle(Exception e) {
         logException(e);
 
-        BaseResponse<Void> response = BaseResponse.fail("9999", e.getMessage());
+        BaseResponse<Void> response = BaseResponse.fail("9999", "알 수 없는 오류가 발생했습니다.");
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(response);
     }
