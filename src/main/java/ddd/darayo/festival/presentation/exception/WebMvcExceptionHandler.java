@@ -1,6 +1,7 @@
 package ddd.darayo.festival.presentation.exception;
 
 import ddd.darayo.festival.domain.exception.DomainException;
+import ddd.darayo.festival.domain.exception.UserException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,18 @@ public class WebMvcExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(DomainException.class)
     public ResponseEntity<ErrorResponse> handleDomainException(DomainException e) {
+        logException(e);
+
+        ErrorResponse response = new ErrorResponse(
+                e.error.getCode(),
+                e.error.getDesc(),
+                LocalDateTime.now()
+        );
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+    }
+
+    @ExceptionHandler(UserException.class)
+    public ResponseEntity<ErrorResponse> handleUserException(UserException e) {
         logException(e);
 
         ErrorResponse response = new ErrorResponse(
