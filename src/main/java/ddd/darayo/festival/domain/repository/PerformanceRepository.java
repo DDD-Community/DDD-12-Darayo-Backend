@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -31,4 +32,11 @@ public interface PerformanceRepository extends JpaRepository<Performance, Long> 
         @Param("start") LocalDateTime start,
         @Param("end") LocalDateTime end
     );
+
+    @Query("""
+        SELECT p
+            FROM Performance p
+        WHERE p.startDate = :date
+    """)
+    List<Performance> findByDate(@Param("date") LocalDate date);
 }
