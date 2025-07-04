@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -52,5 +53,25 @@ public class SelectPerformanceForAlarmTest extends ReadonlyContainerBaseTest {
 
         Assertions.assertEquals(1, performances.size());
         Assertions.assertEquals(3, performances.get(0).getId());
+    }
+
+    @Test
+    void 반입물품_및_교통안내를_위해__1일후_시작되는_공연정보를_조회해야_합니다() {
+        LocalDate now = LocalDate.of(2024, 8, 14);
+        LocalDate tomorrow = now.plusDays(1);
+
+        List<Performance> performances = performanceRepository.findByDate(tomorrow);
+        Assertions.assertEquals(1, performances.size());
+        Assertions.assertEquals(4, performances.get(0).getId());
+    }
+
+    @Test
+    void 시간표_알림을_위해_3일후_시작되는_공연정보를_조회해야_합니다() {
+        LocalDate now = LocalDate.of(2024, 8, 12);
+        LocalDate tomorrow = now.plusDays(3);
+
+        List<Performance> performances = performanceRepository.findByDate(tomorrow);
+        Assertions.assertEquals(1, performances.size());
+        Assertions.assertEquals(4, performances.get(0).getId());
     }
 }
