@@ -21,7 +21,7 @@ public class UserService {
         String token = jwtService.generateToken(deviceId);
 
         userRepository.save(User.builder()
-                .provider(Provider.DEVICE)
+                .provider(Provider.DEVICE)      // todo : apple 로그인 구현되면 파라미터에 추가하고, 해당 부분도 바꿔줘야함
                 .providerUserId(token)
                 .build());
 
