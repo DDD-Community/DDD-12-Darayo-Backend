@@ -108,14 +108,21 @@ INSERT INTO users (id, is_alarm_allowed, last_login_at, provider, provider_user_
 
 -- 12. 사용자 알람 토큰 (user_alarm_token)
 INSERT INTO user_alarm_token (id, alarm_token, expired_at, is_valid, user_id) VALUES
-  (1, 'token-abc', '2024-12-31 23:59:59.000000', b'1', 1),
-  (2, 'token-def', '2024-12-31 23:59:59.000000', b'1', 2),
-  (3, 'token-def', '2024-12-31 23:59:59.000000', b'1', 3),
-  (4, 'token-efg', '2024-12-31 23:59:59.000000', b'0', 4);
+  (null, 'token-1-1', '2024-12-31 23:59:59.000000', b'1', 1),
+  (null, 'token-2-1', '2024-12-31 23:59:59.000000', b'1', 2),
+  (null, 'token-3-1', '2024-12-31 23:59:59.000000', b'1', 3),
+  (null, 'token-4-1', '2024-12-31 23:59:59.000000', b'0', 4),
+  (null, 'token-1-2', '2024-12-31 23:59:59.000000', b'0', 1);
 
 -- 13. 사용자 공연 알람 (user_performance_alarm)
 INSERT INTO user_performance_alarm (id, target_id, type, user_id) VALUES
   (1, 1, 0, 1),
-  (2, 2, 0, 2);
+  (2, 2, 0, 2),
+  (3, 3, 0, 2),
+  (4, 1,0,2),
+  (5, 2, 0, 1),
+  (6,3, 0, 3),
+  (7, 4, 0,4)
+;
 
 SET foreign_key_checks = 1;

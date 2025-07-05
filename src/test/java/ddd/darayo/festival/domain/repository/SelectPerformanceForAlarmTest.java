@@ -15,8 +15,7 @@ import java.util.List;
 @ServiceTest
 @SuppressWarnings("NonAsciiCharacters")
 public class SelectPerformanceForAlarmTest extends ReadonlyContainerBaseTest {
-    @Autowired
-    private PerformanceRepository performanceRepository;
+    @Autowired private PerformanceRepository performanceRepository;
 
     @Test
     void 예매_1일후_공연_정보를_조회해야_합니다_다중_조회_성공() {
