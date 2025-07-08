@@ -1,6 +1,6 @@
 package ddd.darayo.festival.presentation.user;
 
-import ddd.darayo.festival.domain.user.service.UserService;
+import ddd.darayo.festival.domain.service.UserService;
 import ddd.darayo.festival.presentation.user.exchanges.UserLoginReq;
 import ddd.darayo.festival.presentation.user.exchanges.UserLoginRes;
 import lombok.RequiredArgsConstructor;

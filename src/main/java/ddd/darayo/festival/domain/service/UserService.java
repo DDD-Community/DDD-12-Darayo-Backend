@@ -1,8 +1,8 @@
-package ddd.darayo.festival.domain.user.service;
+package ddd.darayo.festival.domain.service;
 
-import ddd.darayo.festival.domain.user.entity.Provider;
-import ddd.darayo.festival.domain.user.entity.User;
-import ddd.darayo.festival.domain.user.repository.UserRepository;
+import ddd.darayo.festival.domain.constant.AuthProviderType;
+import ddd.darayo.festival.domain.entity.User;
+import ddd.darayo.festival.domain.repository.UserRepository;
 import ddd.darayo.festival.infra.jwt.JwtService;
 import ddd.darayo.festival.presentation.user.exchanges.UserLoginRes;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class UserService {
         String token = jwtService.generateToken(deviceId);
 
         userRepository.save(User.builder()
-                .provider(Provider.DEVICE)      // todo : apple 로그인 구현되면 파라미터에 추가하고, 해당 부분도 바꿔줘야함
+                .provider(AuthProviderType.DEVICE)      // todo : apple 로그인 구현되면 파라미터에 추가하고, 해당 부분도 바꿔줘야함
                 .providerUserId(token)
                 .build());
 

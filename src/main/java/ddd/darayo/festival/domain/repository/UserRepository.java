@@ -1,6 +1,6 @@
-package ddd.darayo.festival.domain.user.repository;
+package ddd.darayo.festival.domain.repository;
 
-import ddd.darayo.festival.domain.user.entity.User;
+import ddd.darayo.festival.domain.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
