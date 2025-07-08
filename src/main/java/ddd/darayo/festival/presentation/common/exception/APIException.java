@@ -1,4 +1,4 @@
-package ddd.darayo.festival.presentation.exception;
+package ddd.darayo.festival.presentation.common.exception;
 
 import ddd.darayo.festival.domain.exception.DomainException;
 import ddd.darayo.festival.domain.exception.constant.ErrorInfo;
@@ -16,7 +16,7 @@ public class APIException extends RuntimeException {
         return new APIException(ex.getMessage(), status);
     }
 
-    APIException(String message, HttpStatus status) {
+    private APIException(String message, HttpStatus status) {
         super(message);
         this.status = status;
     }
