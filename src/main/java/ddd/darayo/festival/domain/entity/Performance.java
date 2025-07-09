@@ -32,11 +32,11 @@ public class Performance {
     private String posterUrl;
 
     @Lob
-    @Column(nullable = true)
+    @Column(nullable = true, columnDefinition = "TEXT")
     private String banGoods;
 
     @Lob
-    @Column(nullable = true)
+    @Column(nullable = true, columnDefinition = "TEXT")
     private String transportationInfo;
 
     @Lob

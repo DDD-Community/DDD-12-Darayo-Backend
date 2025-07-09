@@ -5,7 +5,7 @@ import ddd.darayo.festival.domain.exception.DomainException;
 import ddd.darayo.festival.domain.service.ArtistManagement;
 import ddd.darayo.festival.domain.service.AuthService;
 import ddd.darayo.festival.presentation.artist.exchanges.*;
-import ddd.darayo.festival.presentation.exception.APIException;
+import ddd.darayo.festival.presentation.common.exception.APIException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
