@@ -8,7 +8,7 @@ public class APIException extends RuntimeException {
     public ErrorInfo error;
     public HttpStatus status;
 
-    public static APIException from(DomainException ex, HttpStatus status) {
+    public static APIException from(RuntimeException ex, HttpStatus status) {
         return new APIException(ex.getMessage(), status);
     }
 

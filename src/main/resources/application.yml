@@ -35,5 +35,5 @@ logging:
               BasicBinder: TRACE
 
 jwt:
-  secret-key: ${JWT_SECRET_KEY:default-secret-key-for-local-environment}
+  secret-key: ${JWT_SECRET_KEY}
   expire-length: ${JWT_EXPIRE_LENGTH:86400000}

@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,4 +32,8 @@ public class User {
     @Column(nullable = false)
     @Builder.Default
     private Boolean isAlarmAllowed = false;
+
+    public void updateAlarmPermission(boolean allowed) {
+        this.isAlarmAllowed = allowed;
+    }
 }
