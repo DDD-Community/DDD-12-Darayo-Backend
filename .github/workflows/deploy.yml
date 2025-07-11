@@ -1,0 +1,166 @@
+name: CI & Deploy Festival App
+
+on:
+  push:
+    branches: [release]
+
+env:
+  IMAGE: asia-northeast3-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/festival-app-backend:latest
+
+jobs:
+  test:
+    name: Run Tests Only
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Unit Tests
+        run: ./gradlew test --no-daemon
+
+      - name: Discord Notification on Test Failure
+        if: failure()
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          title: "❌ 테스트 실패"
+          description: "단위 테스트 실행 중 오류가 발생했습니다."
+          color: 0xff0000
+          username: Festival CI/CD Bot
+
+  build-image:
+    name: Build & Push Docker Image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.GCP_SECRET_KEY }}'
+
+      - name: Configure Docker for Artifact Registry
+        run: |
+          gcloud auth configure-docker asia-northeast3-docker.pkg.dev
+
+      - name: Build & Push Docker Image
+        run: |
+          docker buildx build \
+            --tag $IMAGE \
+            --provenance=false \
+            --platform=linux/amd64 \
+            --push \
+            $IMAGE
+
+      - name: Discord Notification on Build Failure
+        if: failure()
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          title: "❌ 도커 이미지 빌드 실패"
+          description: "도커 이미지 빌드 또는 푸시 중 오류가 발생했습니다."
+          color: 0xff0000
+          username: Festival CI/CD Bot
+
+  deploy:
+    name: Deploy to GCP VM
+    runs-on: ubuntu-latest
+    needs: [test, build-image]
+
+    steps:
+      - name: SSH and Deploy on VM
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.GCP_VM_HOST }}
+          username: ${{ secrets.GCP_VM_USERNAME }}
+          key: ${{ secrets.GCP_VM_SSH_KEY }}
+          script: |
+            # 오류 발생 시 즉시 스크립트 중단
+            set -e
+            
+            # 함수 정의: 오류 발생 시 처리
+            handle_error() {
+              echo "Error occurred in deployment: $1"
+              exit 1
+            }
+            
+            # 함수 정의: 명령어 실행 및 오류 처리
+            run_command() {
+              echo "[+] Running: $1"
+              if ! eval "$1"; then
+                handle_error "$1 failed"
+              fi
+            }
+            
+            # Artifact Registry 인증
+            echo "[+] Authenticating Artifact Registry"
+            run_command "gcloud auth configure-docker asia-northeast3-docker.pkg.dev"
+            
+            # 최신 이미지 가져오기
+            echo "[+] Pulling latest image"
+            run_command "docker pull $IMAGE"
+            
+            # 기존 컨테이너 정리
+            echo "[+] Cleaning up old container"
+            docker stop my-app 2>/dev/null || true
+            docker rm my-app 2>/dev/null || true
+            
+            # 새 컨테이너 실행
+            echo "[+] Starting new container"
+            run_command "docker run -d \
+              --name my-app \
+              -p 8080:8080 \
+              --env-file .env \
+              -v .secret:/app/.secret \
+              $IMAGE"
+            
+            # 컨테이너 상태 확인
+            echo "[+] Verifying container status"
+            if ! docker ps | grep -q my-app; then
+              handle_error "Container failed to start"
+            fi
+            
+            # 컨테이너 로그 확인
+            echo "[+] Checking container logs for errors"
+            if docker logs my-app 2>&1 | grep -i "error\|exception\|failed" > /dev/null; then
+              handle_error "Container reported errors in logs"
+            fi
+            
+            # 헬스체크 (애플리케이션이 8080 포트에서 실행 중인지 확인)
+            echo "[+] Performing health check"
+            MAX_RETRIES=30
+            RETRY_COUNT=0
+            
+            while ! curl -s http://localhost:8080/actuator/health | grep -q "UP"; do
+              if [ $RETRY_COUNT -ge $MAX_RETRIES ]; then
+                handle_error "Health check failed after $MAX_RETRIES attempts"
+              fi
+              echo "Waiting for application to start... ($(($RETRY_COUNT + 1))/$MAX_RETRIES)"
+              sleep 2
+              RETRY_COUNT=$((RETRY_COUNT + 1))
+            done
+            
+            echo "[+] Deployment completed successfully"
+
+      - name: Discord Notification on Deploy Success
+        if: success()
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          title: "✅ 배포 성공"
+          description: "새로운 버전이 성공적으로 배포되었습니다."
+          color: 0x00ff00
+          username: Festival CI/CD Bot
+
+      - name: Discord Notification on Deploy Failure
+        if: failure()
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          title: "❌ 배포 실패"
+          description: "배포 과정에서 오류가 발생했습니다."
+          color: 0xff0000
+          username: Festival CI/CD Bot
