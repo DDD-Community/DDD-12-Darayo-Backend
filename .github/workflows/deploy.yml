@@ -23,7 +23,7 @@ jobs:
         if: failure()
         uses: sarisia/actions-status-discord@v1
         with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
           title: "❌ 테스트 실패"
           description: "단위 테스트 실행 중 오류가 발생했습니다."
           color: 0xff0000
@@ -53,13 +53,13 @@ jobs:
             --provenance=false \
             --platform=linux/amd64 \
             --push \
-            $IMAGE
+            .
 
       - name: Discord Notification on Build Failure
         if: failure()
         uses: sarisia/actions-status-discord@v1
         with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          webhook: ${{ secrets.DISCORD_WEBHOOK_URL}}
           title: "❌ 도커 이미지 빌드 실패"
           description: "도커 이미지 빌드 또는 푸시 중 오류가 발생했습니다."
           color: 0xff0000
@@ -128,7 +128,6 @@ jobs:
             if docker logs my-app 2>&1 | grep -i "error\|exception\|failed" > /dev/null; then
               handle_error "Container reported errors in logs"
             fi
-            
             # 헬스체크 (애플리케이션이 8080 포트에서 실행 중인지 확인)
             echo "[+] Performing health check"
             MAX_RETRIES=30
@@ -149,7 +148,7 @@ jobs:
         if: success()
         uses: sarisia/actions-status-discord@v1
         with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
           title: "✅ 배포 성공"
           description: "새로운 버전이 성공적으로 배포되었습니다."
           color: 0x00ff00
@@ -159,7 +158,7 @@ jobs:
         if: failure()
         uses: sarisia/actions-status-discord@v1
         with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
           title: "❌ 배포 실패"
           description: "배포 과정에서 오류가 발생했습니다."
           color: 0xff0000
