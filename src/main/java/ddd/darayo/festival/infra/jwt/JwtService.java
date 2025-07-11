@@ -1,5 +1,6 @@
 package ddd.darayo.festival.infra.jwt;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -28,6 +29,15 @@ public class JwtService {
                 .setExpiration(validity)
                 .signWith(getSigningKey(secretKey), SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    public String getSubject(String token) {
+        Claims claims = Jwts.parserBuilder()
+            .setSigningKey(getSigningKey(secretKey))
+            .build()
+            .parseClaimsJws(token)
+            .getBody();
+        return claims.getSubject();
     }
 
     private Key getSigningKey(String secretKey) {
