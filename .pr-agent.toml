@@ -1,0 +1,3 @@
+[config]
+ignore_pr_target_branches = ['release', 'main'] # a list of regular expressions of target branches to ignore from PR agent when an PR is created
+ignore_pr_source_branches = ['develop', 'release'] # a list of regular expressions of source branches to ignore from PR agent when an PR is created
