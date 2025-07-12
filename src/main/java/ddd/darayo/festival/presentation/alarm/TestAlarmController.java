@@ -31,7 +31,7 @@ public class TestAlarmController {
         if (day < 0) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
-                    .body(BaseResponse.fail("7002", "dayLeft는 0보다 크거나 작아야 합니다."));
+                    .body(BaseResponse.fail("7002", "dayLeft는 0보다 크거나 같아야 합니다."));
         }
 
         switch (alarmType) {
