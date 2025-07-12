@@ -6,3 +6,7 @@ spring:
 
 auth:
   password: test
+
+jwt:
+  secret-key: test-secret-key-for-jwt-token-signing-at-least-32-bytes
+  expire-length: 86400000

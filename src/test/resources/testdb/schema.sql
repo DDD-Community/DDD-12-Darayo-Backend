@@ -126,7 +126,7 @@ create table user_performance_alarm
     user_id   bigint  null
 );
 
-create table users
+create table user
 (
     id               bigint auto_increment
         primary key,
