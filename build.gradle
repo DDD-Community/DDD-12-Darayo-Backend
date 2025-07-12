@@ -44,6 +44,8 @@ dependencies {
 
     // GCP CloudSQL 프록시
     implementation 'com.google.cloud.sql:mysql-socket-factory-connector-j-8:1.25.1'
+    // Firebase Cloud Messaging SDK
+    implementation 'com.google.firebase:firebase-admin:9.5.0'
 
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.mysql:mysql-connector-j'

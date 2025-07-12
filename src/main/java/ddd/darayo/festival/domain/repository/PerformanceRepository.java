@@ -3,8 +3,11 @@ package ddd.darayo.festival.domain.repository;
 import ddd.darayo.festival.domain.entity.Performance;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -19,4 +22,21 @@ public interface PerformanceRepository extends JpaRepository<Performance, Long> 
     """)
     List<Performance> findAllDetail();
 
+    @Query("""
+        SELECT DISTINCT p
+            FROM Performance p
+            JOIN FETCH p.reservationInfos r
+        WHERE r.openDateTime BETWEEN :start AND :end
+    """)
+    List<Performance> findByReservationOpenDateBetween(
+        @Param("start") LocalDateTime start,
+        @Param("end") LocalDateTime end
+    );
+
+    @Query("""
+        SELECT p
+            FROM Performance p
+        WHERE p.startDate = :date
+    """)
+    List<Performance> findByDate(@Param("date") LocalDate date);
 }
