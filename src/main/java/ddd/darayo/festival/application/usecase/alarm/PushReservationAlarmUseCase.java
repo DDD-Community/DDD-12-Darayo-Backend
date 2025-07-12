@@ -17,6 +17,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -41,23 +43,40 @@ public class PushReservationAlarmUseCase implements UseCase<PushReservationAlarm
         LocalDateTime targetStart = targetDate.atStartOfDay();
         LocalDateTime targetEnd = targetDate.atTime(LocalTime.MAX);
         
-        log.info("예매 {}일전 알림 실행 - 대상 날짜: {}", params.daysLeft, targetDate);
+        log.info("예매 {}일전 알림 스케줄러 실행 - 대상 날짜: {}", params.daysLeft, targetDate);
         
         List<Performance> performances = performanceRepository.findByReservationOpenDateBetween(targetStart, targetEnd);
         
+        if (performances.isEmpty()) {
+            log.info("예매 {}일전 알림 대상 공연 없음", params.daysLeft);
+            return null;
+        }
+        
+        // 모든 공연 ID를 한번에 수집
+        List<Long> performanceIds = performances.stream()
+                .map(Performance::getId)
+                .toList();
+        
+        // 한번의 쿼리로 모든 알림 토큰 조회
+        List<AlarmTokenProjection> allTokens = userAlarmTokenRepository.findAlarmTokens(performanceIds);
+        
+        // 공연별로 알림 토큰 그룹핑
+        Map<Long, List<AlarmTokenProjection>> tokensByPerformance = allTokens.stream()
+                .collect(Collectors.groupingBy(AlarmTokenProjection::getTargetId));
+        
+        // 각 공연에 대해 알림 발송
         for (Performance performance : performances) {
-            sendReservationAlarm(performance, params.daysLeft);
+            List<AlarmTokenProjection> tokens = tokensByPerformance.get(performance.getId());
+            sendReservationAlarm(performance, params.daysLeft, tokens);
         }
         
         log.info("예매 {}일전 알림 발송 완료. 대상 공연: {}", params.daysLeft, performances.size());
         return null;
     }
     
-    private void sendReservationAlarm(Performance performance, int daysLeft) {
+    private void sendReservationAlarm(Performance performance, int daysLeft, List<AlarmTokenProjection> tokens) {
         try {
-            List<AlarmTokenProjection> tokens = userAlarmTokenRepository.findAlarmTokens(List.of(performance.getId()));
-            
-            if (tokens.isEmpty()) {
+            if (tokens == null || tokens.isEmpty()) {
                 log.debug("공연 '{}' 예매 알림 대상 없음", performance.getName());
                 return;
             }

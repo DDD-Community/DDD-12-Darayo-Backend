@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -35,23 +37,40 @@ public class PushGuideAlarmUseCase implements UseCase<PushGuideAlarmUseCase.Para
     public Void execute(Param params) {
         LocalDate targetDate = params.today.plusDays(params.daysLeft);
         
-        log.info("반입물품/교통안내 알림 실행 - 대상 날짜: {}", targetDate);
+        log.info("반입물품/교통안내 알림 스케줄러 실행 - 대상 날짜: {}", targetDate);
         
         List<Performance> performances = performanceRepository.findByDate(targetDate);
         
+        if (performances.isEmpty()) {
+            log.info("반입물품/교통안내 알림 대상 공연 없음");
+            return null;
+        }
+        
+        // 모든 공연 ID를 한번에 수집
+        List<Long> performanceIds = performances.stream()
+                .map(Performance::getId)
+                .toList();
+        
+        // 한번의 쿼리로 모든 알림 토큰 조회
+        List<AlarmTokenProjection> allTokens = userAlarmTokenRepository.findAlarmTokens(performanceIds);
+        
+        // 공연별로 알림 토큰 그룹핑
+        Map<Long, List<AlarmTokenProjection>> tokensByPerformance = allTokens.stream()
+                .collect(Collectors.groupingBy(AlarmTokenProjection::getTargetId));
+        
+        // 각 공연에 대해 알림 발송
         for (Performance performance : performances) {
-            sendGuideAlarm(performance);
+            List<AlarmTokenProjection> tokens = tokensByPerformance.get(performance.getId());
+            sendGuideAlarm(performance, tokens);
         }
         
         log.info("반입물품/교통안내 알림 발송 완료. 대상 공연: {}", performances.size());
         return null;
     }
     
-    private void sendGuideAlarm(Performance performance) {
+    private void sendGuideAlarm(Performance performance, List<AlarmTokenProjection> tokens) {
         try {
-            List<AlarmTokenProjection> tokens = userAlarmTokenRepository.findAlarmTokens(List.of(performance.getId()));
-            
-            if (tokens.isEmpty()) {
+            if (tokens == null || tokens.isEmpty()) {
                 log.debug("공연 '{}' 반입물품/교통안내 알림 대상 없음", performance.getName());
                 return;
             }

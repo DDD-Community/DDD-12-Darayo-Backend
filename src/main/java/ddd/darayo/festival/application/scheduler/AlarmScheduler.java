@@ -16,7 +16,7 @@ import java.time.LocalDate;
 public class AlarmScheduler {
     
     private final PushReservationAlarmUseCase pushReservationAlarmUseCase;
-    private final PushTimetableAlarmUseCase pushTimetableAlarm;
+    private final PushTimetableAlarmUseCase pushTimetableAlarmUseCase;
     private final PushGuideAlarmUseCase pushGuideAlarmUseCase;
 
     /**
@@ -66,7 +66,7 @@ public class AlarmScheduler {
     public void pushPerformanceTimetable() {
         LocalDate today = LocalDate.now();
         PushTimetableAlarmUseCase.Param param = new PushTimetableAlarmUseCase.Param(today, 3);
-        pushTimetableAlarm.execute(param);
+        pushTimetableAlarmUseCase.execute(param);
     }
 
     /**
