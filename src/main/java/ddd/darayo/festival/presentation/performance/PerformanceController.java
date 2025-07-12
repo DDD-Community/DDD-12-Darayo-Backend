@@ -41,32 +41,30 @@ public class PerformanceController {
 
     @PostMapping("/{festivalId}/push")
     public ResponseEntity<BaseResponse<Void>> enrollPerformanceAlarm(
+            @RequestAttribute("userId") Long userId,
             @PathVariable Long festivalId
     ) {
-        Long dummyUserId = 1L;
-
         try {
-            alarmSettingManagement.enrollPerformanceAlarm(dummyUserId, festivalId);
-            log .info("공연 알림 설정 성공 - 사용자: {}, 공연: {}", dummyUserId, festivalId);
+            alarmSettingManagement.enrollPerformanceAlarm(userId, festivalId);
+            log.info("공연 알림 설정 성공 - 사용자: {}, 공연: {}", userId, festivalId);
             return ResponseEntity.ok(BaseResponse.success());
         } catch (DomainException e) {
-            log.warn("공연 알림 설정 실패 - 사용자: {}, 공연: {}, 오류: {}", dummyUserId, festivalId, e.getMessage());
+            log.warn("공연 알림 설정 실패 - 사용자: {}, 공연: {}, 오류: {}", userId, festivalId, e.getMessage());
             throw APIException.from(e, HttpStatus.BAD_REQUEST);
         }
     }
 
     @DeleteMapping("/{festivalId}/push")
     public ResponseEntity<BaseResponse<Void>> unenrollPerformanceAlarm(
+            @RequestAttribute("userId") Long userId,
             @PathVariable Long festivalId
     ) {
-        Long dummyUserId = 1L;
-
         try {
-            alarmSettingManagement.unenrollPerformanceAlarm(dummyUserId, festivalId);
-            log.info("공연 알림 해제 성공 - 사용자: {}, 공연: {}", dummyUserId, festivalId);
+            alarmSettingManagement.unenrollPerformanceAlarm(userId, festivalId);
+            log.info("공연 알림 해제 성공 - 사용자: {}, 공연: {}", userId, festivalId);
             return ResponseEntity.ok(BaseResponse.success());
         } catch (DomainException e) {
-            log.warn("공연 알림 해제 실패 - 사용자: {}, 공연: {}, 오류: {}", dummyUserId, festivalId, e.getMessage());
+            log.warn("공연 알림 해제 실패 - 사용자: {}, 공연: {}, 오류: {}", userId, festivalId, e.getMessage());
             throw APIException.from(e, HttpStatus.NOT_FOUND);
         }
     }

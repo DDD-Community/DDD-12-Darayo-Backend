@@ -23,10 +23,10 @@ public class UserController {
 
     @PostMapping("/push-permission")
     public ResponseEntity<BaseResponse<Void>> updatePushPermission(
-            @RequestAttribute("providerUserId") String providerUserId,
+            @RequestAttribute("userId") Long userId,
             @RequestBody PushPermissionReq req
     ) {
-        userService.updatePushPermission(providerUserId, req.getPermissionEnabled());
+        userService.updatePushPermission(userId, req.getPermissionEnabled());
         return ResponseEntity.ok(BaseResponse.success());
     }
 }
