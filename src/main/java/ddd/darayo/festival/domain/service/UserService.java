@@ -18,15 +18,22 @@ public class UserService {
     private final JwtService jwtService;
 
     public UserLoginRes login(String deviceId) {
-        String token = jwtService.generateToken(deviceId);
-
-        userRepository.save(User.builder()
-                .provider(AuthProviderType.DEVICE)      // todo : apple 로그인 구현되면 파라미터에 추가하고, 해당 부분도 바꿔줘야함
-                .providerUserId(token)
-                .build());
+        User user = userRepository.findByProviderUserId(deviceId)
+                .orElseGet(() -> userRepository.save(User.builder()
+                        .provider(AuthProviderType.DEVICE)
+                        .providerUserId(deviceId)
+                        .build()));
+        String token = jwtService.generateToken(user);
 
         return UserLoginRes.builder()
                 .token(token)
                 .build();
+    }
+
+    public void updatePushPermission(Long userId, boolean permissionEnabled) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(); // 인터셉터에서 이미 검증했지만, 혹시 모르니 추가
+
+        user.updateAlarmPermission(permissionEnabled);
     }
 }
