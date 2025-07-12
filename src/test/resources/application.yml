@@ -7,6 +7,10 @@ spring:
 auth:
   password: test
 
+# Firebase 설정 (테스트 환경에서는 비활성화)
+firebase:
+  service-account-key: ./test-firebase-key.json
+
 jwt:
   secret-key: test-secret-key-for-jwt-token-signing-at-least-32-bytes
   expire-length: 86400000
