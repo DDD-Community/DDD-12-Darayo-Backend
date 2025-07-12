@@ -28,11 +28,24 @@ public class UserAlarmToken {
     @Column
     private LocalDateTime expiredAt;
 
+    @Column
+    private LocalDateTime updatedAt;
+
     @Column(nullable=false)
     private Long userId;
 
     public void deactivate(LocalDateTime expiredAt) {
         isValid = false;
         this.expiredAt = expiredAt;
+    }
+
+    public void refresh(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public UserAlarmToken(Long userId, String alarmToken, LocalDateTime createdAt) {
+        this.userId = userId;
+        this.alarmToken = alarmToken;
+        this.updatedAt = createdAt;
     }
 }
