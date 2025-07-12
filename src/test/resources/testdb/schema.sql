@@ -136,3 +136,4 @@ create table users
     provider_user_id varchar(255)    null
 );
 
+alter table user_alarm_token add column updated_at datetime(6) null;
