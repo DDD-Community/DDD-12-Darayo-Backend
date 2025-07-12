@@ -23,6 +23,11 @@ auth:
 springdoc:
   use-fqn: true
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 
 logging:
   level:
