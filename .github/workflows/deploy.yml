@@ -5,7 +5,7 @@ on:
     branches: [release]
 
 env:
-  IMAGE: asia-northeast3-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/festival-app-backend:latest
+  IMAGE: asia-northeast3-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/festival-app-backend/my-app:latest
 
 jobs:
   test:
@@ -101,7 +101,7 @@ jobs:
             
             # 최신 이미지 가져오기
             echo "[+] Pulling latest image"
-            run_command "docker pull $IMAGE"
+            run_command "docker pull ${{ env.IMAGE }}"
             
             # 기존 컨테이너 정리
             echo "[+] Cleaning up old container"
@@ -115,7 +115,7 @@ jobs:
               -p 8080:8080 \
               --env-file .env \
               -v .secret:/app/.secret \
-              $IMAGE"
+              ${{ env.IMAGE }}"
             
             # 컨테이너 상태 확인
             echo "[+] Verifying container status"
