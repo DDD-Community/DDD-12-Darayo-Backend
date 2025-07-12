@@ -12,7 +12,7 @@ SET foreign_key_checks = 0;
 -- DELETE FROM artist;
 -- DELETE FROM user_performance_alarm;
 -- DELETE FROM user_alarm_token;
--- DELETE FROM users;
+-- DELETE FROM user;
 
 -- 2. 공연 장소 (performance_place)
 INSERT INTO performance_place (id, address, name) VALUES
@@ -99,7 +99,7 @@ INSERT INTO timetable_artist (id, timetable_id, artist_id, participation_type) V
   (8, 3, 8, 'SUB');
 
 -- 11. 사용자 (users)
-INSERT INTO users (id, is_alarm_allowed, last_login_at, provider, provider_user_id) VALUES
+INSERT INTO user (id, is_alarm_allowed, last_login_at, provider, provider_user_id) VALUES
   (1, b'1', '2024-05-01 10:00:00.000000', 'DEVICE', 'user1'),
   (2, b'1', '2024-05-02 11:00:00.000000', 'DEVICE', 'user2'),
   (3, b'0', '2024-05-02 11:00:00.000000', 'DEVICE', 'user2'),
@@ -107,12 +107,12 @@ INSERT INTO users (id, is_alarm_allowed, last_login_at, provider, provider_user_
 
 
 -- 12. 사용자 알람 토큰 (user_alarm_token)
-INSERT INTO user_alarm_token (id, alarm_token, expired_at, is_valid, user_id) VALUES
-  (null, 'token-1-1', '2024-12-31 23:59:59.000000', b'1', 1),
-  (null, 'token-2-1', '2024-12-31 23:59:59.000000', b'1', 2),
-  (null, 'token-3-1', '2024-12-31 23:59:59.000000', b'1', 3),
-  (null, 'token-4-1', '2024-12-31 23:59:59.000000', b'0', 4),
-  (null, 'token-1-2', '2024-12-31 23:59:59.000000', b'0', 1);
+INSERT INTO user_alarm_token (id, alarm_token, expired_at, is_valid, user_id, updated_at) VALUES
+  (null, 'token-1-1', '2024-12-31 23:59:59.000000', b'1', 1, null),
+  (null, 'token-2-1', '2024-12-31 23:59:59.000000', b'1', 2, null),
+  (null, 'token-3-1', '2024-12-31 23:59:59.000000', b'1', 3, null),
+  (null, 'token-4-1', '2024-12-31 23:59:59.000000', b'0', 4, null),
+  (null, 'token-1-2', '2024-12-31 23:59:59.000000', b'0', 1, null);
 
 -- 13. 사용자 공연 알람 (user_performance_alarm)
 INSERT INTO user_performance_alarm (id, target_id, type, user_id) VALUES

@@ -18,21 +18,20 @@ public class UserService {
     private final JwtService jwtService;
 
     public UserLoginRes login(String deviceId) {
-        userRepository.findByProviderUserId(deviceId)
-            .orElseGet(() -> userRepository.save(User.builder()
-                .provider(AuthProviderType.DEVICE)
-                .providerUserId(deviceId)
-                .build()));
-
-        String token = jwtService.generateToken(deviceId);
+        User user = userRepository.findByProviderUserId(deviceId)
+                .orElseGet(() -> userRepository.save(User.builder()
+                        .provider(AuthProviderType.DEVICE)
+                        .providerUserId(deviceId)
+                        .build()));
+        String token = jwtService.generateToken(user);
 
         return UserLoginRes.builder()
                 .token(token)
                 .build();
     }
 
-    public void updatePushPermission(String providerUserId, boolean permissionEnabled) {
-        User user = userRepository.findByProviderUserId(providerUserId)
+    public void updatePushPermission(Long userId, boolean permissionEnabled) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(); // 인터셉터에서 이미 검증했지만, 혹시 모르니 추가
 
         user.updateAlarmPermission(permissionEnabled);

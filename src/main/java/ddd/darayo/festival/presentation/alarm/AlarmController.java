@@ -19,20 +19,20 @@ public class AlarmController {
 
     @PutMapping
     public ResponseEntity<BaseResponse<Void>> upsertAlarm(
+            @RequestAttribute("userId") Long userId,
             @RequestBody TokenEnrollReq request
     ) {
-        Long dummyUserId = 1L;
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
-        alarmTokenManagement.upsertToken(dummyUserId, request.token(), now);
+        alarmTokenManagement.upsertToken(userId, request.token(), now);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @DeleteMapping("/{token}")
     public ResponseEntity<BaseResponse<Void>> deleteAlarm(
+            @RequestAttribute("userId") Long userId,
             @PathVariable String token
     ) {
-        Long dummyUserId = 1L;
-        alarmTokenManagement.deleteToken(dummyUserId, token);
+        alarmTokenManagement.deleteToken(userId, token);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

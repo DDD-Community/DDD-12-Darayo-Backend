@@ -33,10 +33,15 @@ public class AuthInterceptor implements HandlerInterceptor {
         String token = authHeader.substring(7);
 
         try {
-            if (userRepository.findByProviderUserId(token).isEmpty()) {
+            // JWT 토큰에서 userId 추출
+            Long userId = jwtService.getUserId(token);
+            
+            // 사용자 존재 여부 확인
+            if (userRepository.findById(userId).isEmpty()) {
                 throw NOT_FOUND_USER.toException();  // 유효하지 않은 User
             }
-            request.setAttribute("providerUserId", token);
+            
+            request.setAttribute("userId", userId);
         } catch (JwtException e) {
             throw APIException.from(e, HttpStatus.BAD_REQUEST);
         }
