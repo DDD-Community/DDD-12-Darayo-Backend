@@ -20,6 +20,10 @@ spring:
 auth:
   password: ${ADMIN_PASSWORD}
 
+# Firebase 설정
+firebase:
+  service-account-key: ${FIREBASE_SERVICE_ACCOUNT_KEY_PATH}
+
 springdoc:
   use-fqn: true
 
