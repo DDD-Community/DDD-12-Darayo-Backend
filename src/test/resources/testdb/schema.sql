@@ -137,3 +137,4 @@ create table user
 );
 
 alter table user_alarm_token add column updated_at datetime(6) null;
+alter table reservation_info add column open_time_modified_at datetime(6) null;
