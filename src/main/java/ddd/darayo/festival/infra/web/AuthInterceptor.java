@@ -1,5 +1,6 @@
 package ddd.darayo.festival.infra.web;
 
+import ddd.darayo.festival.domain.exception.constant.AuthError;
 import ddd.darayo.festival.domain.repository.UserRepository;
 import ddd.darayo.festival.infra.jwt.JwtService;
 import ddd.darayo.festival.presentation.common.exception.APIException;
@@ -43,7 +44,7 @@ public class AuthInterceptor implements HandlerInterceptor {
             
             request.setAttribute("userId", userId);
         } catch (JwtException e) {
-            throw APIException.from(e, HttpStatus.BAD_REQUEST);
+            throw new APIException(AuthError.AUTH_FAIL, HttpStatus.BAD_REQUEST);
         }
 
         return true;
