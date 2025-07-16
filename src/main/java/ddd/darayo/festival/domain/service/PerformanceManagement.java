@@ -18,6 +18,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -35,7 +37,7 @@ public class PerformanceManagement {
     private final ReservationInfoMapper reservationInfoMapper;
     private final TimetableMapper.TimetableDetailMapper timetableDetailMapper;
 
-    public Performance save(SavePerformanceReq dto) {
+    public Performance save(SavePerformanceReq dto, LocalDateTime now) {
         Performance performance = this.performanceMapper.toPerformanceEntity(dto.getPerformance());
 
         // 타임테이블 추가
@@ -50,7 +52,7 @@ public class PerformanceManagement {
 
         // 예약 정보 추가
         dto.getReservationInfos().forEach(reservationInfoDTO -> {
-            ReservationInfo reservationInfo = reservationInfoMapper.toReservationEntity(reservationInfoDTO);
+            ReservationInfo reservationInfo = reservationInfoMapper.toReservationEntity(reservationInfoDTO, now);
             performance.addReservationInfo(reservationInfo);
         });
 
@@ -95,7 +97,7 @@ public class PerformanceManagement {
         performanceRepository.delete(performance);
     }
 
-    public void updateReservationInfo(Long performanceId, List<EditReservationInfoReq> reqList) {
+    public void updateReservationInfo(Long performanceId, List<EditReservationInfoReq> reqList, LocalDateTime now) {
         val performance = performanceRepository.findById(performanceId)
                 .orElseThrow(PerformanceError.PERFORMANCE_NOT_EXIST::toException);
 
@@ -104,11 +106,10 @@ public class PerformanceManagement {
                 .collect(Collectors.toMap(ReservationInfo::getId, Function.identity()));
 
         Set<ReservationInfo> newReservationInfos = new HashSet<>();
-
         for (val req : reqList) {
             if (req.id() != null && existingMap.containsKey(req.id())) {
                 ReservationInfo existing = existingMap.get(req.id());
-                existing.updateWith(req); // 아래에 정의
+                existing.updateWith(req, now); // 아래에 정의
                 newReservationInfos.add(existing);
             } else {
                 ReservationInfo newInfo = new ReservationInfo(
@@ -116,7 +117,8 @@ public class PerformanceManagement {
                         req.closeDateTime(),
                         req.ticketURL(),
                         req.type(),
-                        req.remark()
+                        req.remark(),
+                        now
                 );
                 newInfo.setPerformance(performance);
                 newReservationInfos.add(newInfo);

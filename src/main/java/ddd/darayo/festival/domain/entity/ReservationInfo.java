@@ -36,17 +36,24 @@ public class ReservationInfo {
     @ManyToOne(fetch = FetchType.LAZY)
     private Performance performance;
 
+    @Column(nullable = false)
+    private LocalDateTime openTimeModifiedAt;
+
     public ReservationInfo(LocalDateTime openDateTime, LocalDateTime closeDateTime, 
-                          String ticketURL, ReservationType type, String remark) {
+                          String ticketURL, ReservationType type, String remark, LocalDateTime openTimeModifiedAt) {
         this.openDateTime = openDateTime;
         this.closeDateTime = closeDateTime;
         this.ticketURL = ticketURL;
         this.type = type;
         this.remark = remark;
+        this.openTimeModifiedAt = openTimeModifiedAt;
     }
 
-    public void updateWith(EditReservationInfoReq req) {
+    public void updateWith(EditReservationInfoReq req, LocalDateTime lastModifiedAt) {
         if (req.openDateTime() != null) {
+            if (!this.openDateTime.equals(req.openDateTime())) {
+                this.openTimeModifiedAt = lastModifiedAt;
+            }
             this.openDateTime = req.openDateTime();
         }
         if (req.closeDateTime() != null) {

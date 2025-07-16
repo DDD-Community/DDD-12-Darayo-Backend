@@ -136,4 +136,5 @@ create table user
     provider_user_id varchar(255)    null
 );
 
-alter table user_alarm_token add column updated_at datetime(6) null;
+alter table user_alarm_token add column updated_at datetime(6) not null;
+alter table reservation_info add column open_time_modified_at datetime(6) null;
