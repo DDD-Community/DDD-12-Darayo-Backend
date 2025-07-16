@@ -8,13 +8,14 @@ import io.jsonwebtoken.JwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import static ddd.darayo.festival.domain.exception.constant.ArtistError.ARTIST_NOT_EXISTS;
 import static ddd.darayo.festival.domain.exception.constant.UserError.NOT_FOUND_USER;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class AuthInterceptor implements HandlerInterceptor {
@@ -44,6 +45,7 @@ public class AuthInterceptor implements HandlerInterceptor {
             
             request.setAttribute("userId", userId);
         } catch (JwtException e) {
+            log.info("Invalid JWT token: {}", e.getMessage());
             throw new APIException(AuthError.AUTH_FAIL, HttpStatus.BAD_REQUEST);
         }
 
