@@ -10,6 +10,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 
 @Component
 @Slf4j
@@ -24,9 +25,9 @@ public class AlarmScheduler {
     /**
      * 예매 1일전 오후 7시 알림
      */
-    @Scheduled(cron = "0 0 19 * * ?")
+    @Scheduled(cron = "0 0 19 * * ?", zone = "Asia/Seoul")
     public void pushPerformanceReservationOneDayLeft() {
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
         PushReservationAlarmUseCase.Param param = new PushReservationAlarmUseCase.Param(today, 1);
         pushReservationAlarmUseCase.execute(param);
     }
@@ -34,9 +35,9 @@ public class AlarmScheduler {
     /**
      * 예매 3일전 오후 7시 알림
      */
-    @Scheduled(cron = "0 0 19 * * ?")
+    @Scheduled(cron = "0 0 19 * * ?", zone = "Asia/Seoul")
     public void pushPerformanceReservationThreeDayLeft() {
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
         PushReservationAlarmUseCase.Param param = new PushReservationAlarmUseCase.Param(today, 3);
         pushReservationAlarmUseCase.execute(param);
     }
@@ -44,9 +45,9 @@ public class AlarmScheduler {
     /**
      * 예매 7일전 오후 7시 알림
      */
-    @Scheduled(cron = "0 0 19 * * ?")
+    @Scheduled(cron = "0 0 19 * * ?", zone = "Asia/Seoul")
     public void pushPerformanceReservationSevenDayLeft() {
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
         PushReservationAlarmUseCase.Param param = new PushReservationAlarmUseCase.Param(today, 7);
         pushReservationAlarmUseCase.execute(param);
     }
@@ -54,9 +55,9 @@ public class AlarmScheduler {
     /**
      * 예매 당일 오전 7시 알림
      */
-    @Scheduled(cron = "0 0 7 * * ?")
+    @Scheduled(cron = "0 0 7 * * ?", zone = "Asia/Seoul")
     public void pushPerformanceReservationToday() {
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
         PushReservationAlarmUseCase.Param param = new PushReservationAlarmUseCase.Param(today, 0);
         pushReservationAlarmUseCase.execute(param);
     }
@@ -64,7 +65,7 @@ public class AlarmScheduler {
     /**
      * 공연 시간표 안내 3일전 오후 7시 알림
      */
-    @Scheduled(cron = "0 0 19 * * ?")
+    @Scheduled(cron = "0 0 19 * * ?", zone = "Asia/Seoul")
     public void pushPerformanceTimetable() {
         LocalDate today = LocalDate.now();
         PushTimetableAlarmUseCase.Param param = new PushTimetableAlarmUseCase.Param(today, 3);
@@ -74,7 +75,7 @@ public class AlarmScheduler {
     /**
      * 반입물품/교통안내 1일전 오후 7시 알림
      */
-    @Scheduled(cron = "0 0 19 * * ?")
+    @Scheduled(cron = "0 0 19 * * ?", zone = "Asia/Seoul")
     public void pushPerformanceGuide() {
         LocalDate today = LocalDate.now();
         PushGuideAlarmUseCase.Param param = new PushGuideAlarmUseCase.Param(today, 1);
@@ -84,7 +85,7 @@ public class AlarmScheduler {
     /**
      * 업데이트 된 예매일 알림 오후 7시 알림
      */
-    @Scheduled(cron = "0 0 19 * * ?")
+    @Scheduled(cron = "0 0 19 * * ?", zone = "Asia/Seoul")
     public void pushUpdatedReservationInfo() {
         LocalDate today = LocalDate.now();
         PushReservationUpdateAlarmUseCase.Param param = new PushReservationUpdateAlarmUseCase.Param(today);
