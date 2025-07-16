@@ -2,6 +2,7 @@ package ddd.darayo.festival.application.scheduler;
 
 import ddd.darayo.festival.application.usecase.alarm.PushGuideAlarmUseCase;
 import ddd.darayo.festival.application.usecase.alarm.PushReservationAlarmUseCase;
+import ddd.darayo.festival.application.usecase.alarm.PushReservationUpdateAlarmUseCase;
 import ddd.darayo.festival.application.usecase.alarm.PushTimetableAlarmUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ public class AlarmScheduler {
     private final PushReservationAlarmUseCase pushReservationAlarmUseCase;
     private final PushTimetableAlarmUseCase pushTimetableAlarmUseCase;
     private final PushGuideAlarmUseCase pushGuideAlarmUseCase;
+    private final PushReservationUpdateAlarmUseCase pushReservationUpdateAlarmUseCase;
 
     /**
      * 예매 1일전 오후 7시 알림
@@ -77,5 +79,15 @@ public class AlarmScheduler {
         LocalDate today = LocalDate.now();
         PushGuideAlarmUseCase.Param param = new PushGuideAlarmUseCase.Param(today, 1);
         pushGuideAlarmUseCase.execute(param);
+    }
+
+    /**
+     * 업데이트 된 예매일 알림 오후 7시 알림
+     */
+    @Scheduled(cron = "0 0 19 * * ?")
+    public void pushUpdatedReservationInfo() {
+        LocalDate today = LocalDate.now();
+        PushReservationUpdateAlarmUseCase.Param param = new PushReservationUpdateAlarmUseCase.Param(today);
+        pushReservationUpdateAlarmUseCase.execute(param);
     }
 }
