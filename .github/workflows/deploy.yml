@@ -9,18 +9,25 @@ env:
 
 jobs:
   test:
-    name: Run Tests Only
+    name: Run Tests with Testcontainers
     runs-on: ubuntu-latest
+
+    # Docker-in-Docker 서비스 설정
     services:
       docker:
-        image: docker:dind
-        # --privileged 플래그와 shm-size 설정을 options에 문자열로 전달
+        image: docker:28.3.2-dind-alpine3.22
         options: >-
           --privileged
           --shm-size=2g
-        # DIND 데몬의 2375 포트를 호스트(러너)에도 노출
         ports:
           - 2375:2375
+
+    # Testcontainers가 DIND에 붙도록, Ryuk 비활성화, 타임아웃 확장
+    env:
+      DOCKER_HOST: tcp://localhost:2375
+      DOCKER_TLS_CERTDIR: ""
+      TESTCONTAINERS_RYUK_DISABLED: "true"
+      TESTCONTAINERS_STARTUP_TIMEOUT: "120000"
 
     steps:
       - name: Checkout
@@ -31,9 +38,23 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      
-      - name: Run Unit Tests
-        run: ./gradlew test --no-daemon
+
+      - name: Verify Docker Daemon
+        run: |
+          echo "DOCKER_HOST=$DOCKER_HOST"
+          docker version
+          docker info
+
+      - name: Run Tests (with debug)
+        run: ./gradlew clean test --no-daemon -Dtestcontainers.debug=true
+
+      - name: Dump DIND logs on failure
+        if: failure()
+        run: |
+          docker ps -a --filter ancestor=docker:28.3.2-dind-alpine3.22 --format "{{.ID}}" | while read cid; do
+            echo "--- Logs for DIND container $cid ---"
+            docker logs "$cid"
+          done
 
       - name: Discord Notification on Test Failure
         if: failure()
@@ -75,7 +96,7 @@ jobs:
         if: failure()
         uses: sarisia/actions-status-discord@v1
         with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK_URL}}
+          webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
           title: "❌ 도커 이미지 빌드 실패"
           description: "도커 이미지 빌드 또는 푸시 중 오류가 발생했습니다."
           color: 0xff0000
@@ -94,61 +115,41 @@ jobs:
           username: ${{ secrets.GCP_VM_USERNAME }}
           key: ${{ secrets.GCP_VM_SSH_KEY }}
           script: |
-            # 오류 발생 시 즉시 스크립트 중단
             set -e
-            
-            # 함수 정의: 오류 발생 시 처리
-            handle_error() {
-              echo "Error occurred in deployment: $1"
-              exit 1
-            }
-            
-            # 함수 정의: 명령어 실행 및 오류 처리
+            handle_error() { echo "Error occurred in deployment: $1"; exit 1; }
             run_command() {
               echo "[+] Running: $1"
-              if ! eval "$1"; then
-                handle_error "$1 failed"
-              fi
+              if ! eval "$1"; then handle_error "$1 failed"; fi
             }
-            
-            # Artifact Registry 인증
+
             echo "[+] Authenticating Artifact Registry"
             run_command "gcloud auth configure-docker asia-northeast3-docker.pkg.dev"
-            
-            # 최신 이미지 가져오기
+
             echo "[+] Pulling latest image"
-            run_command "docker pull ${{ env.IMAGE }}"
-            
-            # 기존 컨테이너 정리
+            run_command "docker pull $IMAGE"
+
             echo "[+] Cleaning up old container"
             docker stop my-app 2>/dev/null || true
             docker rm my-app 2>/dev/null || true
-            
-            # 새 컨테이너 실행
+
             echo "[+] Starting new container"
             run_command "docker run -d \
               --name my-app \
               -p 8080:8080 \
               --env-file .env \
               -v .secret:/app/.secret \
-              ${{ env.IMAGE }}"
-            
-            # 컨테이너 상태 확인
+              $IMAGE"
+
             echo "[+] Verifying container status"
-            if ! docker ps | grep -q my-app; then
-              handle_error "Container failed to start"
-            fi
-            
-            # 컨테이너 로그 확인
+            if ! docker ps | grep -q my-app; then handle_error "Container failed to start"; fi
+
             echo "[+] Checking container logs for errors"
             if docker logs my-app 2>&1 | grep -i "error\|exception\|failed" > /dev/null; then
               handle_error "Container reported errors in logs"
             fi
-            # 헬스체크 (애플리케이션이 8080 포트에서 실행 중인지 확인)
+
             echo "[+] Performing health check"
-            MAX_RETRIES=30
-            RETRY_COUNT=0
-            
+            MAX_RETRIES=30; RETRY_COUNT=0
             while ! curl -s http://localhost:8080/actuator/health | grep -q "UP"; do
               if [ $RETRY_COUNT -ge $MAX_RETRIES ]; then
                 handle_error "Health check failed after $MAX_RETRIES attempts"
@@ -157,7 +158,7 @@ jobs:
               sleep 2
               RETRY_COUNT=$((RETRY_COUNT + 1))
             done
-            
+
             echo "[+] Deployment completed successfully"
 
       - name: Discord Notification on Deploy Success
