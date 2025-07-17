@@ -11,6 +11,16 @@ jobs:
   test:
     name: Run Tests Only
     runs-on: ubuntu-latest
+    services:
+      docker:
+        image: docker:dind
+        # --privileged 플래그와 shm-size 설정을 options에 문자열로 전달
+        options: >-
+          --privileged
+          --shm-size=2g
+        # DIND 데몬의 2375 포트를 호스트(러너)에도 노출
+        ports:
+          - 2375:2375
 
     steps:
       - name: Checkout
