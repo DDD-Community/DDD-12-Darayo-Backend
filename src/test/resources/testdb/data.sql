@@ -65,21 +65,26 @@ INSERT INTO performanceurl (id, performance_id, type, url) VALUES
 
 
 -- 8. 예매 정보 (reservation_info)
-INSERT INTO reservation_info (id, performance_id, open_date_time, close_date_time, ticketurl, remark, type) VALUES
-  (1, 1, '2024-04-01 10:00:00.000000', '2024-05-23 23:59:59.000000', 'https://ticket.example.com/seoul-jazz-2024', '3일권 티켓 구매 가능', 'GENERAL'),
-  (2, 2, '2024-06-01 10:00:00.000000', '2024-07-14 23:59:59.000000', 'https://ticket.example.com/busan-rock-2024', '1일권, 3일권 티켓 구매 가능', 'GENERAL'),
-  (3, 3, '2024-08-01 10:00:00.000000', '2024-09-19 23:59:59.000000', 'https://ticket.example.com/indie-music-2024', '1일권, 3일권 티켓 구매 가능', 'GENERAL'),
-  (4, 4, '2024-06-02 10:00:00.000000', '2024-08-14 23:59:59.000000', 'https://ticket.example.com/summer-fest-2024/early', '얼리버드 티켓 (팬클럽)', 'EARLY_BIRD'),
-  (5, 5, '2024-06-02 10:00:00.000000', '2024-08-19 23:59:59.000000', 'https://ticket.example.com/hiphop-fest-2024/early', '얼리버드 티켓 (팬클럽)', 'EARLY_BIRD'),
-  (6, 6, '2024-06-02 10:00:00.000000', '2024-08-24 23:59:59.000000', 'https://ticket.example.com/edm-fest-2024/early', '얼리버드 티켓 (팬클럽)', 'EARLY_BIRD'),
-  (7, 4, '2024-06-04 10:00:00.000000', '2024-08-14 23:59:59.000000', 'https://ticket.example.com/summer-fest-2024/early2', '얼리버드 2차 (일반)', 'EARLY_BIRD'),
-  (8, 5, '2024-06-04 10:00:00.000000', '2024-08-19 23:59:59.000000', 'https://ticket.example.com/hiphop-fest-2024/early2', '얼리버드 2차 (일반)', 'EARLY_BIRD'),
-  (9, 4, '2024-06-08 10:00:00.000000', '2024-08-14 23:59:59.000000', 'https://ticket.example.com/summer-fest-2024', '일반 예매', 'GENERAL'),
-  (10, 5, '2024-06-08 10:00:00.000000', '2024-08-19 23:59:59.000000', 'https://ticket.example.com/hiphop-fest-2024', '일반 예매', 'GENERAL'),
-  (11, 6, '2024-06-08 10:00:00.000000', '2024-08-24 23:59:59.000000', 'https://ticket.example.com/edm-fest-2024', '일반 예매', 'GENERAL'),
-  (12, 4, '2024-06-15 10:00:00.000000', '2024-08-14 23:59:59.000000', 'https://ticket.example.com/summer-fest-2024/onsite', '현장 예매', 'GENERAL'),
-  (13, 5, '2024-06-15 10:00:00.000000', '2024-08-19 23:59:59.000000', 'https://ticket.example.com/hiphop-fest-2024/onsite', '현장 예매', 'GENERAL'),
-  (14, 6, '2024-06-15 10:00:00.000000', '2024-08-24 23:59:59.000000', 'https://ticket.example.com/edm-fest-2024/onsite', '현장 예매', 'GENERAL');
+INSERT INTO reservation_info (id, performance_id, open_date_time, close_date_time, ticketurl, remark, type, open_time_modified_at) VALUES
+  -- 19:00 이전 (오전/오후/경계)
+  (1, 1, '2024-04-01 10:00:00.000000', '2024-05-23 23:59:59.000000', 'https://ticket.example.com/seoul-jazz-2024', '3일권 티켓 구매 가능', 'GENERAL', '2024-04-01 05:30:00.000000'),
+  (2, 2, '2024-06-01 10:00:00.000000', '2024-07-14 23:59:59.000000', 'https://ticket.example.com/busan-rock-2024', '1일권, 3일권 티켓 구매 가능', 'GENERAL', '2024-06-01 07:00:00.000000'),
+  (3, 3, '2024-08-01 10:00:00.000000', '2024-09-19 23:59:59.000000', 'https://ticket.example.com/indie-music-2024', '1일권, 3일권 티켓 구매 가능', 'GENERAL', '2024-08-01 11:30:00.000000'),
+  (4, 4, '2024-06-02 10:00:00.000000', '2024-08-14 23:59:59.000000', 'https://ticket.example.com/summer-fest-2024/early', '얼리버드 티켓 (팬클럽)', 'EARLY_BIRD', '2024-06-02 12:00:00.000000'),
+  (5, 5, '2024-06-02 10:00:00.000000', '2024-08-19 23:59:59.000000', 'https://ticket.example.com/hiphop-fest-2024/early', '얼리버드 티켓 (팬클럽)', 'EARLY_BIRD', '2024-06-02 15:45:00.000000'),
+  (6, 6, '2024-06-02 10:00:00.000000', '2024-08-24 23:59:59.000000', 'https://ticket.example.com/edm-fest-2024/early', '얼리버드 티켓 (팬클럽)', 'EARLY_BIRD', '2024-06-02 18:30:00.000000'),
+  (7, 4, '2024-06-04 10:00:00.000000', '2024-08-14 23:59:59.000000', 'https://ticket.example.com/summer-fest-2024/early2', '얼리버드 2차 (일반)', 'EARLY_BIRD', '2024-06-04 18:59:59.000000'),
+
+  -- 19:00:00 (정확히)
+  (8, 5, '2024-06-04 10:00:00.000000', '2024-08-19 23:59:59.000000', 'https://ticket.example.com/hiphop-fest-2024/early2', '얼리버드 2차 (일반)', 'EARLY_BIRD', '2024-06-04 19:00:00.000000'),
+
+  -- 19:00 이후 (저녁/밤/자정/경계)
+  (9, 4, '2024-06-08 10:00:00.000000', '2024-08-14 23:59:59.000000', 'https://ticket.example.com/summer-fest-2024', '일반 예매', 'GENERAL', '2024-06-08 19:00:01.000000'),
+  (10, 5, '2024-06-08 10:00:00.000000', '2024-08-19 23:59:59.000000', 'https://ticket.example.com/hiphop-fest-2024', '일반 예매', 'GENERAL', '2024-06-08 20:15:00.000000'),
+  (11, 6, '2024-06-08 10:00:00.000000', '2024-08-24 23:59:59.000000', 'https://ticket.example.com/edm-fest-2024', '일반 예매', 'GENERAL', '2024-06-08 22:45:00.000000'),
+  (12, 4, '2024-06-15 10:00:00.000000', '2024-08-14 23:59:59.000000', 'https://ticket.example.com/summer-fest-2024/onsite', '현장 예매', 'GENERAL', '2024-06-15 23:59:00.000000'),
+  (13, 5, '2024-06-15 10:00:00.000000', '2024-08-19 23:59:59.000000', 'https://ticket.example.com/hiphop-fest-2024/onsite', '현장 예매', 'GENERAL', '2024-06-15 00:15:00.000000'),
+  (14, 6, '2024-06-15 10:00:00.000000', '2024-08-24 23:59:59.000000', 'https://ticket.example.com/edm-fest-2024/onsite', '현장 예매', 'GENERAL', '2024-06-15 01:00:00.000000');
 
 -- 9. 타임테이블 (timetable)
 INSERT INTO timetable (id, performance_id, hall_id, performance_date, start_time, end_time) VALUES

@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 @RestController
@@ -27,7 +29,8 @@ public class PerformanceAdminController {
         if (!authService.authenticate(req.getPassword())) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        Performance performance = performanceManagement.save(req);
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+        Performance performance = performanceManagement.save(req, now);
         return ResponseEntity.ok(performance.getId());
     }
 
@@ -41,7 +44,8 @@ public class PerformanceAdminController {
             @PathVariable Long performanceId,
             @RequestBody List<EditReservationInfoReq> reqList
     ) {
-        performanceManagement.updateReservationInfo(performanceId, reqList);
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+        performanceManagement.updateReservationInfo(performanceId, reqList, now);
         return ResponseEntity.noContent().build();
     }
 

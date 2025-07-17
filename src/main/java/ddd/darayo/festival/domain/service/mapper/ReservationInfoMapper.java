@@ -7,6 +7,8 @@ import ddd.darayo.festival.presentation.performance.exchanges.UserGetPerformance
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.time.LocalDateTime;
+
 @Mapper(componentModel = "spring")
 public interface ReservationInfoMapper {
     PerformanceDetailRes.ReservationInfoDetailRes toReservationDetailRes(ReservationInfo reservationInfo);
@@ -14,5 +16,6 @@ public interface ReservationInfoMapper {
     @Mapping(target = "reservationInfoId", source = "id")
     UserGetPerformanceInfo.ReservationInfoDetailRes toUserReservationDetailRes(ReservationInfo reservationInfo);
 
-    ReservationInfo toReservationEntity(SavePerformanceReq.ReservationInfoDTO dto);
+    @Mapping(target = "openTimeModifiedAt", source = "now")
+    ReservationInfo toReservationEntity(SavePerformanceReq.ReservationInfoDTO dto, LocalDateTime now);
 }

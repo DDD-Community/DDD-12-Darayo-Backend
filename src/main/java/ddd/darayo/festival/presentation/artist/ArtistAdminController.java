@@ -37,7 +37,7 @@ public class ArtistAdminController {
         try {
             artistManagement.createArtistAlias(req);
         } catch (DomainException e) {
-            throw APIException.from(e, HttpStatus.NOT_FOUND);
+            throw new APIException(e, HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok().build();
     }
@@ -50,7 +50,7 @@ public class ArtistAdminController {
             artistManagement.editArtist(req, artistId);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (DomainException e) {
-            throw APIException.from(e, HttpStatus.NOT_FOUND);
+            throw new APIException(e, HttpStatus.NOT_FOUND);
         }
     }
 
@@ -62,7 +62,7 @@ public class ArtistAdminController {
             artistManagement.editArtistAlias(req, aliasId);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (DomainException e) {
-            throw APIException.from(e, HttpStatus.NOT_FOUND);
+            throw new APIException(e, HttpStatus.NOT_FOUND);
         }
     }
 
@@ -74,7 +74,7 @@ public class ArtistAdminController {
             artistManagement.deleteArtistAlias(aliasId);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (DomainException e) {
-            throw APIException.from(e, HttpStatus.NOT_FOUND);
+            throw new APIException(e, HttpStatus.NOT_FOUND);
         }
     }
 

@@ -2,6 +2,7 @@ package ddd.darayo.festival.presentation.alarm;
 
 import ddd.darayo.festival.application.usecase.alarm.PushGuideAlarmUseCase;
 import ddd.darayo.festival.application.usecase.alarm.PushReservationAlarmUseCase;
+import ddd.darayo.festival.application.usecase.alarm.PushReservationUpdateAlarmUseCase;
 import ddd.darayo.festival.application.usecase.alarm.PushTimetableAlarmUseCase;
 import ddd.darayo.festival.presentation.common.BaseResponse;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ public class TestAlarmController {
     private final PushReservationAlarmUseCase pushReservationAlarmUseCase;
     private final PushTimetableAlarmUseCase pushTimetableAlarmUseCase;
     private final PushGuideAlarmUseCase pushGuideAlarmUseCase;
+    private final PushReservationUpdateAlarmUseCase pushReservationUpdateAlarmUseCase;
 
     @GetMapping
     public ResponseEntity<BaseResponse<Void>> testAlarm(
@@ -43,6 +45,9 @@ public class TestAlarmController {
                 break;
             case "guide":
                 pushGuideAlarmUseCase.execute(new PushGuideAlarmUseCase.Param(date, day));
+                break;
+            case "updateReservation":
+                pushReservationUpdateAlarmUseCase.execute(new PushReservationUpdateAlarmUseCase.Param(date));
                 break;
             default:
                 return ResponseEntity
