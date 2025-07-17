@@ -12,7 +12,6 @@ jobs:
     name: Run Tests with Testcontainers
     runs-on: ubuntu-latest
 
-    # Docker-in-Docker 서비스 설정
     services:
       docker:
         image: docker:28.3.2-dind-alpine3.22
@@ -21,10 +20,11 @@ jobs:
           --shm-size=2g
         ports:
           - 2375:2375
+        env:
+          DOCKER_TLS_CERTDIR: ""
 
-    # Testcontainers가 DIND에 붙도록, Ryuk 비활성화, 타임아웃 확장
     env:
-      DOCKER_HOST: tcp://localhost:2375
+      DOCKER_HOST: tcp://docker:2375
       DOCKER_TLS_CERTDIR: ""
       TESTCONTAINERS_RYUK_DISABLED: "true"
       TESTCONTAINERS_STARTUP_TIMEOUT: "120000"
@@ -51,8 +51,8 @@ jobs:
       - name: Dump DIND logs on failure
         if: failure()
         run: |
-          docker ps -a --filter ancestor=docker:28.3.2-dind-alpine3.22 --format "{{.ID}}" | while read cid; do
-            echo "--- Logs for DIND container $cid ---"
+          for cid in $(docker ps -a --filter ancestor=docker:28.3.2-dind-alpine3.22 --format '{{.ID}}'); do
+            echo "=== Logs for DIND container $cid ==="
             docker logs "$cid"
           done
 
@@ -77,11 +77,10 @@ jobs:
       - name: Authenticate to GCP
         uses: google-github-actions/auth@v2
         with:
-          credentials_json: '${{ secrets.GCP_SECRET_KEY }}'
+          credentials_json: ${{ secrets.GCP_SECRET_KEY }}
 
       - name: Configure Docker for Artifact Registry
-        run: |
-          gcloud auth configure-docker asia-northeast3-docker.pkg.dev
+        run: gcloud auth configure-docker asia-northeast3-docker.pkg.dev
 
       - name: Build & Push Docker Image
         run: |
