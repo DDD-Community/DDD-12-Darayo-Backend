@@ -12,23 +12,6 @@ jobs:
     name: Run Tests with Testcontainers
     runs-on: ubuntu-latest
 
-    services:
-      docker:
-        image: docker:28.3.2-dind-alpine3.22
-        options: >-
-          --privileged
-          --shm-size=2g
-        ports:
-          - 2375:2375
-        env:
-          DOCKER_TLS_CERTDIR: ""
-
-    env:
-      DOCKER_HOST: tcp://docker:2375
-      DOCKER_TLS_CERTDIR: ""
-      TESTCONTAINERS_RYUK_DISABLED: "true"
-      TESTCONTAINERS_STARTUP_TIMEOUT: "120000"
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -39,22 +22,8 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Verify Docker Daemon
-        run: |
-          echo "DOCKER_HOST=$DOCKER_HOST"
-          docker version
-          docker info
-
       - name: Run Tests (with debug)
         run: ./gradlew clean test --no-daemon -Dtestcontainers.debug=true
-
-      - name: Dump DIND logs on failure
-        if: failure()
-        run: |
-          for cid in $(docker ps -a --filter ancestor=docker:28.3.2-dind-alpine3.22 --format '{{.ID}}'); do
-            echo "=== Logs for DIND container $cid ==="
-            docker logs "$cid"
-          done
 
       - name: Discord Notification on Test Failure
         if: failure()
