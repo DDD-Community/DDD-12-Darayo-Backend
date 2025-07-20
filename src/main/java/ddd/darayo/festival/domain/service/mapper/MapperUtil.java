@@ -11,7 +11,7 @@ public class MapperUtil {
     public static List<PerformanceDetailRes.ArtistDetailRes> toArtistDetailRes(Set<Timetable> timetable) {
         Map<Long, PerformanceDetailRes.ArtistDetailRes> artistDetailResMap = new HashMap<>();
         for (Timetable timetableItem : timetable) {
-            List<TimetableArtist> artists = timetableItem.getArtists();
+            Set<TimetableArtist> artists = timetableItem.getArtists();
             for (TimetableArtist artist: artists) {
                 artistDetailResMap.put(
                         artist.getId(),

@@ -5,8 +5,8 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Builder
@@ -35,7 +35,7 @@ public class Timetable {
     private Performance performance;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "timetable")
-    private List<TimetableArtist> artists = new ArrayList<>();
+    private Set<TimetableArtist> artists = new HashSet<>();
 
     public Timetable(LocalDate performanceDate, LocalTime startTime, LocalTime endTime, Long hallId) {
         this.performanceDate = performanceDate;
