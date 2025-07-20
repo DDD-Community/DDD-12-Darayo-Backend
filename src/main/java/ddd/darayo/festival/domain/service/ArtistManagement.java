@@ -8,12 +8,10 @@ import ddd.darayo.festival.domain.repository.projection.ArtistDetailProjection;
 import ddd.darayo.festival.presentation.artist.exchanges.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static ddd.darayo.festival.domain.exception.constant.ArtistError.ARTIST_ALIAS_NOT_EXISTS;
 import static ddd.darayo.festival.domain.exception.constant.ArtistError.ARTIST_NOT_EXISTS;
@@ -28,7 +26,16 @@ public class ArtistManagement {
 
     public Artist createArtist(SaveArtistReq dto) {
         Artist artist = new Artist(dto.getName(), dto.getDescription());
-        artist.addAlias(new ArtistAlias(null, dto.getName(), null));
+
+        val aliasList = dto.getAliasList();
+
+        aliasList.add(dto.getName()); // 자기 자신은 반드시 별칭으로 추가
+
+        aliasList.stream()
+                .filter(Objects::nonNull) // null 방지
+                .distinct() // 중복 방지
+                .forEach(alias -> artist.addAlias(new ArtistAlias(null, alias, null)));
+
         return artistRepository.save(artist);
     }
 
