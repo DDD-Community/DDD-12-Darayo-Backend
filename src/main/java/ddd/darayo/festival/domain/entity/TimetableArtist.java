@@ -9,6 +9,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(of = "id")
 public class TimetableArtist {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
