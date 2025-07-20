@@ -94,7 +94,7 @@ jobs:
             run_command "gcloud auth configure-docker asia-northeast3-docker.pkg.dev"
 
             echo "[+] Pulling latest image"
-            run_command "docker pull $IMAGE"
+            run_command "docker pull ${{ env.IMAGE }}"
 
             echo "[+] Cleaning up old container"
             docker stop my-app 2>/dev/null || true
@@ -106,7 +106,7 @@ jobs:
               -p 8080:8080 \
               --env-file .env \
               -v .secret:/app/.secret \
-              $IMAGE"
+              ${{ env.IMAGE }}"
 
             echo "[+] Verifying container status"
             if ! docker ps | grep -q my-app; then handle_error "Container failed to start"; fi
