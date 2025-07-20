@@ -78,13 +78,17 @@ public class PerformanceManagement {
         List<UserGetPerformanceInfo> userGetPerformanceInfos = new ArrayList<>();
         for (Performance performance : performances) {
             UserGetPerformanceInfo dto = performanceMapper.toUserGetPerformanceInfo(performance);
+            Set<UserGetPerformanceInfo.ArtistDetailRes> artistSet = new HashSet<>();
             Set<Timetable> timetables = performance.getTimetables();
+
             for (Timetable timetable : timetables) {
                 for (TimetableArtist timetableArtist : timetable.getArtists()) {
                     UserGetPerformanceInfo.ArtistDetailRes artist = timetableDetailMapper.toArtistDetail(timetableArtist);
-                    dto.artists().add(artist);
+                    artistSet.add(artist);
                 }
             }
+
+            dto.artists().addAll(artistSet);
             userGetPerformanceInfos.add(dto);
         }
         return userGetPerformanceInfos;
