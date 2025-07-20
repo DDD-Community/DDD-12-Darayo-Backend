@@ -9,7 +9,7 @@ env:
 
 jobs:
   test:
-    name: Run Tests Only
+    name: Run Tests with Testcontainers
     runs-on: ubuntu-latest
 
     steps:
@@ -21,9 +21,9 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      
-      - name: Run Unit Tests
-        run: ./gradlew test --no-daemon
+
+      - name: Run Tests (with debug)
+        run: ./gradlew clean test --no-daemon -Dtestcontainers.debug=true
 
       - name: Discord Notification on Test Failure
         if: failure()
@@ -46,11 +46,10 @@ jobs:
       - name: Authenticate to GCP
         uses: google-github-actions/auth@v2
         with:
-          credentials_json: '${{ secrets.GCP_SECRET_KEY }}'
+          credentials_json: ${{ secrets.GCP_SECRET_KEY }}
 
       - name: Configure Docker for Artifact Registry
-        run: |
-          gcloud auth configure-docker asia-northeast3-docker.pkg.dev
+        run: gcloud auth configure-docker asia-northeast3-docker.pkg.dev
 
       - name: Build & Push Docker Image
         run: |
@@ -65,7 +64,7 @@ jobs:
         if: failure()
         uses: sarisia/actions-status-discord@v1
         with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK_URL}}
+          webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
           title: "❌ 도커 이미지 빌드 실패"
           description: "도커 이미지 빌드 또는 푸시 중 오류가 발생했습니다."
           color: 0xff0000
@@ -84,37 +83,23 @@ jobs:
           username: ${{ secrets.GCP_VM_USERNAME }}
           key: ${{ secrets.GCP_VM_SSH_KEY }}
           script: |
-            # 오류 발생 시 즉시 스크립트 중단
             set -e
-            
-            # 함수 정의: 오류 발생 시 처리
-            handle_error() {
-              echo "Error occurred in deployment: $1"
-              exit 1
-            }
-            
-            # 함수 정의: 명령어 실행 및 오류 처리
+            handle_error() { echo "Error occurred in deployment: $1"; exit 1; }
             run_command() {
               echo "[+] Running: $1"
-              if ! eval "$1"; then
-                handle_error "$1 failed"
-              fi
+              if ! eval "$1"; then handle_error "$1 failed"; fi
             }
-            
-            # Artifact Registry 인증
+
             echo "[+] Authenticating Artifact Registry"
             run_command "gcloud auth configure-docker asia-northeast3-docker.pkg.dev"
-            
-            # 최신 이미지 가져오기
+
             echo "[+] Pulling latest image"
             run_command "docker pull ${{ env.IMAGE }}"
-            
-            # 기존 컨테이너 정리
+
             echo "[+] Cleaning up old container"
             docker stop my-app 2>/dev/null || true
             docker rm my-app 2>/dev/null || true
-            
-            # 새 컨테이너 실행
+
             echo "[+] Starting new container"
             run_command "docker run -d \
               --name my-app \
@@ -122,23 +107,17 @@ jobs:
               --env-file .env \
               -v .secret:/app/.secret \
               ${{ env.IMAGE }}"
-            
-            # 컨테이너 상태 확인
+
             echo "[+] Verifying container status"
-            if ! docker ps | grep -q my-app; then
-              handle_error "Container failed to start"
-            fi
-            
-            # 컨테이너 로그 확인
+            if ! docker ps | grep -q my-app; then handle_error "Container failed to start"; fi
+
             echo "[+] Checking container logs for errors"
             if docker logs my-app 2>&1 | grep -i "error\|exception\|failed" > /dev/null; then
               handle_error "Container reported errors in logs"
             fi
-            # 헬스체크 (애플리케이션이 8080 포트에서 실행 중인지 확인)
+
             echo "[+] Performing health check"
-            MAX_RETRIES=30
-            RETRY_COUNT=0
-            
+            MAX_RETRIES=30; RETRY_COUNT=0
             while ! curl -s http://localhost:8080/actuator/health | grep -q "UP"; do
               if [ $RETRY_COUNT -ge $MAX_RETRIES ]; then
                 handle_error "Health check failed after $MAX_RETRIES attempts"
@@ -147,7 +126,7 @@ jobs:
               sleep 2
               RETRY_COUNT=$((RETRY_COUNT + 1))
             done
-            
+
             echo "[+] Deployment completed successfully"
 
       - name: Discord Notification on Deploy Success

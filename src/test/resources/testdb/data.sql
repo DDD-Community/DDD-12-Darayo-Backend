@@ -113,11 +113,11 @@ INSERT INTO user (id, is_alarm_allowed, last_login_at, provider, provider_user_i
 
 -- 12. 사용자 알람 토큰 (user_alarm_token)
 INSERT INTO user_alarm_token (id, alarm_token, expired_at, is_valid, user_id, updated_at) VALUES
-  (null, 'token-1-1', '2024-12-31 23:59:59.000000', b'1', 1, null),
-  (null, 'token-2-1', '2024-12-31 23:59:59.000000', b'1', 2, null),
-  (null, 'token-3-1', '2024-12-31 23:59:59.000000', b'1', 3, null),
-  (null, 'token-4-1', '2024-12-31 23:59:59.000000', b'0', 4, null),
-  (null, 'token-1-2', '2024-12-31 23:59:59.000000', b'0', 1, null);
+  (null, 'token-1-1', '2024-12-31 23:59:59.000000', b'1', 1, '2024-12-31 23:59:59.000000'),
+  (null, 'token-2-1', '2024-12-31 23:59:59.000000', b'1', 2, '2024-12-31 23:59:59.000000'),
+  (null, 'token-3-1', '2024-12-31 23:59:59.000000', b'1', 3, '2024-12-31 23:59:59.000000'),
+  (null, 'token-4-1', '2024-12-31 23:59:59.000000', b'0', 4, '2024-12-31 23:59:59.000000'),
+  (null, 'token-1-2', '2024-12-31 23:59:59.000000', b'0', 1, '2024-12-31 23:59:59.000000');
 
 -- 13. 사용자 공연 알람 (user_performance_alarm)
 INSERT INTO user_performance_alarm (id, target_id, type, user_id) VALUES

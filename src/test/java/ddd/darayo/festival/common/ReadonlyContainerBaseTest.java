@@ -1,6 +1,5 @@
 package ddd.darayo.festival.common;
 
-import org.junit.jupiter.api.AfterAll;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MySQLContainer;
@@ -19,13 +18,15 @@ public abstract class ReadonlyContainerBaseTest {
                 .withUsername(ROOT)
                 .withEnv("MYSQL_ROOT_PASSWORD", ROOT_PASSWORD)
                 .withInitScripts("testdb/schema.sql", "testdb/data.sql");
-
         mysql.start();
-    }
 
-    @AfterAll
-    static void stopContainer() {
-        mysql.stop();
+        // JVM 종료 시 컨테이너를 명시적으로 중지하는 셧다운 훅 추가 (권장)
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            if (mysql != null) {
+                System.out.println("Shutting down MySQL Testcontainer...");
+                mysql.stop();
+            }
+        }));
     }
 
     @DynamicPropertySource
