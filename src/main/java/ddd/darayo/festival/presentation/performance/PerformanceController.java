@@ -1,5 +1,6 @@
 package ddd.darayo.festival.presentation.performance;
 
+import ddd.darayo.festival.application.usecase.performance.GetAlarmedFestivalUseCase;
 import ddd.darayo.festival.domain.exception.DomainException;
 import ddd.darayo.festival.domain.service.AlarmSettingManagement;
 import ddd.darayo.festival.domain.service.PerformanceManagement;
@@ -24,11 +25,20 @@ public class PerformanceController {
     private final PerformanceManagement performanceManagement;
     private final TimetableManagement timetableManagement;
     private final AlarmSettingManagement alarmSettingManagement;
+    private final GetAlarmedFestivalUseCase getAlarmedFestivalUseCase;
 
     @GetMapping
     public ResponseEntity<BaseResponse<List<UserGetPerformanceInfo>>> getPerformances() {
         List<UserGetPerformanceInfo> data = performanceManagement.findUserPerformance();
         return ResponseEntity.ok(BaseResponse.success(data));
+    }
+
+    @GetMapping("/alarmed")
+    public ResponseEntity<BaseResponse<List<UserGetPerformanceInfo>>> getAlarmedPerformances(
+            @RequestAttribute("userId") Long userId
+    ) {
+        List<UserGetPerformanceInfo> result = getAlarmedFestivalUseCase.execute(new GetAlarmedFestivalUseCase.Param(userId));
+        return ResponseEntity.ok(BaseResponse.success(result));
     }
 
     @GetMapping("/{festivalId}/timetable")
