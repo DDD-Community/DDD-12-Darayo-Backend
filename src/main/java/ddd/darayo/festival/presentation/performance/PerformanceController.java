@@ -1,7 +1,9 @@
 package ddd.darayo.festival.presentation.performance;
 
 import ddd.darayo.festival.application.usecase.performance.GetAlarmedFestivalUseCase;
+import ddd.darayo.festival.domain.entity.UserPerformanceAlarm;
 import ddd.darayo.festival.domain.exception.DomainException;
+import ddd.darayo.festival.domain.repository.UserPerformanceAlarmRepository;
 import ddd.darayo.festival.domain.service.AlarmSettingManagement;
 import ddd.darayo.festival.domain.service.PerformanceManagement;
 import ddd.darayo.festival.domain.service.TimetableManagement;
@@ -16,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -26,6 +29,7 @@ public class PerformanceController {
     private final TimetableManagement timetableManagement;
     private final AlarmSettingManagement alarmSettingManagement;
     private final GetAlarmedFestivalUseCase getAlarmedFestivalUseCase;
+    private final UserPerformanceAlarmRepository userPerformanceAlarmRepository;
 
     @GetMapping
     public ResponseEntity<BaseResponse<List<UserGetPerformanceInfo>>> getPerformances() {
@@ -63,6 +67,16 @@ public class PerformanceController {
             throw new APIException(e, HttpStatus.NOT_FOUND);
         }
     }
+
+    @GetMapping("/{festivalId}/push")
+    public ResponseEntity<BaseResponse<Boolean>> getPerformanceAlarm(
+            @RequestAttribute("userId") Long userId,
+            @PathVariable Long festivalId
+    ) {
+        Optional<UserPerformanceAlarm> alarm = userPerformanceAlarmRepository.findByUserIdAndPerformanceId(userId, festivalId);
+        return ResponseEntity.ok(BaseResponse.success(alarm.isPresent()));
+    }
+
 
     @DeleteMapping("/{festivalId}/push")
     public ResponseEntity<BaseResponse<Void>> unenrollPerformanceAlarm(
