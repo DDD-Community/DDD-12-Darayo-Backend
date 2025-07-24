@@ -23,6 +23,19 @@ public interface PerformanceRepository extends JpaRepository<Performance, Long> 
     List<Performance> findAllDetail();
 
     @Query("""
+        SELECT DISTINCT p FROM Performance p
+            LEFT JOIN FETCH p.timetables t
+            LEFT JOIN FETCH t.artists ta
+            LEFT JOIN FETCH ta.artist a
+            LEFT JOIN FETCH p.place pp
+            LEFT JOIN FETCH p.urls pu
+            WHERE p.id in :performanceIds
+    """)
+    List<Performance> findAllDetail(
+            @Param("performanceIds") List<Long> performanceIds
+    );
+
+    @Query("""
         SELECT DISTINCT p
             FROM Performance p
             JOIN FETCH p.reservationInfos r
