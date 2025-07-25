@@ -81,22 +81,43 @@ jobs:
       deployments: write
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # 전체 히스토리 조회를 위해
 
-      # 1. Deployment 생성 (Jira/GitHub 인식용)
+      - name: Extract JIRA Issue Keys
+        id: extract_keys
+        run: |
+          echo "🔍 Finding JIRA keys between develop and release…"
+          # develop 브랜치 최신을 origin/develop으로 가정
+          git fetch origin develop:develop
+          # release 브랜치 (=현재 ref)와 develop 사이 커밋 메시지에서 키만 추출
+          ISSUE_KEYS=$(git log develop..HEAD --pretty=%B \
+            | grep -oE 'FSTB-[0-9]+' \
+            | sort -u \
+            | jq -R -s -c 'split("\n")[:-1]')
+          # 만약 키가 없다면 빈 배열
+          if [ -z "$ISSUE_KEYS" ] || [ "$ISSUE_KEYS" = '[]' ]; then
+            ISSUE_KEYS="[]"
+          fi
+          echo "::set-output name=keys::$ISSUE_KEYS"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Create GitHub deployment
         id: deployment
         uses: chrnorm/deployment-action@v2
         with:
-          token: ${{ github.token }}
-          environment: production
-          environment-url: ${{ env.DEPLOY_URL }}
-          description: "Deploying Festival App to GCP VM"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          environment: staging
+          environment-url: http://staging.your-service.com
+          description: "Staging 배포 (${ { github.sha } })"
           initial-status: in_progress
-          production-environment: true
+          payload: |
+            {
+              "issueKeys": ${{ steps.extract_keys.outputs.keys }}
+            }
 
-      # 2. 실제 배포 (VM 접속)
       - name: SSH and Deploy on VM
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -142,7 +163,6 @@ jobs:
 
             echo "[+] Deployment completed successfully"
 
-      # 3. Deployment 상태 업데이트 (성공)
       - name: Update deployment status (success)
         if: success()
         uses: chrnorm/deployment-status@v2
@@ -152,7 +172,6 @@ jobs:
           environment-url: ${{ env.DEPLOY_URL }}
           state: success
 
-      # 4. Deployment 상태 업데이트 (실패)
       - name: Update deployment status (failure)
         if: failure()
         uses: chrnorm/deployment-status@v2
@@ -162,7 +181,6 @@ jobs:
           environment-url: ${{ env.DEPLOY_URL }}
           state: failure
 
-      # Discord 알림
       - name: Discord Notification on Deploy Success
         if: success()
         uses: sarisia/actions-status-discord@v1
