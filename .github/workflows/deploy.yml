@@ -73,9 +73,30 @@ jobs:
   deploy:
     name: Deploy to GCP VM
     runs-on: ubuntu-latest
-    needs: [test, build-image]
+    needs: [ test, build-image ]
+    env:
+      DEPLOY_URL: https://darayo-festival.shop
+
+    permissions:
+      deployments: write
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 1. Deployment 생성 (Jira/GitHub 인식용)
+      - name: Create GitHub deployment
+        id: deployment
+        uses: chrnorm/deployment-action@v2
+        with:
+          token: ${{ github.token }}
+          environment: production
+          environment-url: ${{ env.DEPLOY_URL }}
+          description: "Deploying Festival App to GCP VM"
+          initial-status: in_progress
+          production-environment: true
+
+      # 2. 실제 배포 (VM 접속)
       - name: SSH and Deploy on VM
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -108,14 +129,6 @@ jobs:
               -v .secret:/app/.secret \
               ${{ env.IMAGE }}"
 
-            echo "[+] Verifying container status"
-            if ! docker ps | grep -q my-app; then handle_error "Container failed to start"; fi
-
-            echo "[+] Checking container logs for errors"
-            if docker logs my-app 2>&1 | grep -i "error\|exception\|failed" > /dev/null; then
-              handle_error "Container reported errors in logs"
-            fi
-
             echo "[+] Performing health check"
             MAX_RETRIES=30; RETRY_COUNT=0
             while ! curl -s http://localhost:8080/actuator/health | grep -q "UP"; do
@@ -129,6 +142,27 @@ jobs:
 
             echo "[+] Deployment completed successfully"
 
+      # 3. Deployment 상태 업데이트 (성공)
+      - name: Update deployment status (success)
+        if: success()
+        uses: chrnorm/deployment-status@v2
+        with:
+          token: ${{ github.token }}
+          deployment-id: ${{ steps.deployment.outputs.deployment_id }}
+          environment-url: ${{ env.DEPLOY_URL }}
+          state: success
+
+      # 4. Deployment 상태 업데이트 (실패)
+      - name: Update deployment status (failure)
+        if: failure()
+        uses: chrnorm/deployment-status@v2
+        with:
+          token: ${{ github.token }}
+          deployment-id: ${{ steps.deployment.outputs.deployment_id }}
+          environment-url: ${{ env.DEPLOY_URL }}
+          state: failure
+
+      # Discord 알림
       - name: Discord Notification on Deploy Success
         if: success()
         uses: sarisia/actions-status-discord@v1

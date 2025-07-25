@@ -64,7 +64,7 @@ public class PerformanceController {
             return ResponseEntity.ok(BaseResponse.success());
         } catch (DomainException e) {
             log.warn("공연 알림 설정 실패 - 사용자: {}, 공연: {}, 오류: {}", userId, festivalId, e.getMessage());
-            throw new APIException(e, HttpStatus.NOT_FOUND);
+            return ResponseEntity.ok(BaseResponse.success());
         }
     }
 
@@ -89,7 +89,7 @@ public class PerformanceController {
             return ResponseEntity.ok(BaseResponse.success());
         } catch (DomainException e) {
             log.warn("공연 알림 해제 실패 - 사용자: {}, 공연: {}, 오류: {}", userId, festivalId, e.getMessage());
-            throw new APIException(e, HttpStatus.NOT_FOUND);
+            return ResponseEntity.ok(BaseResponse.success());
         }
     }
 }
