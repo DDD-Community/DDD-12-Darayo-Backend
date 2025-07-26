@@ -50,9 +50,9 @@ public class Timetable {
     }
 
     public void update(LocalDate performanceDate, LocalTime startTime, LocalTime endTime, PerformanceHall hall) {
-        this.performanceDate = performanceDate;
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.performanceDate = performanceDate == null ? LocalDate.of(1, 1, 1) : performanceDate;
+        this.startTime = startTime == null ? LocalTime.of(0, 0, 0) : startTime;
+        this.endTime = endTime == null ? LocalTime.of(0, 0, 0) : endTime;
         this.hall = hall;
     }
 }
