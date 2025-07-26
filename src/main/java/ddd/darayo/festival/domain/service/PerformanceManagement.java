@@ -1,9 +1,8 @@
 package ddd.darayo.festival.domain.service;
 
-import ddd.darayo.festival.domain.constant.ParticipationType;
+import ddd.darayo.festival.domain.dto.EditPerformanceDTO;
 import ddd.darayo.festival.domain.entity.*;
 import ddd.darayo.festival.domain.exception.constant.PerformanceError;
-import ddd.darayo.festival.domain.exception.constant.TimetableError;
 import ddd.darayo.festival.domain.repository.PerformanceRepository;
 import ddd.darayo.festival.domain.service.mapper.PerformanceMapper;
 import ddd.darayo.festival.domain.service.mapper.ReservationInfoMapper;
@@ -30,6 +29,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PerformanceManagement {
     private final PerformanceRepository performanceRepository;
+
     private final PerformanceMapper performanceMapper;
     private final URLMapper urlMapper;
 
@@ -131,5 +131,12 @@ public class PerformanceManagement {
 
         performance.getReservationInfos().clear();
         performance.getReservationInfos().addAll(newReservationInfos);
+    }
+
+    public void updatePerformance(Long performanceId, EditPerformanceDTO req) {
+        Performance performance = performanceRepository.findById(performanceId)
+                .orElseThrow(PerformanceError.PERFORMANCE_NOT_EXIST::toException);
+
+        performance.update(req);
     }
 }
