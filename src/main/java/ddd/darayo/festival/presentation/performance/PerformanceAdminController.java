@@ -1,5 +1,6 @@
 package ddd.darayo.festival.presentation.performance;
 
+import ddd.darayo.festival.domain.dto.EditPerformanceDTO;
 import ddd.darayo.festival.domain.entity.Performance;
 import ddd.darayo.festival.domain.entity.Timetable;
 import ddd.darayo.festival.domain.service.AuthService;
@@ -37,6 +38,15 @@ public class PerformanceAdminController {
     @GetMapping
     public ResponseEntity<List<PerformanceDetailRes>> getAllPerformanceDetails() {
         return ResponseEntity.ok(performanceManagement.findAllDetail());
+    }
+
+    @PutMapping("/{performanceId}")
+    public ResponseEntity<Void> updatePerformance(
+            @PathVariable Long performanceId,
+            @RequestBody EditPerformanceDTO req
+    ) {
+        performanceManagement.updatePerformance(performanceId, req);
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{performanceId}/reservation")
