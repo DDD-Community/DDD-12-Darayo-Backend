@@ -1,5 +1,6 @@
 package ddd.darayo.festival.domain.entity;
 
+import ddd.darayo.festival.domain.dto.EditPerformanceDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -75,5 +76,15 @@ public class Performance {
     public void addUrl(PerformanceURL performanceURL) {
         this.urls.add(performanceURL);
         performanceURL.setPerformance(this);
+    }
+
+    public void update(EditPerformanceDTO dto) {
+        this.name = dto.name();
+        this.startDate = dto.startDate();
+        this.endDate = dto.endDate();
+        this.banGoods = dto.banGoods();
+        this.transportationInfo = dto.transportationInfo();
+        this.remark = dto.remark();
+        this.posterUrl = dto.posterUrl();
     }
 }

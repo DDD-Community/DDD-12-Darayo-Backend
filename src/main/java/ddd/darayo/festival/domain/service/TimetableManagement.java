@@ -58,7 +58,7 @@ public class TimetableManagement {
     public void editTimetable(Long timetableId, EditTimetableReq req) {
         Timetable timetable = timetableRepository.findById(timetableId)
                 .orElseThrow(TimetableError.TIMETABLE_NOT_EXISTS::toException);
-        if (performanceHallRepository.existsById(req.hallId())) {
+        if (req.hallId() != null && !performanceHallRepository.existsById(req.hallId())) {
             throw PlaceError.PLACE_HALL_NOT_EXIST.toException();
         }
         timetable.update(req.performanceDate(), req.startTime(), req.endTime(), new PerformanceHall(req.hallId()));
@@ -76,4 +76,9 @@ public class TimetableManagement {
         return timetables.stream().map(timetableMapper::toUserGetTimetable).toList();
     }
 
+    public void deleteTimetable(Long timetableId) {
+        Timetable timetable = timetableRepository.findById(timetableId)
+                .orElseThrow(TimetableError.TIMETABLE_NOT_EXISTS::toException);
+        timetableRepository.delete(timetable);
+    }
 }

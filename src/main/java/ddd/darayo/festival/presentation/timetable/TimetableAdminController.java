@@ -39,4 +39,12 @@ public class TimetableAdminController {
         timetableManagement.deleteTimetableArtist(timetableId, artistId);
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping("/{timetableId}")
+    public ResponseEntity<Void> deleteTimetable(
+            @PathVariable Long timetableId
+    ) {
+        timetableManagement.deleteTimetable(timetableId);
+        return ResponseEntity.noContent().build();
+    }
 }
