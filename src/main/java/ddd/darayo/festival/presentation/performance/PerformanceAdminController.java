@@ -59,6 +59,14 @@ public class PerformanceAdminController {
         return ResponseEntity.noContent().build();
     }
 
+    @DeleteMapping("/reservation/{reservationInfoId}")
+    public ResponseEntity<Void> deleteReservation(
+            @PathVariable Long reservationInfoId
+    ) {
+        performanceManagement.deleteReservationInfo(reservationInfoId);
+        return ResponseEntity.noContent().build();
+    }
+
     @DeleteMapping("/{performanceId}")
     public ResponseEntity<Void> deletePerformance(@PathVariable Long performanceId) {
         performanceManagement.delete(performanceId);
