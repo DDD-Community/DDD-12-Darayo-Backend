@@ -116,15 +116,15 @@ public class  PerformanceManagement {
         for (val req : reqList) {
             if (req.id() != null && existingMap.containsKey(req.id())) {
                 ReservationInfo existing = existingMap.get(req.id());
-                existing.updateWith(req, now); // 아래에 정의
+                existing.updateWith(req.command(), now); // 아래에 정의
                 newReservationInfos.add(existing);
             } else {
                 ReservationInfo newInfo = new ReservationInfo(
-                        req.openDateTime(),
-                        req.closeDateTime(),
-                        req.ticketURL(),
-                        req.type(),
-                        req.remark(),
+                        req.command().openDateTime(),
+                        req.command().closeDateTime(),
+                        req.command().ticketURL(),
+                        req.command().type(),
+                        req.command().remark(),
                         now
                 );
                 newInfo.setPerformance(performance);

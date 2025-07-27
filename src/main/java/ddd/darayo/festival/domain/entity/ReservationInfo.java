@@ -1,6 +1,7 @@
 package ddd.darayo.festival.domain.entity;
 
 import ddd.darayo.festival.domain.constant.ReservationType;
+import ddd.darayo.festival.domain.dto.EditReservationInfoCommand;
 import ddd.darayo.festival.presentation.performance.exchanges.EditReservationInfoReq;
 import jakarta.persistence.*;
 import lombok.*;
@@ -49,7 +50,7 @@ public class ReservationInfo {
         this.openTimeModifiedAt = openTimeModifiedAt;
     }
 
-    public void updateWith(EditReservationInfoReq req, LocalDateTime lastModifiedAt) {
+    public void updateWith(EditReservationInfoCommand req, LocalDateTime lastModifiedAt) {
         if (req.openDateTime() != null) {
             if (!this.openDateTime.equals(req.openDateTime())) {
                 this.openTimeModifiedAt = lastModifiedAt;
