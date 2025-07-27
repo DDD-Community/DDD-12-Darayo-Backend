@@ -1,5 +1,7 @@
 package ddd.darayo.festival.presentation.performance;
 
+import ddd.darayo.festival.domain.dto.EditPerformanceDTO;
+import ddd.darayo.festival.domain.dto.EditReservationInfoCommand;
 import ddd.darayo.festival.domain.entity.Performance;
 import ddd.darayo.festival.domain.entity.Timetable;
 import ddd.darayo.festival.domain.service.AuthService;
@@ -39,13 +41,41 @@ public class PerformanceAdminController {
         return ResponseEntity.ok(performanceManagement.findAllDetail());
     }
 
+    @PutMapping("/{performanceId}")
+    public ResponseEntity<Void> updatePerformance(
+            @PathVariable Long performanceId,
+            @RequestBody EditPerformanceDTO req
+    ) {
+        performanceManagement.updatePerformance(performanceId, req);
+        return ResponseEntity.ok().build();
+    }
+
     @PutMapping("/{performanceId}/reservation")
-    public ResponseEntity<Void> updateReservationInfo(
+    public ResponseEntity<Void> updateReservationInfos(
             @PathVariable Long performanceId,
             @RequestBody List<EditReservationInfoReq> reqList
     ) {
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         performanceManagement.updateReservationInfo(performanceId, reqList, now);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{performanceId}/reservation/{reservationInfoId}")
+    public ResponseEntity<Void> updateReservationInfo(
+            @PathVariable Long performanceId,
+            @PathVariable Long reservationInfoId,
+            @RequestBody EditReservationInfoCommand req
+    ) {
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+        performanceManagement.updateReservationInfo(reservationInfoId, req, now);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/reservation/{reservationInfoId}")
+    public ResponseEntity<Void> deleteReservation(
+            @PathVariable Long reservationInfoId
+    ) {
+        performanceManagement.deleteReservationInfo(reservationInfoId);
         return ResponseEntity.noContent().build();
     }
 
@@ -62,5 +92,14 @@ public class PerformanceAdminController {
     ) {
         Timetable timetable = timetableManagement.addTimetable(performanceId, req);
         return ResponseEntity.ok(timetable.getId());
+    }
+
+    @DeleteMapping("/{performanceId}/performanceURL/{performanceURLId}")
+    public ResponseEntity<Void> deletePerformanceURL(
+            @PathVariable Long performanceId,
+            @PathVariable Long performanceURLId
+    ) {
+        performanceManagement.deletePerformanceURL(performanceURLId);
+        return ResponseEntity.noContent().build();
     }
 }
