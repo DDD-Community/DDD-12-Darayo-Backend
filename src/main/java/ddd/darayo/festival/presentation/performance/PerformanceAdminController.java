@@ -81,4 +81,13 @@ public class PerformanceAdminController {
         Timetable timetable = timetableManagement.addTimetable(performanceId, req);
         return ResponseEntity.ok(timetable.getId());
     }
+
+    @DeleteMapping("/{performanceId}/performanceURL/{performanceURLId}")
+    public ResponseEntity<Void> deletePerformanceURL(
+            @PathVariable Long performanceId,
+            @PathVariable Long performanceURLId
+    ) {
+        performanceManagement.deletePerformanceURL(performanceURLId);
+        return ResponseEntity.noContent().build();
+    }
 }

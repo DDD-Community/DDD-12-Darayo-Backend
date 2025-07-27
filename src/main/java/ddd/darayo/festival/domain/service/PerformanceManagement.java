@@ -4,6 +4,7 @@ import ddd.darayo.festival.domain.dto.EditPerformanceDTO;
 import ddd.darayo.festival.domain.entity.*;
 import ddd.darayo.festival.domain.exception.constant.PerformanceError;
 import ddd.darayo.festival.domain.repository.PerformanceRepository;
+import ddd.darayo.festival.domain.repository.PerformanceURLRepository;
 import ddd.darayo.festival.domain.repository.ReservationInfoRepository;
 import ddd.darayo.festival.domain.service.mapper.PerformanceMapper;
 import ddd.darayo.festival.domain.service.mapper.ReservationInfoMapper;
@@ -19,7 +20,6 @@ import lombok.val;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -28,8 +28,9 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class PerformanceManagement {
+public class  PerformanceManagement {
     private final PerformanceRepository performanceRepository;
+    private final PerformanceURLRepository performanceURLRepository;
     private final ReservationInfoRepository reservationInfoRepository;
 
     private final PerformanceMapper performanceMapper;
@@ -146,5 +147,12 @@ public class PerformanceManagement {
         ReservationInfo reservationInfo = reservationInfoRepository.findById(reservationId)
                 .orElseThrow(PerformanceError.PERFORMANCE_RESERVATION_INFO_NOT_EXIST::toException);
         reservationInfoRepository.delete(reservationInfo);
+    }
+
+    public void deletePerformanceURL(Long performanceURLId) {
+        performanceURLRepository.findById(performanceURLId)
+                .orElseThrow(PerformanceError.PERFORMANCE_URL_NOT_EXIST::toException);
+
+        performanceURLRepository.deleteById(performanceURLId);
     }
 }
