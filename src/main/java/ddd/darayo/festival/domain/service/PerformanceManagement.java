@@ -1,6 +1,7 @@
 package ddd.darayo.festival.domain.service;
 
 import ddd.darayo.festival.domain.dto.EditPerformanceDTO;
+import ddd.darayo.festival.domain.dto.EditReservationInfoCommand;
 import ddd.darayo.festival.domain.entity.*;
 import ddd.darayo.festival.domain.exception.constant.PerformanceError;
 import ddd.darayo.festival.domain.repository.PerformanceRepository;
@@ -141,6 +142,13 @@ public class  PerformanceManagement {
                 .orElseThrow(PerformanceError.PERFORMANCE_NOT_EXIST::toException);
 
         performance.update(req);
+    }
+
+    public void updateReservationInfo(Long reservationInfoId, EditReservationInfoCommand command, LocalDateTime now) {
+        ReservationInfo reservationInfo = reservationInfoRepository.findById(reservationInfoId)
+                .orElseThrow(PerformanceError.PERFORMANCE_RESERVATION_INFO_NOT_EXIST::toException);
+
+        reservationInfo.updateWith(command, now);
     }
 
     public void deleteReservationInfo(Long reservationId) {
