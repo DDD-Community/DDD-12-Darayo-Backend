@@ -76,4 +76,9 @@ public class TimetableManagement {
         return timetables.stream().map(timetableMapper::toUserGetTimetable).toList();
     }
 
+    public void deleteTimetable(Long timetableId) {
+        Timetable timetable = timetableRepository.findById(timetableId)
+                .orElseThrow(TimetableError.TIMETABLE_NOT_EXISTS::toException);
+        timetableRepository.delete(timetable);
+    }
 }
