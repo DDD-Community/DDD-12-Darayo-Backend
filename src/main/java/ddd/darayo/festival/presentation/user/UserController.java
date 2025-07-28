@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/v1/users")
 @RequiredArgsConstructor
 public class UserController {
-    private final UserRepository userRepository;
     private final UserService userService;
 
     @PostMapping("/login")
@@ -37,9 +36,8 @@ public class UserController {
     public ResponseEntity<BaseResponse<Boolean>> getPushPermission(
             @RequestAttribute("userId") Long userId
     ) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(UserError.NOT_FOUND_USER::toException);
-        return ResponseEntity.ok(BaseResponse.success(user.getIsAlarmAllowed()));
+        boolean isPushAlarmed = userService.getPushPermission(userId);
+        return ResponseEntity.ok(BaseResponse.success(isPushAlarmed));
     }
 }
 
