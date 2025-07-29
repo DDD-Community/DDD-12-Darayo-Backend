@@ -148,6 +148,10 @@ jobs:
               -p 8080:8080 \
               --env-file .env \
               -v .secret:/app/.secret \
+              --log-driver=gcplogs \
+              --log-opt labels=location \
+              --log-opt env=TEST \
+              --log-opt gcp-log-cmd=true
               ${{ env.IMAGE }}"
 
             echo "[+] Performing health check"
