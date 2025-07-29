@@ -19,7 +19,6 @@ public class LoggingInterceptor implements HandlerInterceptor {
         if (request instanceof ContentCachingRequestWrapper w) {
             body = w.getContentAsString();
         }
-        log.info(body);
 
         String requestId = UUID.randomUUID().toString();
         StringBuilder headerBuilder = new StringBuilder();
