@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
-
+    private final LoggingInterceptor loggingInterceptor;
     private final AuthInterceptor authInterceptor;
 
     @Override
@@ -27,5 +27,8 @@ public class WebConfig implements WebMvcConfigurer {
                 .addPathPatterns("/v1/**")
                 .excludePathPatterns("/v1/users/login")
                 .excludePathPatterns("/v1/alarm/test");
+
+        registry.addInterceptor(loggingInterceptor)
+                .addPathPatterns("/**");
     }
 }
