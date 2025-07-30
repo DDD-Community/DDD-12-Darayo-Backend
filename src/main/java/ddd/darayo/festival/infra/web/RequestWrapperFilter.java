@@ -24,7 +24,7 @@ public class RequestWrapperFilter extends OncePerRequestFilter {
                                     FilterChain chain) throws ServletException, IOException {
 
         ContentCachingRequestWrapper wrapped = new ContentCachingRequestWrapper(req);
-        StreamUtils.copy(wrapped.getInputStream(), OutputStream.nullOutputStream());
+//        StreamUtils.copy(wrapped.getInputStream(), OutputStream.nullOutputStream());
         chain.doFilter(wrapped, res);   // 래핑된 객체 전달
     }
 }
