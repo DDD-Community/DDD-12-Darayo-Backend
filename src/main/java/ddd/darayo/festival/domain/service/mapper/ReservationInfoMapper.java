@@ -1,6 +1,7 @@
 package ddd.darayo.festival.domain.service.mapper;
 
 import ddd.darayo.festival.domain.entity.ReservationInfo;
+import ddd.darayo.festival.domain.dto.ReservationInfoContentDTO;
 import ddd.darayo.festival.presentation.performance.exchanges.PerformanceDetailRes;
 import ddd.darayo.festival.presentation.performance.exchanges.SavePerformanceReq;
 import ddd.darayo.festival.presentation.performance.exchanges.UserGetPerformanceInfo;
@@ -18,4 +19,7 @@ public interface ReservationInfoMapper {
 
     @Mapping(target = "openTimeModifiedAt", source = "now")
     ReservationInfo toReservationEntity(SavePerformanceReq.ReservationInfoDTO dto, LocalDateTime now);
+
+    @Mapping(target = "openTimeModifiedAt", source = "now")
+    ReservationInfo toReservationInfo(ReservationInfoContentDTO dto, LocalDateTime now);
 }
