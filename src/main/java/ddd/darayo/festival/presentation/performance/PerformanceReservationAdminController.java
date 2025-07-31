@@ -5,6 +5,7 @@ import java.time.ZoneId;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,6 +40,14 @@ public class PerformanceReservationAdminController {
             @RequestBody EditReservationInfoCommand req
     ) {
         performanceManagement.updateReservationInfo(reservationInfoId, req, LocalDateTime.now());
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{reservationInfoId}")
+    public ResponseEntity<Void> deleteReservationInfo(
+            @PathVariable("reservationInfoId") Long reservationInfoId
+    ) {
+        performanceManagement.deleteReservationInfo(reservationInfoId);
         return ResponseEntity.ok().build();
     }
 }
