@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 
+import ddd.darayo.festival.domain.dto.EditReservationInfoCommand;
 import ddd.darayo.festival.domain.dto.ReservationInfoContentDTO;
 import ddd.darayo.festival.domain.service.PerformanceManagement;
 
@@ -29,6 +30,15 @@ public class PerformanceReservationAdminController {
     ) {
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         performanceManagement.addReservationInfo(performanceId, req, now);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{reservationInfoId}")
+    public ResponseEntity<Void> updateReservationInfo(
+            @PathVariable("reservationInfoId") Long reservationInfoId,
+            @RequestBody EditReservationInfoCommand req
+    ) {
+        performanceManagement.updateReservationInfo(reservationInfoId, req, LocalDateTime.now());
         return ResponseEntity.ok().build();
     }
 }
