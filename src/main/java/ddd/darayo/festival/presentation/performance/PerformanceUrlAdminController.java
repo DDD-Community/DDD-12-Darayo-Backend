@@ -1,0 +1,49 @@
+package ddd.darayo.festival.presentation.performance;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import ddd.darayo.festival.domain.dto.PerformanceURLContentDTO;
+import ddd.darayo.festival.domain.service.PerformanceManagement;
+
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PostMapping;
+import lombok.RequiredArgsConstructor;
+
+@RestController
+@RequestMapping("/api/admin/performance/{performanceId}/performanceURL")
+@RequiredArgsConstructor
+public class PerformanceUrlAdminController {
+
+    private final PerformanceManagement performanceManagement;
+
+    @PostMapping
+    public ResponseEntity<Void> addPerformanceURL(
+        @PathVariable Long performanceId,
+        @RequestBody PerformanceURLContentDTO dto
+    ) {
+        performanceManagement.addPerformanceURL(performanceId, dto);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{performanceURLId}")
+    public ResponseEntity<Void> deletePerformanceURL(
+        @PathVariable Long performanceURLId
+    ) {
+        performanceManagement.deletePerformanceURL(performanceURLId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{performanceURLId}")
+    public ResponseEntity<Void> updatePerformanceURL(
+        @PathVariable Long performanceURLId,
+        @RequestBody PerformanceURLContentDTO dto
+    ) {
+        performanceManagement.updatePerformanceURL(performanceURLId, dto);
+        return ResponseEntity.ok().build();
+    }
+}

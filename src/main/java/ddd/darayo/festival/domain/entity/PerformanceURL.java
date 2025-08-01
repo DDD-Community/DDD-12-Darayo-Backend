@@ -23,4 +23,9 @@ public class PerformanceURL {
     @ManyToOne(fetch = FetchType.LAZY)
     @Setter
     private Performance performance;
+
+    public void update(String url, URLType type) {
+        this.url = url;
+        this.type = type;
+    }
 }

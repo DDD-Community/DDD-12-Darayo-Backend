@@ -2,6 +2,7 @@ package ddd.darayo.festival.domain.service;
 
 import ddd.darayo.festival.domain.dto.EditPerformanceDTO;
 import ddd.darayo.festival.domain.dto.EditReservationInfoCommand;
+import ddd.darayo.festival.domain.dto.PerformanceURLContentDTO;
 import ddd.darayo.festival.domain.dto.ReservationInfoContentDTO;
 import ddd.darayo.festival.domain.entity.*;
 import ddd.darayo.festival.domain.exception.constant.PerformanceError;
@@ -112,6 +113,19 @@ public class  PerformanceManagement {
         ReservationInfo reservationInfo = reservationInfoMapper.toReservationInfo(dto, now);
         performance.addReservationInfo(reservationInfo);
     }
+
+    public void addPerformanceURL(Long performanceId, PerformanceURLContentDTO dto) {
+        Performance performance = performanceRepository.findById(performanceId)
+                .orElseThrow(PerformanceError.PERFORMANCE_NOT_EXIST::toException);
+        PerformanceURL performanceURL = urlMapper.toPerformanceURL(dto);
+        performance.addUrl(performanceURL);
+    }
+
+    public void updatePerformanceURL(Long performanceURLId, PerformanceURLContentDTO dto) {
+        PerformanceURL performanceURL = performanceURLRepository.findById(performanceURLId)
+                .orElseThrow(PerformanceError.PERFORMANCE_URL_NOT_EXIST::toException);
+        performanceURL.update(dto.url(), dto.type());
+    } 
 
     public void updateReservationInfo(Long performanceId, List<EditReservationInfoReq> reqList, LocalDateTime now) {
         val performance = performanceRepository.findById(performanceId)
