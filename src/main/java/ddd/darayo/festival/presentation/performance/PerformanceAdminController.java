@@ -57,17 +57,6 @@ public class PerformanceAdminController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{performanceId}/reservation/{reservationInfoId}")
-    public ResponseEntity<Void> updateReservationInfo(
-            @PathVariable Long performanceId,
-            @PathVariable Long reservationInfoId,
-            @RequestBody EditReservationInfoCommand req
-    ) {
-        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
-        performanceManagement.updateReservationInfo(reservationInfoId, req, now);
-        return ResponseEntity.noContent().build();
-    }
-
     @DeleteMapping("/reservation/{reservationInfoId}")
     public ResponseEntity<Void> deleteReservation(
             @PathVariable Long reservationInfoId
@@ -79,15 +68,6 @@ public class PerformanceAdminController {
     @DeleteMapping("/{performanceId}")
     public ResponseEntity<Void> deletePerformance(@PathVariable Long performanceId) {
         performanceManagement.delete(performanceId);
-        return ResponseEntity.noContent().build();
-    }
-
-    @DeleteMapping("/{performanceId}/performanceURL/{performanceURLId}")
-    public ResponseEntity<Void> deletePerformanceURL(
-            @PathVariable Long performanceId,
-            @PathVariable Long performanceURLId
-    ) {
-        performanceManagement.deletePerformanceURL(performanceURLId);
         return ResponseEntity.noContent().build();
     }
 }

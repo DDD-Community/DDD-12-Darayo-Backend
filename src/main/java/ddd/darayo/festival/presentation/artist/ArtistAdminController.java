@@ -43,14 +43,6 @@ public class ArtistAdminController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/{artistId}/alias")
-    public ResponseEntity<Void> addArtistAlias(
-        @PathVariable Long artistId,
-        @RequestBody SaveArtistAliasesReq req
-    ) {
-        artistManagement.createArtistAlias(req);
-        return ResponseEntity.ok().build();
-    }
 
     @PostMapping("/aliases")
     public ResponseEntity<Void> addArtistAlias(@RequestBody SaveArtistAliasesReq req) {
