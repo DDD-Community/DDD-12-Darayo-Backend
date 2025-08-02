@@ -47,6 +47,12 @@ public class ArtistManagement {
         }
     }
 
+    public void addArtistAlias(Long artistId, String alias) {
+        Artist artist = artistRepository.findById(artistId)
+                .orElseThrow(ARTIST_NOT_EXISTS::toException);
+        artist.addAlias(new ArtistAlias(null, alias, null));
+    }
+
     public void editArtist(EditArtistReq req, long artistId) {
         int result = artistRepository.updateArtistById(artistId, req.name(), req.description());
         if (result < 1) {
