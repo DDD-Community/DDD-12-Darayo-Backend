@@ -38,15 +38,6 @@ public class PlaceController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/{placeId}/hall")
-    public ResponseEntity<Long> addHall(
-            @PathVariable Long placeId,
-            @RequestBody AddPlaceHallReq addPlaceHallReq
-    ) {
-        PerformanceHall hall = placeManagement.addHall(placeId, addPlaceHallReq);
-        return ResponseEntity.ok(hall.getId());
-    }
-
     @PutMapping("/hall/{hallId}")
     public ResponseEntity<Void> editHall(
             @PathVariable Long hallId,
