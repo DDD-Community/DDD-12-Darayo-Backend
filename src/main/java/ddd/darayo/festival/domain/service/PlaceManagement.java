@@ -23,10 +23,9 @@ public class PlaceManagement {
     private final PerformanceHallRepository performanceHallRepository;
 
     public PerformancePlace createNewPlace(AddPlaceReq req) {
-        PerformancePlace placeEntity = placeMapper.toPlaceEntity(req);
-        List<PerformanceHall> halls = MapperUtil.toPlaceHallEntity(req.placeHalls());
-        for (PerformanceHall hall : halls) {
-            placeEntity.addHall(hall);
+        PerformancePlace placeEntity = placeMapper.toPlaceEntity(req.content());
+        for (var hallDto : req.placeHalls()) {
+            placeEntity.addHall(new PerformanceHall(null, hallDto.name(), null));
         }
         return performancePlaceRepository.save(placeEntity);
     }
@@ -42,17 +41,17 @@ public class PlaceManagement {
         PerformancePlace place = performancePlaceRepository.findById(placeId)
                 .orElseThrow(PlaceError.PLACE_NOT_EXIST::toException);
 
-        place.update(req.placeName(), req.address());
+        place.update(req.content().name(), req.content().address());
     }
 
     public PerformanceHall addHall(Long placeId, AddPlaceHallReq req) {
-        PerformanceHall newHall = new PerformanceHall(null, req.name(), new PerformancePlace(placeId));
+        PerformanceHall newHall = new PerformanceHall(null, req.content().name(), new PerformancePlace(placeId));
         return performanceHallRepository.save(newHall);
     }
 
     public void editHall(Long hallId, EditHallReq req) {
         PerformanceHall hall = performanceHallRepository.findById(hallId)
                 .orElseThrow(PlaceError.PLACE_HALL_NOT_EXIST::toException);
-        hall.updateName(req.name());
+        hall.updateName(req.content().name());
     }
 }
