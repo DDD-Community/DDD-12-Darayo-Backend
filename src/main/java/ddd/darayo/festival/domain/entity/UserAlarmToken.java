@@ -46,6 +46,7 @@ public class UserAlarmToken {
     public UserAlarmToken(Long userId, String alarmToken, LocalDateTime createdAt) {
         this.userId = userId;
         this.alarmToken = alarmToken;
+        this.isValid = true;
         this.updatedAt = createdAt;
     }
 }

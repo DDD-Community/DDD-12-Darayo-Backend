@@ -108,7 +108,8 @@ INSERT INTO user (id, is_alarm_allowed, last_login_at, provider, provider_user_i
   (1, b'1', '2024-05-01 10:00:00.000000', 'DEVICE', 'user1'),
   (2, b'1', '2024-05-02 11:00:00.000000', 'DEVICE', 'user2'),
   (3, b'0', '2024-05-02 11:00:00.000000', 'DEVICE', 'user2'),
-  (4, b'1', '2024-05-02 11:00:00.000000', 'DEVICE', 'user2');
+  (4, b'1', '2024-05-02 11:00:00.000000', 'DEVICE', 'user2'),
+  (5, b'1', '2024-05-02 11:00:00.000000', 'DEVICE', 'user5');
 
 
 -- 12. 사용자 알람 토큰 (user_alarm_token)

@@ -9,12 +9,14 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
-    show-sql: true
+      ddl-auto: none
+    show-sql: false
     database-platform: org.hibernate.dialect.MySQL8Dialect
     properties:
       hibernate:
         format_sql: true
+        use_sql_comments: true
+
 
 
 auth:
@@ -38,10 +40,10 @@ logging:
     org:
       hibernate:
         SQL: DEBUG
-        type:
-          descriptor:
-            sql:
-              BasicBinder: TRACE
+        orm:
+          jdbc:
+            bind: TRACE
+#            extract: TRACE #조회 값까지 보고 싶으면
 
 jwt:
   secret-key: ${JWT_SECRET_KEY}

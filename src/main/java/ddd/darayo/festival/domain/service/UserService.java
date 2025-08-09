@@ -36,4 +36,11 @@ public class UserService {
 
         user.updateAlarmPermission(permissionEnabled);
     }
+
+    public boolean getPushPermission(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow();
+
+        return user.getIsAlarmAllowed();
+    }
 }

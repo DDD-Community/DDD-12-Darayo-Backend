@@ -1,5 +1,8 @@
 package ddd.darayo.festival.presentation.user;
 
+import ddd.darayo.festival.domain.entity.User;
+import ddd.darayo.festival.domain.exception.constant.UserError;
+import ddd.darayo.festival.domain.repository.UserRepository;
 import ddd.darayo.festival.domain.service.UserService;
 import ddd.darayo.festival.presentation.common.BaseResponse;
 import ddd.darayo.festival.presentation.user.exchanges.PushPermissionReq;
@@ -13,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/v1/users")
 @RequiredArgsConstructor
 public class UserController {
-
     private final UserService userService;
 
     @PostMapping("/login")
@@ -28,6 +30,14 @@ public class UserController {
     ) {
         userService.updatePushPermission(userId, req.getPermissionEnabled());
         return ResponseEntity.ok(BaseResponse.success());
+    }
+
+    @GetMapping("/push-permission")
+    public ResponseEntity<BaseResponse<Boolean>> getPushPermission(
+            @RequestAttribute("userId") Long userId
+    ) {
+        boolean isPushAlarmed = userService.getPushPermission(userId);
+        return ResponseEntity.ok(BaseResponse.success(isPushAlarmed));
     }
 }
 

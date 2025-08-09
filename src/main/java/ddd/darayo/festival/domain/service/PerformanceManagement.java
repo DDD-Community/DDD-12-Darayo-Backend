@@ -1,10 +1,12 @@
 package ddd.darayo.festival.domain.service;
 
-import ddd.darayo.festival.domain.constant.ParticipationType;
+import ddd.darayo.festival.domain.dto.EditPerformanceDTO;
+import ddd.darayo.festival.domain.dto.EditReservationInfoCommand;
 import ddd.darayo.festival.domain.entity.*;
 import ddd.darayo.festival.domain.exception.constant.PerformanceError;
-import ddd.darayo.festival.domain.exception.constant.TimetableError;
 import ddd.darayo.festival.domain.repository.PerformanceRepository;
+import ddd.darayo.festival.domain.repository.PerformanceURLRepository;
+import ddd.darayo.festival.domain.repository.ReservationInfoRepository;
 import ddd.darayo.festival.domain.service.mapper.PerformanceMapper;
 import ddd.darayo.festival.domain.service.mapper.ReservationInfoMapper;
 import ddd.darayo.festival.domain.service.mapper.TimetableMapper;
@@ -19,7 +21,6 @@ import lombok.val;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -28,8 +29,11 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class PerformanceManagement {
+public class  PerformanceManagement {
     private final PerformanceRepository performanceRepository;
+    private final PerformanceURLRepository performanceURLRepository;
+    private final ReservationInfoRepository reservationInfoRepository;
+
     private final PerformanceMapper performanceMapper;
     private final URLMapper urlMapper;
 
@@ -113,15 +117,15 @@ public class PerformanceManagement {
         for (val req : reqList) {
             if (req.id() != null && existingMap.containsKey(req.id())) {
                 ReservationInfo existing = existingMap.get(req.id());
-                existing.updateWith(req, now); // 아래에 정의
+                existing.updateWith(req.command(), now); // 아래에 정의
                 newReservationInfos.add(existing);
             } else {
                 ReservationInfo newInfo = new ReservationInfo(
-                        req.openDateTime(),
-                        req.closeDateTime(),
-                        req.ticketURL(),
-                        req.type(),
-                        req.remark(),
+                        req.command().openDateTime(),
+                        req.command().closeDateTime(),
+                        req.command().ticketURL(),
+                        req.command().type(),
+                        req.command().remark(),
                         now
                 );
                 newInfo.setPerformance(performance);
@@ -131,5 +135,32 @@ public class PerformanceManagement {
 
         performance.getReservationInfos().clear();
         performance.getReservationInfos().addAll(newReservationInfos);
+    }
+
+    public void updatePerformance(Long performanceId, EditPerformanceDTO req) {
+        Performance performance = performanceRepository.findById(performanceId)
+                .orElseThrow(PerformanceError.PERFORMANCE_NOT_EXIST::toException);
+
+        performance.update(req);
+    }
+
+    public void updateReservationInfo(Long reservationInfoId, EditReservationInfoCommand command, LocalDateTime now) {
+        ReservationInfo reservationInfo = reservationInfoRepository.findById(reservationInfoId)
+                .orElseThrow(PerformanceError.PERFORMANCE_RESERVATION_INFO_NOT_EXIST::toException);
+
+        reservationInfo.updateWith(command, now);
+    }
+
+    public void deleteReservationInfo(Long reservationId) {
+        ReservationInfo reservationInfo = reservationInfoRepository.findById(reservationId)
+                .orElseThrow(PerformanceError.PERFORMANCE_RESERVATION_INFO_NOT_EXIST::toException);
+        reservationInfoRepository.delete(reservationInfo);
+    }
+
+    public void deletePerformanceURL(Long performanceURLId) {
+        performanceURLRepository.findById(performanceURLId)
+                .orElseThrow(PerformanceError.PERFORMANCE_URL_NOT_EXIST::toException);
+
+        performanceURLRepository.deleteById(performanceURLId);
     }
 }

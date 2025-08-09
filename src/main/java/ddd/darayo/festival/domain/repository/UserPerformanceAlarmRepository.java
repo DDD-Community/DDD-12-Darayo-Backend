@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -18,5 +19,10 @@ public interface UserPerformanceAlarmRepository extends JpaRepository<UserPerfor
     Optional<UserPerformanceAlarm> findByUserIdAndPerformanceId(
             @Param("userId") Long userId,
             @Param("performanceId") Long performanceId
+    );
+
+    @Query("SELECT DISTINCT upa.targetId FROM UserPerformanceAlarm upa WHERE upa.userId = :userId")
+    List<Long> findTargetIdsByUserId(
+            @Param("userId") Long userId
     );
 }
