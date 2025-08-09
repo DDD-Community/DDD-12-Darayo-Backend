@@ -23,12 +23,16 @@ public class Artist {
     @Column(length = 512)
     private String description;
 
+    @Column(length = 1024)
+    private String imageUrl;
+
     @OneToMany(mappedBy = "artist", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ArtistAlias> aliases = new ArrayList<>();
 
-    public Artist(String displayName, String description) {
+    public Artist(String displayName, String description, String imageUrl) {
         this.displayName = displayName;
         this.description = description;
+        this.imageUrl = imageUrl;
     }
 
     public Artist(long id) {

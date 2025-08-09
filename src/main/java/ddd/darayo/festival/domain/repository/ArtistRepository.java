@@ -12,17 +12,26 @@ import java.util.List;
 
 @Repository
 public interface ArtistRepository extends JpaRepository<Artist, Long> {
-    @Query("SELECT DISTINCT a.id as id, a.displayName as name, a.description as description, " +
-            "al.id as aliasId, al.name as alias " +
-            "FROM ArtistAlias al " +
-            "JOIN al.artist a")
+    @Query("""
+            SELECT DISTINCT a.id as id, a.displayName as name, a.description as description, a.imageUrl as imageUrl,
+            al.id as aliasId, al.name as alias
+            FROM ArtistAlias al
+            JOIN al.artist a
+            """)
     List<ArtistDetailProjection> findAllArtistDetail();
 
     @Modifying
-    @Query("UPDATE Artist a SET a.displayName = :displayName, a.description = :description WHERE a.id = :artistId")
+    @Query("""
+        UPDATE Artist a 
+        SET a.displayName = :displayName, 
+            a.description = :description,
+            a.imageUrl = :imageUrl
+        WHERE a.id = :artistId
+        """)
     int updateArtistById(
             @Param("artistId") Long artistId,
             @Param("displayName") String displayName,
+            @Param("imageUrl") String imageUrl,
             @Param("description") String description
     );
 }
