@@ -61,7 +61,7 @@ public class ArtistManagement {
     }
 
     public void editArtistAlias(EditArtistAliasReq req, long aliasId) {
-        int result = artistAliasRepository.updateArtistAlias(req.alias(), aliasId);
+        int result = artistAliasRepository.updateArtistAlias(req.content().alias(), aliasId);
         if (result < 1) {
             throw ARTIST_ALIAS_NOT_EXISTS.toException();
         }
