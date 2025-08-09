@@ -1,5 +1,6 @@
 package ddd.darayo.festival.domain.service.mapper;
 
+import ddd.darayo.festival.domain.dto.PerformanceContentDTO;
 import ddd.darayo.festival.domain.entity.Performance;
 import ddd.darayo.festival.domain.entity.PerformanceURL;
 import ddd.darayo.festival.presentation.performance.exchanges.PerformanceDetailRes;
@@ -31,7 +32,7 @@ public interface PerformanceMapper {
     PerformanceDetailRes toPerformanceDetailRes(Performance performance);
 
     @Mapping(target = "place", source = "placeId", qualifiedByName = "fromIdToPerformancePlace")
-    Performance toPerformanceEntity(SavePerformanceReq.PerformanceDTO performanceDTO);
+    Performance toPerformanceEntity(PerformanceContentDTO content);
 
     @Mapping(target = "festivalId", source = "id")
     @Mapping(target = "urlInfos", source = "urls")

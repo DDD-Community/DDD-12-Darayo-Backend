@@ -2,6 +2,7 @@ package ddd.darayo.festival.presentation.performance.exchanges;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import ddd.darayo.festival.domain.constant.ParticipationType;
+import ddd.darayo.festival.domain.dto.PerformanceContentDTO;
 import ddd.darayo.festival.domain.dto.PerformanceURLContentDTO;
 import ddd.darayo.festival.domain.dto.ReservationInfoContentDTO;
 import ddd.darayo.festival.domain.dto.TimetableContentDTO;
@@ -19,15 +20,8 @@ public class SavePerformanceReq {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class PerformanceDTO {
-        private String name;
-        private Long placeId;
-        private LocalDate startDate;
-        private LocalDate endDate;
-        private String posterUrl;
-
-        private String banGoods;
-        private String transportationInfo;
-        private String remark;
+        @JsonUnwrapped
+        private PerformanceContentDTO content;
     }
 
 

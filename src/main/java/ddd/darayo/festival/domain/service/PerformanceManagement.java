@@ -44,7 +44,7 @@ public class  PerformanceManagement {
     private final TimetableMapper.TimetableDetailMapper timetableDetailMapper;
 
     public Performance save(SavePerformanceReq dto, LocalDateTime now) {
-        Performance performance = this.performanceMapper.toPerformanceEntity(dto.getPerformance());
+        Performance performance = this.performanceMapper.toPerformanceEntity(dto.getPerformance().getContent());
 
         // 타임테이블 추가
         dto.getTimeTables().forEach(timeTableDTO -> {
