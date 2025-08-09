@@ -48,7 +48,7 @@ public class  PerformanceManagement {
 
         // 타임테이블 추가
         dto.getTimeTables().forEach(timeTableDTO -> {
-            Timetable timetable = timetableMapper.toTimetableEntity(timeTableDTO);
+            Timetable timetable = timetableMapper.toTimetableEntity(timeTableDTO.getContent());
             timeTableDTO.getArtists().forEach(artist -> {
                 TimetableArtist timetableArtist = timetableDetailMapper.toTimetableArtist(artist);
                 timetable.addArtist(timetableArtist);

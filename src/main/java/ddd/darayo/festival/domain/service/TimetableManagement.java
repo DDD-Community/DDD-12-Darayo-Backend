@@ -33,9 +33,7 @@ public class TimetableManagement {
         Performance performance = performanceRepository.findById(performanceId)
                 .orElseThrow(PerformanceError.PERFORMANCE_NOT_EXIST::toException);
 
-        // TODO: 같은 홀, 같은 시간 겹치는 경우
-        Timetable timetable = new Timetable(req.performanceDate(), req.startTime(), req.endTime(), req.hallId());
-
+        Timetable timetable = timetableMapper.toTimetableEntity(req.content());
         timetable.setPerformance(performance);
 
         return timetableRepository.save(timetable);
@@ -58,10 +56,15 @@ public class TimetableManagement {
     public void editTimetable(Long timetableId, EditTimetableReq req) {
         Timetable timetable = timetableRepository.findById(timetableId)
                 .orElseThrow(TimetableError.TIMETABLE_NOT_EXISTS::toException);
-        if (req.hallId() != null && !performanceHallRepository.existsById(req.hallId())) {
+        if (req.content().hallId() != null && !performanceHallRepository.existsById(req.content().hallId())) {
             throw PlaceError.PLACE_HALL_NOT_EXIST.toException();
         }
-        timetable.update(req.performanceDate(), req.startTime(), req.endTime(), new PerformanceHall(req.hallId()));
+        timetable.update(
+                req.content().performanceDate(),
+                req.content().startTime(),
+                req.content().endTime(),
+                new PerformanceHall(req.content().hallId())
+        );
     }
 
     public void deleteTimetableArtist(Long timetableId, Long artistId) {
