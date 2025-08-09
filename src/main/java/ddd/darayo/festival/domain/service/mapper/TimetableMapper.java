@@ -25,10 +25,6 @@ public interface TimetableMapper {
     @Mapping(target = "timetableId", source = "id")
     UserGetTimetableRes toUserGetTimetable(Timetable timetable);
 
-
-    @Mapping(target = "hall", source = "hallId", qualifiedByName = "fromIdToPerformanceHall")
-    Timetable toTimetableEntity(SavePerformanceReq.TimeTableDTO timetableDTO);
-
     @Mapping(target = "hall", source = "hallId", qualifiedByName = "fromIdToPerformanceHall")
     Timetable toTimetableEntity(TimetableContentDTO timetableDTO);
 
