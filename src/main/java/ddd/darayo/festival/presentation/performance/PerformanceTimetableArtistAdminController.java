@@ -26,7 +26,7 @@ public class PerformanceTimetableArtistAdminController {
             @PathVariable("timetableId") Long timetableId,
             @RequestBody AddTimetableArtistReq req
     ) {
-        timetableManagement.putTimetableArtist(timetableId, req.artistId(), req.participationType());
+        timetableManagement.putTimetableArtist(timetableId, req.artistId(), req.content().participationType());
         return ResponseEntity.ok().build();
     }
     
