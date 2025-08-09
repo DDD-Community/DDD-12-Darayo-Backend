@@ -25,11 +25,11 @@ public class ArtistManagement {
     private final ArtistAliasRepository artistAliasRepository;
 
     public Artist createArtist(SaveArtistReq dto) {
-        Artist artist = new Artist(dto.getName(), dto.getDescription());
+        Artist artist = new Artist(dto.getContent().name(), dto.getContent().description());
 
         val aliasList = dto.getAliasList();
 
-        aliasList.add(dto.getName()); // 자기 자신은 반드시 별칭으로 추가
+        aliasList.add(dto.getContent().name()); // 자기 자신은 반드시 별칭으로 추가
 
         aliasList.stream()
                 .filter(Objects::nonNull) // null 방지
@@ -54,7 +54,7 @@ public class ArtistManagement {
     }
 
     public void editArtist(EditArtistReq req, long artistId) {
-        int result = artistRepository.updateArtistById(artistId, req.name(), req.description());
+        int result = artistRepository.updateArtistById(artistId, req.content().name(), req.content().description());
         if (result < 1) {
             throw ARTIST_NOT_EXISTS.toException();
         }
