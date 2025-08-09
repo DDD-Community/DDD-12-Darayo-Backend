@@ -58,7 +58,7 @@ public class  PerformanceManagement {
 
         // 예약 정보 추가
         dto.getReservationInfos().forEach(reservationInfoDTO -> {
-            ReservationInfo reservationInfo = reservationInfoMapper.toReservationEntity(reservationInfoDTO, now);
+            ReservationInfo reservationInfo = reservationInfoMapper.toReservationInfo(reservationInfoDTO, now);
             performance.addReservationInfo(reservationInfo);
         });
 
