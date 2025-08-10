@@ -31,7 +31,7 @@ public interface ArtistRepository extends JpaRepository<Artist, Long> {
     int updateArtistById(
             @Param("artistId") Long artistId,
             @Param("displayName") String displayName,
-            @Param("imageUrl") String imageUrl,
-            @Param("description") String description
+            @Param("description") String description,
+            @Param("imageUrl") String imageUrl
     );
 }
