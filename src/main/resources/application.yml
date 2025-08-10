@@ -48,3 +48,8 @@ logging:
 jwt:
   secret-key: ${JWT_SECRET_KEY}
   expire-length: ${JWT_EXPIRE_LENGTH:86400000}
+
+applemusic:
+  team-id: ${APPLE_TEAM_ID}
+  key-id: ${APPLE_KEY_ID}
+  private-key-path: ${APPLE_KEY_PATH}

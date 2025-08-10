@@ -1,11 +1,13 @@
+version: '3.8'
 services:
-  app:
-    image: asia-northeast3-docker.pkg.dev/carbon-web-461709-v3/backend-docker-image-registry/festival-app:latest
-    platform: linux/arm64
-    build:
-      context: .
-      dockerfile: Dockerfile
-    env_file:
-      - .env
+  mysql:
+    image: mysql:8.0
+    platform: linux/x86_64
     ports:
-      - "8080:8080"
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: festival
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./src/test/resources/testdb/schema.sql:/docker-entrypoint-initdb.d/1-schema.sql
+      - ./src/test/resources/testdb/data.sql:/docker-entrypoint-initdb.d/2-data.sql
