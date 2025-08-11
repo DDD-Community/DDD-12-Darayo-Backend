@@ -78,6 +78,7 @@ public class ArtistManagement {
                         artist.getId(),
                         artist.getName(),
                         artist.getDescription(),
+                        artist.getImageUrl(),
                         new ArrayList<>()
                 )
             )
