@@ -49,13 +49,13 @@ INSERT INTO artist_alias (id, artist_id, name) VALUES
   (8, 8, '사운드의 마법사');
 
 -- 6. 공연 (performance)
-INSERT INTO performance (id, start_date, end_date, place_id, poster_url, name, ban_goods, remark, transportation_info) VALUES
-  (1, '2024-05-24', '2024-05-26', 1, 'https://example.com/seoul-jazz-2024.jpg', '2024 서울 재즈 페스티벌', '음식물, 음료, 촬영장비', '우천시 실내공연장으로 변경될 수 있습니다.', '5호선 올림픽공원역 3번 출구'),
-  (2, '2024-07-15', '2024-07-17', 2, 'https://example.com/busan-rock-2024.jpg', '부산 록 페스티벌', '유리병, 캔, 촬영장비', '주차장이 제한적이니 대중교통 이용을 권장합니다.', '2호선 사상역 1번 출구'),
-  (3, '2024-09-20', '2024-09-22', 3, 'https://example.com/indie-music-2024.jpg', '인디뮤직 페스티벌', '음식물, 음료, 촬영장비', '야외 공연장이므로 우의를 준비하세요.', '6호선 월드컵경기장역 1번 출구'),
-  (4, '2024-08-15', '2024-08-17', 1, 'https://example.com/summer-fest-2024.jpg', '썸머 페스티벌', '음식물, 음료, 촬영장비', '우천시에도 진행됩니다.', '5호선 올림픽공원역 3번 출구'),
-  (5, '2024-08-20', '2024-08-22', 2, 'https://example.com/hiphop-fest-2024.jpg', '힙합 페스티벌', '음식물, 음료, 촬영장비', '스탠딩석 운영', '2호선 사상역 1번 출구'),
-  (6, '2024-08-25', '2024-08-27', 3, 'https://example.com/edm-fest-2024.jpg', 'EDM 페스티벌', '음식물, 음료, 촬영장비', '우천시에도 진행됩니다.', '6호선 월드컵경기장역 1번 출구');
+INSERT INTO performance (id, start_date, end_date, place_id, poster_url, name, updated_at, ban_goods, remark, transportation_info) VALUES
+  (1, '2024-05-24', '2024-05-26', 1, 'https://example.com/seoul-jazz-2024.jpg', '2024 서울 재즈 페스티벌', '2024-05-01 00:00:00.000000', '음식물, 음료, 촬영장비', '우천시 실내공연장으로 변경될 수 있습니다.', '5호선 올림픽공원역 3번 출구'),
+  (2, '2024-07-15', '2024-07-17', 2, 'https://example.com/busan-rock-2024.jpg', '부산 록 페스티벌', '2024-06-01 00:00:00.000000', '유리병, 캔, 촬영장비', '주차장이 제한적이니 대중교통 이용을 권장합니다.', '2호선 사상역 1번 출구'),
+  (3, '2024-09-20', '2024-09-22', 3, 'https://example.com/indie-music-2024.jpg', '인디뮤직 페스티벌', '2024-07-01 00:00:00.000000', '음식물, 음료, 촬영장비', '야외 공연장이므로 우의를 준비하세요.', '6호선 월드컵경기장역 1번 출구'),
+  (4, '2024-08-15', '2024-08-17', 1, 'https://example.com/summer-fest-2024.jpg', '썸머 페스티벌', '2024-06-15 00:00:00.000000', '음식물, 음료, 촬영장비', '우천시에도 진행됩니다.', '5호선 올림픽공원역 3번 출구'),
+  (5, '2024-08-20', '2024-08-22', 2, 'https://example.com/hiphop-fest-2024.jpg', '힙합 페스티벌', '2024-06-20 00:00:00.000000', '음식물, 음료, 촬영장비', '스탠딩석 운영', '2호선 사상역 1번 출구'),
+  (6, '2024-08-25', '2024-08-27', 3, 'https://example.com/edm-fest-2024.jpg', 'EDM 페스티벌', '2024-06-25 00:00:00.000000', '음식물, 음료, 촬영장비', '우천시에도 진행됩니다.', '6호선 월드컵경기장역 1번 출구');
 
 -- 7. 공연 URL (performanceurl)
 INSERT INTO performanceurl (id, performance_id, type, url) VALUES
