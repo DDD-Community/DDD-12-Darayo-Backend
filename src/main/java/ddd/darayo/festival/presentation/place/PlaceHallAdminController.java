@@ -24,8 +24,7 @@ public class PlaceHallAdminController {
             @PathVariable Long hallId,
             @RequestBody EditHallReq editHallReq
     ) {
-        LocalDateTime now = LocalDateTime.now(java.time.ZoneId.of("Asia/Seoul"));
-        placeManagement.editHall(hallId, editHallReq, now);
+        placeManagement.editHall(hallId, editHallReq);
         return ResponseEntity.ok().build();
     }
 
@@ -34,8 +33,7 @@ public class PlaceHallAdminController {
             @PathVariable Long placeId,
             @RequestBody AddPlaceHallReq addPlaceHallReq
     ) {
-        LocalDateTime now = LocalDateTime.now(java.time.ZoneId.of("Asia/Seoul"));
-        PerformanceHall hall = placeManagement.addHall(placeId, addPlaceHallReq, now);
+        PerformanceHall hall = placeManagement.addHall(placeId, addPlaceHallReq);
         return ResponseEntity.ok(hall.getId());
     }
 }

@@ -13,6 +13,7 @@ import ddd.darayo.festival.domain.service.mapper.PerformanceMapper;
 import ddd.darayo.festival.domain.service.mapper.ReservationInfoMapper;
 import ddd.darayo.festival.domain.service.mapper.TimetableMapper;
 import ddd.darayo.festival.domain.service.mapper.URLMapper;
+import ddd.darayo.festival.infra.aop.TouchPerformanceUpdatedAt;
 import ddd.darayo.festival.presentation.performance.exchanges.EditReservationInfoReq;
 import ddd.darayo.festival.presentation.performance.exchanges.PerformanceDetailRes;
 import ddd.darayo.festival.presentation.performance.exchanges.SavePerformanceReq;
@@ -66,8 +67,6 @@ public class  PerformanceManagement {
             PerformanceURL url = urlMapper.toPerformanceURL(urlDTO);
             performance.addUrl(url);
         });
-
-        performance.touch(now);
         return performanceRepository.save(performance);
     }
 
@@ -107,30 +106,32 @@ public class  PerformanceManagement {
 
         performanceRepository.delete(performance);
     }
-    public void addReservationInfo(Long performanceId, ReservationInfoContentDTO dto, LocalDateTime now) {
+
+    @TouchPerformanceUpdatedAt(by = TouchPerformanceUpdatedAt.By.PERFORMANCE_ID, key = "#performanceId")
+    public void addReservationInfo(Long performanceId, ReservationInfoContentDTO dto) {
         Performance performance = performanceRepository.findById(performanceId)
                 .orElseThrow(PerformanceError.PERFORMANCE_NOT_EXIST::toException);
 
-        ReservationInfo reservationInfo = reservationInfoMapper.toReservationInfo(dto, now);
+        ReservationInfo reservationInfo = reservationInfoMapper.toReservationInfo(dto, LocalDateTime.now());
         performance.addReservationInfo(reservationInfo);
-        performance.touch(now);
     }
 
-    public void addPerformanceURL(Long performanceId, PerformanceURLContentDTO dto, LocalDateTime now) {
+    @TouchPerformanceUpdatedAt(by = TouchPerformanceUpdatedAt.By.PERFORMANCE_ID, key = "#performanceId")
+    public void addPerformanceURL(Long performanceId, PerformanceURLContentDTO dto) {
         Performance performance = performanceRepository.findById(performanceId)
                 .orElseThrow(PerformanceError.PERFORMANCE_NOT_EXIST::toException);
         PerformanceURL performanceURL = urlMapper.toPerformanceURL(dto);
         performance.addUrl(performanceURL);
-        performance.touch(now);
     }
 
-    public void updatePerformanceURL(Long performanceURLId, PerformanceURLContentDTO dto, LocalDateTime now) {
+    @TouchPerformanceUpdatedAt(by = TouchPerformanceUpdatedAt.By.PERFORMANCE_URL_ID, key = "#performanceURLId")
+    public void updatePerformanceURL(Long performanceURLId, PerformanceURLContentDTO dto) {
         PerformanceURL performanceURL = performanceURLRepository.findById(performanceURLId)
                 .orElseThrow(PerformanceError.PERFORMANCE_URL_NOT_EXIST::toException);
         performanceURL.update(dto.url(), dto.type());
-        performanceURL.getPerformance().touch(now);
     } 
 
+    @TouchPerformanceUpdatedAt(by = TouchPerformanceUpdatedAt.By.PERFORMANCE_ID, key = "#performanceId")
     public void updateReservationInfo(Long performanceId, List<EditReservationInfoReq> reqList, LocalDateTime now) {
         val performance = performanceRepository.findById(performanceId)
                 .orElseThrow(PerformanceError.PERFORMANCE_NOT_EXIST::toException);
@@ -161,40 +162,37 @@ public class  PerformanceManagement {
 
         performance.getReservationInfos().clear();
         performance.getReservationInfos().addAll(newReservationInfos);
-        performance.touch(now);
     }
 
-    public void updatePerformance(Long performanceId, EditPerformanceDTO req, LocalDateTime now) {
+    @TouchPerformanceUpdatedAt(by = TouchPerformanceUpdatedAt.By.PERFORMANCE_ID, key = "#performanceId")
+    public void updatePerformance(Long performanceId, EditPerformanceDTO req) {
         Performance performance = performanceRepository.findById(performanceId)
                 .orElseThrow(PerformanceError.PERFORMANCE_NOT_EXIST::toException);
 
         performance.update(req);
-        performance.touch(now);
     }
 
+    @TouchPerformanceUpdatedAt(by = TouchPerformanceUpdatedAt.By.RESERVATION_INFO_ID, key = "#reservationInfoId")
     public void updateReservationInfo(Long reservationInfoId, EditReservationInfoCommand command, LocalDateTime now) {
         ReservationInfo reservationInfo = reservationInfoRepository.findById(reservationInfoId)
                 .orElseThrow(PerformanceError.PERFORMANCE_RESERVATION_INFO_NOT_EXIST::toException);
 
         reservationInfo.updateWith(command, now);
-        reservationInfo.getPerformance().touch(now);
     }
 
-    public void deleteReservationInfo(Long reservationId, LocalDateTime now) {
+    @TouchPerformanceUpdatedAt(by = TouchPerformanceUpdatedAt.By.RESERVATION_INFO_ID, key = "#reservationId")
+    public void deleteReservationInfo(Long reservationId) {
         ReservationInfo reservationInfo = reservationInfoRepository.findById(reservationId)
                 .orElseThrow(PerformanceError.PERFORMANCE_RESERVATION_INFO_NOT_EXIST::toException);
-        Performance performance = reservationInfo.getPerformance();
         reservationInfoRepository.delete(reservationInfo);
-        performance.touch(now);
     }
 
-    public void deletePerformanceURL(Long performanceURLId, LocalDateTime now) {
+    @TouchPerformanceUpdatedAt(by = TouchPerformanceUpdatedAt.By.PERFORMANCE_URL_ID, key = "#performanceURLId")
+    public void deletePerformanceURL(Long performanceURLId) {
         performanceURLRepository.findById(performanceURLId)
                 .orElseThrow(PerformanceError.PERFORMANCE_URL_NOT_EXIST::toException);
 
         PerformanceURL url = performanceURLRepository.getReferenceById(performanceURLId);
-        Performance performance = url.getPerformance();
-        performanceURLRepository.deleteById(performanceURLId);
-        performance.touch(now);
+        performanceURLRepository.delete(url);
     }
 }

@@ -28,8 +28,7 @@ public class PerformanceTimetableArtistAdminController {
             @PathVariable("timetableId") Long timetableId,
             @RequestBody AddTimetableArtistReq req
     ) {
-        LocalDateTime now = LocalDateTime.now(java.time.ZoneId.of("Asia/Seoul"));
-        timetableManagement.putTimetableArtist(timetableId, req.artistId(), req.content().participationType(), now);
+        timetableManagement.putTimetableArtist(timetableId, req.artistId(), req.content().participationType());
         return ResponseEntity.ok().build();
     }
     
@@ -40,8 +39,7 @@ public class PerformanceTimetableArtistAdminController {
             @PathVariable("artistId") Long artistId,
             @RequestBody TimetableArtistContentDTO req
     ) {
-        LocalDateTime now = LocalDateTime.now(java.time.ZoneId.of("Asia/Seoul"));
-        timetableManagement.putTimetableArtist(timetableId, artistId, req.participationType(), now);
+        timetableManagement.putTimetableArtist(timetableId, artistId, req.participationType());
         return ResponseEntity.ok().build();
     }
 
@@ -50,8 +48,7 @@ public class PerformanceTimetableArtistAdminController {
             @PathVariable("timetableId") Long timetableId,
             @PathVariable("artistId") Long artistId
     ) {
-        LocalDateTime now = LocalDateTime.now(java.time.ZoneId.of("Asia/Seoul"));
-        timetableManagement.deleteTimetableArtist(timetableId, artistId, now);
+        timetableManagement.deleteTimetableArtist(timetableId, artistId);
         return ResponseEntity.ok().build();
     }
 }  

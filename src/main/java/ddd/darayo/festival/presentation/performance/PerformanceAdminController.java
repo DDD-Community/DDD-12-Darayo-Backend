@@ -1,7 +1,6 @@
 package ddd.darayo.festival.presentation.performance;
 
 import ddd.darayo.festival.domain.dto.EditPerformanceDTO;
-import ddd.darayo.festival.domain.dto.EditReservationInfoCommand;
 import ddd.darayo.festival.domain.entity.Performance;
 import ddd.darayo.festival.domain.service.AuthService;
 import ddd.darayo.festival.domain.service.PerformanceManagement;
@@ -43,8 +42,7 @@ public class PerformanceAdminController {
             @PathVariable Long performanceId,
             @RequestBody EditPerformanceDTO req
     ) {
-        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
-        performanceManagement.updatePerformance(performanceId, req, now);
+        performanceManagement.updatePerformance(performanceId, req);
         return ResponseEntity.ok().build();
     }
 
@@ -62,8 +60,7 @@ public class PerformanceAdminController {
     public ResponseEntity<Void> deleteReservation(
             @PathVariable Long reservationInfoId
     ) {
-        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
-        performanceManagement.deleteReservationInfo(reservationInfoId, now);
+        performanceManagement.deleteReservationInfo(reservationInfoId);
         return ResponseEntity.noContent().build();
     }
 

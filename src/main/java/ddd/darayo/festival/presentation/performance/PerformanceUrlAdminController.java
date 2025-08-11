@@ -28,8 +28,7 @@ public class PerformanceUrlAdminController {
         @PathVariable Long performanceId,
         @RequestBody PerformanceURLContentDTO dto
     ) {
-        LocalDateTime now = LocalDateTime.now(java.time.ZoneId.of("Asia/Seoul"));
-        performanceManagement.addPerformanceURL(performanceId, dto, now);
+        performanceManagement.addPerformanceURL(performanceId, dto);
         return ResponseEntity.ok().build();
     }
 
@@ -37,8 +36,7 @@ public class PerformanceUrlAdminController {
     public ResponseEntity<Void> deletePerformanceURL(
         @PathVariable Long performanceURLId
     ) {
-        LocalDateTime now = LocalDateTime.now(java.time.ZoneId.of("Asia/Seoul"));
-        performanceManagement.deletePerformanceURL(performanceURLId, now);
+        performanceManagement.deletePerformanceURL(performanceURLId);
         return ResponseEntity.ok().build();
     }
 
@@ -47,8 +45,7 @@ public class PerformanceUrlAdminController {
         @PathVariable Long performanceURLId,
         @RequestBody PerformanceURLContentDTO dto
     ) {
-        LocalDateTime now = LocalDateTime.now(java.time.ZoneId.of("Asia/Seoul"));
-        performanceManagement.updatePerformanceURL(performanceURLId, dto, now);
+        performanceManagement.updatePerformanceURL(performanceURLId, dto);
         return ResponseEntity.ok().build();
     }
 }

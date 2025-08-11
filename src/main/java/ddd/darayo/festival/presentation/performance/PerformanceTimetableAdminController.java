@@ -29,8 +29,7 @@ public class PerformanceTimetableAdminController {
     public ResponseEntity<Long> createTimetable(
             @PathVariable Long performanceId,
             @RequestBody AddTimetableReq req) {
-        LocalDateTime now = LocalDateTime.now(java.time.ZoneId.of("Asia/Seoul"));
-        Timetable timetable = timetableManagement.addTimetable(performanceId, req, now);
+        Timetable timetable = timetableManagement.addTimetable(performanceId, req);
         return ResponseEntity.ok(timetable.getId());
     }
 
@@ -39,8 +38,7 @@ public class PerformanceTimetableAdminController {
             @PathVariable("timetableId") Long timetableId,
             @RequestBody EditTimetableReq req
     ) {
-        LocalDateTime now = LocalDateTime.now(java.time.ZoneId.of("Asia/Seoul"));
-        timetableManagement.editTimetable(timetableId, req, now);
+        timetableManagement.editTimetable(timetableId, req);
         return ResponseEntity.ok().build();
     }
 
@@ -49,8 +47,7 @@ public class PerformanceTimetableAdminController {
             @PathVariable("timetableId") Long timetableId,
             @RequestBody AddTimetableArtistReq req
     ) {
-        LocalDateTime now = LocalDateTime.now(java.time.ZoneId.of("Asia/Seoul"));
-        timetableManagement.putTimetableArtist(timetableId, req.artistId(), req.content().participationType(), now);
+        timetableManagement.putTimetableArtist(timetableId, req.artistId(), req.content().participationType());
         return ResponseEntity.ok().build();
     }
 }

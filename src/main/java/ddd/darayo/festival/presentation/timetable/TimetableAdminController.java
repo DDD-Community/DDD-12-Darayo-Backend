@@ -20,8 +20,7 @@ public class TimetableAdminController {
             @PathVariable("timetableId") Long timetableId,
             @RequestBody EditTimetableReq req
     ) {
-        LocalDateTime now = LocalDateTime.now(java.time.ZoneId.of("Asia/Seoul"));
-        timetableManagement.editTimetable(timetableId, req, now);
+        timetableManagement.editTimetable(timetableId, req);
         return ResponseEntity.ok().build();
     }
 
@@ -30,8 +29,7 @@ public class TimetableAdminController {
             @PathVariable("timetableId") Long timetableId,
             @RequestBody AddTimetableArtistReq req
     ) {
-        LocalDateTime now = LocalDateTime.now(java.time.ZoneId.of("Asia/Seoul"));
-        timetableManagement.putTimetableArtist(timetableId, req.artistId(), req.content().participationType(), now);
+        timetableManagement.putTimetableArtist(timetableId, req.artistId(), req.content().participationType());
         return ResponseEntity.ok().build();
     }
 
@@ -40,8 +38,7 @@ public class TimetableAdminController {
             @PathVariable("timetableId") Long timetableId,
             @PathVariable("artistId") Long artistId
     ) {
-        LocalDateTime now = LocalDateTime.now(java.time.ZoneId.of("Asia/Seoul"));
-        timetableManagement.deleteTimetableArtist(timetableId, artistId, now);
+        timetableManagement.deleteTimetableArtist(timetableId, artistId);
         return ResponseEntity.ok().build();
     }
 
@@ -49,8 +46,7 @@ public class TimetableAdminController {
     public ResponseEntity<Void> deleteTimetable(
             @PathVariable Long timetableId
     ) {
-        LocalDateTime now = LocalDateTime.now(java.time.ZoneId.of("Asia/Seoul"));
-        timetableManagement.deleteTimetable(timetableId, now);
+        timetableManagement.deleteTimetable(timetableId);
         return ResponseEntity.noContent().build();
     }
 }
