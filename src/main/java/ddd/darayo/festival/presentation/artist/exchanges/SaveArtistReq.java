@@ -11,5 +11,6 @@ public class SaveArtistReq {
     private String password;
     private String name;
     private String description;
+    private String imageUrl;
     private List<String> aliasList;
 }

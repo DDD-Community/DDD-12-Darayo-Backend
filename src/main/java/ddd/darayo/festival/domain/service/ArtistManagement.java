@@ -25,7 +25,7 @@ public class ArtistManagement {
     private final ArtistAliasRepository artistAliasRepository;
 
     public Artist createArtist(SaveArtistReq dto) {
-        Artist artist = new Artist(dto.getName(), dto.getDescription());
+        Artist artist = new Artist(dto.getName(), dto.getDescription(), dto.getImageUrl());
 
         val aliasList = dto.getAliasList();
 
@@ -48,7 +48,7 @@ public class ArtistManagement {
     }
 
     public void editArtist(EditArtistReq req, long artistId) {
-        int result = artistRepository.updateArtistById(artistId, req.name(), req.description());
+        int result = artistRepository.updateArtistById(artistId, req.name(), req.description(), req.imageUrl());
         if (result < 1) {
             throw ARTIST_NOT_EXISTS.toException();
         }
@@ -72,6 +72,7 @@ public class ArtistManagement {
                         artist.getId(),
                         artist.getName(),
                         artist.getDescription(),
+                        artist.getImageUrl(),
                         new ArrayList<>()
                 )
             )
