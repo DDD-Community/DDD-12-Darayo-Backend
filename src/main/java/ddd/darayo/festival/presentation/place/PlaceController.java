@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -34,7 +35,8 @@ public class PlaceController {
             @PathVariable long placeId,
             @RequestBody EditPlaceReq editPlaceReq
     ) {
-        placeManagement.editPlace(placeId, editPlaceReq);
+        LocalDateTime now = LocalDateTime.now(java.time.ZoneId.of("Asia/Seoul"));
+        placeManagement.editPlace(placeId, editPlaceReq, now);
         return ResponseEntity.ok().build();
     }
 
@@ -43,7 +45,8 @@ public class PlaceController {
             @PathVariable Long hallId,
             @RequestBody EditHallReq editHallReq
     ) {
-        placeManagement.editHall(hallId, editHallReq);
+        LocalDateTime now = LocalDateTime.now(java.time.ZoneId.of("Asia/Seoul"));
+        placeManagement.editHall(hallId, editHallReq, now);
         return ResponseEntity.ok().build();
     }
 }

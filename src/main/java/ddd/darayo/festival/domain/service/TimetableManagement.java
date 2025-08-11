@@ -11,6 +11,7 @@ import ddd.darayo.festival.presentation.performance.exchanges.AddTimetableReq;
 import ddd.darayo.festival.presentation.performance.exchanges.UserGetTimetableRes;
 import ddd.darayo.festival.presentation.timetable.exchanges.EditTimetableReq;
 import jakarta.transaction.Transactional;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,18 +30,18 @@ public class TimetableManagement {
 
     private final TimetableMapper timetableMapper;
 
-    public Timetable addTimetable(Long performanceId, AddTimetableReq req) {
+    public Timetable addTimetable(Long performanceId, AddTimetableReq req, LocalDateTime now) {
         Performance performance = performanceRepository.findById(performanceId)
                 .orElseThrow(PerformanceError.PERFORMANCE_NOT_EXIST::toException);
 
         Timetable timetable = timetableMapper.toTimetableEntity(req.content());
         timetable.setPerformance(performance);
-
+        performance.touch(now);
         return timetableRepository.save(timetable);
     }
 
 
-    public void putTimetableArtist(Long timetableId, Long artistId, ParticipationType type) {
+    public void putTimetableArtist(Long timetableId, Long artistId, ParticipationType type, LocalDateTime now) {
         Timetable timetable = timetableRepository.findById(timetableId)
                 .orElseThrow(TimetableError.TIMETABLE_NOT_EXISTS::toException);
         Optional<TimetableArtist> ota = timetableArtistRepository.findParticipatingArtist(timetableId, artistId);
@@ -51,9 +52,10 @@ public class TimetableManagement {
             TimetableArtist ta = new TimetableArtist(null, type, new Artist(artistId), timetable);
             timetableArtistRepository.save(ta);
         }
+        timetable.getPerformance().touch(now);
     }
 
-    public void editTimetable(Long timetableId, EditTimetableReq req) {
+    public void editTimetable(Long timetableId, EditTimetableReq req, LocalDateTime now) {
         Timetable timetable = timetableRepository.findById(timetableId)
                 .orElseThrow(TimetableError.TIMETABLE_NOT_EXISTS::toException);
         if (req.content().hallId() != null && !performanceHallRepository.existsById(req.content().hallId())) {
@@ -65,13 +67,17 @@ public class TimetableManagement {
                 req.content().endTime(),
                 new PerformanceHall(req.content().hallId())
         );
+        timetable.getPerformance().touch(now);
     }
 
-    public void deleteTimetableArtist(Long timetableId, Long artistId) {
+    public void deleteTimetableArtist(Long timetableId, Long artistId, LocalDateTime now) {
         int result = timetableArtistRepository.deleteTimetableArtist(timetableId, artistId);
         if (result < 1) {
             throw TimetableError.TIMETABLE_ARTIST_NOT_EXISTS.toException();
         }
+        Timetable timetable = timetableRepository.findById(timetableId)
+                .orElseThrow(TimetableError.TIMETABLE_NOT_EXISTS::toException);
+        timetable.getPerformance().touch(now);
     }
 
     public List<UserGetTimetableRes> getUserGetTimetables(Long festivalId) {
@@ -79,9 +85,11 @@ public class TimetableManagement {
         return timetables.stream().map(timetableMapper::toUserGetTimetable).toList();
     }
 
-    public void deleteTimetable(Long timetableId) {
+    public void deleteTimetable(Long timetableId, LocalDateTime now) {
         Timetable timetable = timetableRepository.findById(timetableId)
                 .orElseThrow(TimetableError.TIMETABLE_NOT_EXISTS::toException);
+        Performance performance = timetable.getPerformance();
         timetableRepository.delete(timetable);
+        performance.touch(now);
     }
 }

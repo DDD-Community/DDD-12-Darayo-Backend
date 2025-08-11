@@ -67,6 +67,7 @@ public class  PerformanceManagement {
             performance.addUrl(url);
         });
 
+        performance.touch(now);
         return performanceRepository.save(performance);
     }
 
@@ -112,19 +113,22 @@ public class  PerformanceManagement {
 
         ReservationInfo reservationInfo = reservationInfoMapper.toReservationInfo(dto, now);
         performance.addReservationInfo(reservationInfo);
+        performance.touch(now);
     }
 
-    public void addPerformanceURL(Long performanceId, PerformanceURLContentDTO dto) {
+    public void addPerformanceURL(Long performanceId, PerformanceURLContentDTO dto, LocalDateTime now) {
         Performance performance = performanceRepository.findById(performanceId)
                 .orElseThrow(PerformanceError.PERFORMANCE_NOT_EXIST::toException);
         PerformanceURL performanceURL = urlMapper.toPerformanceURL(dto);
         performance.addUrl(performanceURL);
+        performance.touch(now);
     }
 
-    public void updatePerformanceURL(Long performanceURLId, PerformanceURLContentDTO dto) {
+    public void updatePerformanceURL(Long performanceURLId, PerformanceURLContentDTO dto, LocalDateTime now) {
         PerformanceURL performanceURL = performanceURLRepository.findById(performanceURLId)
                 .orElseThrow(PerformanceError.PERFORMANCE_URL_NOT_EXIST::toException);
         performanceURL.update(dto.url(), dto.type());
+        performanceURL.getPerformance().touch(now);
     } 
 
     public void updateReservationInfo(Long performanceId, List<EditReservationInfoReq> reqList, LocalDateTime now) {
@@ -157,13 +161,15 @@ public class  PerformanceManagement {
 
         performance.getReservationInfos().clear();
         performance.getReservationInfos().addAll(newReservationInfos);
+        performance.touch(now);
     }
 
-    public void updatePerformance(Long performanceId, EditPerformanceDTO req) {
+    public void updatePerformance(Long performanceId, EditPerformanceDTO req, LocalDateTime now) {
         Performance performance = performanceRepository.findById(performanceId)
                 .orElseThrow(PerformanceError.PERFORMANCE_NOT_EXIST::toException);
 
         performance.update(req);
+        performance.touch(now);
     }
 
     public void updateReservationInfo(Long reservationInfoId, EditReservationInfoCommand command, LocalDateTime now) {
@@ -171,18 +177,24 @@ public class  PerformanceManagement {
                 .orElseThrow(PerformanceError.PERFORMANCE_RESERVATION_INFO_NOT_EXIST::toException);
 
         reservationInfo.updateWith(command, now);
+        reservationInfo.getPerformance().touch(now);
     }
 
-    public void deleteReservationInfo(Long reservationId) {
+    public void deleteReservationInfo(Long reservationId, LocalDateTime now) {
         ReservationInfo reservationInfo = reservationInfoRepository.findById(reservationId)
                 .orElseThrow(PerformanceError.PERFORMANCE_RESERVATION_INFO_NOT_EXIST::toException);
+        Performance performance = reservationInfo.getPerformance();
         reservationInfoRepository.delete(reservationInfo);
+        performance.touch(now);
     }
 
-    public void deletePerformanceURL(Long performanceURLId) {
+    public void deletePerformanceURL(Long performanceURLId, LocalDateTime now) {
         performanceURLRepository.findById(performanceURLId)
                 .orElseThrow(PerformanceError.PERFORMANCE_URL_NOT_EXIST::toException);
 
+        PerformanceURL url = performanceURLRepository.getReferenceById(performanceURLId);
+        Performance performance = url.getPerformance();
         performanceURLRepository.deleteById(performanceURLId);
+        performance.touch(now);
     }
 }

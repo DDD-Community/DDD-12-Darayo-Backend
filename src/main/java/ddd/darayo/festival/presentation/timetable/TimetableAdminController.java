@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+
 @RestController
 @RequestMapping("/api/admin/timetable")
 @RequiredArgsConstructor
@@ -18,7 +20,8 @@ public class TimetableAdminController {
             @PathVariable("timetableId") Long timetableId,
             @RequestBody EditTimetableReq req
     ) {
-        timetableManagement.editTimetable(timetableId, req);
+        LocalDateTime now = LocalDateTime.now(java.time.ZoneId.of("Asia/Seoul"));
+        timetableManagement.editTimetable(timetableId, req, now);
         return ResponseEntity.ok().build();
     }
 
@@ -27,7 +30,8 @@ public class TimetableAdminController {
             @PathVariable("timetableId") Long timetableId,
             @RequestBody AddTimetableArtistReq req
     ) {
-        timetableManagement.putTimetableArtist(timetableId, req.artistId(), req.content().participationType());
+        LocalDateTime now = LocalDateTime.now(java.time.ZoneId.of("Asia/Seoul"));
+        timetableManagement.putTimetableArtist(timetableId, req.artistId(), req.content().participationType(), now);
         return ResponseEntity.ok().build();
     }
 
@@ -36,7 +40,8 @@ public class TimetableAdminController {
             @PathVariable("timetableId") Long timetableId,
             @PathVariable("artistId") Long artistId
     ) {
-        timetableManagement.deleteTimetableArtist(timetableId, artistId);
+        LocalDateTime now = LocalDateTime.now(java.time.ZoneId.of("Asia/Seoul"));
+        timetableManagement.deleteTimetableArtist(timetableId, artistId, now);
         return ResponseEntity.ok().build();
     }
 
@@ -44,7 +49,8 @@ public class TimetableAdminController {
     public ResponseEntity<Void> deleteTimetable(
             @PathVariable Long timetableId
     ) {
-        timetableManagement.deleteTimetable(timetableId);
+        LocalDateTime now = LocalDateTime.now(java.time.ZoneId.of("Asia/Seoul"));
+        timetableManagement.deleteTimetable(timetableId, now);
         return ResponseEntity.noContent().build();
     }
 }

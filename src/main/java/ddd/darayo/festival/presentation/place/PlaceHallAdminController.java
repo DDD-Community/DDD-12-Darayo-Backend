@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
+import java.time.LocalDateTime;
+
 @RestController
 @RequestMapping("/api/admin/place/{placeId}/hall")
 @RequiredArgsConstructor
@@ -22,7 +24,8 @@ public class PlaceHallAdminController {
             @PathVariable Long hallId,
             @RequestBody EditHallReq editHallReq
     ) {
-        placeManagement.editHall(hallId, editHallReq);
+        LocalDateTime now = LocalDateTime.now(java.time.ZoneId.of("Asia/Seoul"));
+        placeManagement.editHall(hallId, editHallReq, now);
         return ResponseEntity.ok().build();
     }
 
@@ -31,7 +34,8 @@ public class PlaceHallAdminController {
             @PathVariable Long placeId,
             @RequestBody AddPlaceHallReq addPlaceHallReq
     ) {
-        PerformanceHall hall = placeManagement.addHall(placeId, addPlaceHallReq);
+        LocalDateTime now = LocalDateTime.now(java.time.ZoneId.of("Asia/Seoul"));
+        PerformanceHall hall = placeManagement.addHall(placeId, addPlaceHallReq, now);
         return ResponseEntity.ok(hall.getId());
     }
 }

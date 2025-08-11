@@ -39,7 +39,8 @@ public class PerformanceReservationAdminController {
             @PathVariable("reservationInfoId") Long reservationInfoId,
             @RequestBody EditReservationInfoCommand req
     ) {
-        performanceManagement.updateReservationInfo(reservationInfoId, req, LocalDateTime.now());
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+        performanceManagement.updateReservationInfo(reservationInfoId, req, now);
         return ResponseEntity.ok().build();
     }
 
@@ -47,7 +48,8 @@ public class PerformanceReservationAdminController {
     public ResponseEntity<Void> deleteReservationInfo(
             @PathVariable("reservationInfoId") Long reservationInfoId
     ) {
-        performanceManagement.deleteReservationInfo(reservationInfoId);
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+        performanceManagement.deleteReservationInfo(reservationInfoId, now);
         return ResponseEntity.ok().build();
     }
 }

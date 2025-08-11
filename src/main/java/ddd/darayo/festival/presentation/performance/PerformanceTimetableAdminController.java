@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
+
 
 @RestController
 @RequestMapping("/api/admin/performance/{performanceId}/timetable")
@@ -27,7 +29,8 @@ public class PerformanceTimetableAdminController {
     public ResponseEntity<Long> createTimetable(
             @PathVariable Long performanceId,
             @RequestBody AddTimetableReq req) {
-        Timetable timetable = timetableManagement.addTimetable(performanceId, req);
+        LocalDateTime now = LocalDateTime.now(java.time.ZoneId.of("Asia/Seoul"));
+        Timetable timetable = timetableManagement.addTimetable(performanceId, req, now);
         return ResponseEntity.ok(timetable.getId());
     }
 
@@ -36,7 +39,8 @@ public class PerformanceTimetableAdminController {
             @PathVariable("timetableId") Long timetableId,
             @RequestBody EditTimetableReq req
     ) {
-        timetableManagement.editTimetable(timetableId, req);
+        LocalDateTime now = LocalDateTime.now(java.time.ZoneId.of("Asia/Seoul"));
+        timetableManagement.editTimetable(timetableId, req, now);
         return ResponseEntity.ok().build();
     }
 
@@ -45,7 +49,8 @@ public class PerformanceTimetableAdminController {
             @PathVariable("timetableId") Long timetableId,
             @RequestBody AddTimetableArtistReq req
     ) {
-        timetableManagement.putTimetableArtist(timetableId, req.artistId(), req.content().participationType());
+        LocalDateTime now = LocalDateTime.now(java.time.ZoneId.of("Asia/Seoul"));
+        timetableManagement.putTimetableArtist(timetableId, req.artistId(), req.content().participationType(), now);
         return ResponseEntity.ok().build();
     }
 }

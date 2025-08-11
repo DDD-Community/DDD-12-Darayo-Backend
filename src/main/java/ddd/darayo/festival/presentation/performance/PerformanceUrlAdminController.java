@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PostMapping;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @RestController
 @RequestMapping("/api/admin/performance/{performanceId}/performanceURL")
 @RequiredArgsConstructor
@@ -26,7 +28,8 @@ public class PerformanceUrlAdminController {
         @PathVariable Long performanceId,
         @RequestBody PerformanceURLContentDTO dto
     ) {
-        performanceManagement.addPerformanceURL(performanceId, dto);
+        LocalDateTime now = LocalDateTime.now(java.time.ZoneId.of("Asia/Seoul"));
+        performanceManagement.addPerformanceURL(performanceId, dto, now);
         return ResponseEntity.ok().build();
     }
 
@@ -34,7 +37,8 @@ public class PerformanceUrlAdminController {
     public ResponseEntity<Void> deletePerformanceURL(
         @PathVariable Long performanceURLId
     ) {
-        performanceManagement.deletePerformanceURL(performanceURLId);
+        LocalDateTime now = LocalDateTime.now(java.time.ZoneId.of("Asia/Seoul"));
+        performanceManagement.deletePerformanceURL(performanceURLId, now);
         return ResponseEntity.ok().build();
     }
 
@@ -43,7 +47,8 @@ public class PerformanceUrlAdminController {
         @PathVariable Long performanceURLId,
         @RequestBody PerformanceURLContentDTO dto
     ) {
-        performanceManagement.updatePerformanceURL(performanceURLId, dto);
+        LocalDateTime now = LocalDateTime.now(java.time.ZoneId.of("Asia/Seoul"));
+        performanceManagement.updatePerformanceURL(performanceURLId, dto, now);
         return ResponseEntity.ok().build();
     }
 }
