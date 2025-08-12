@@ -11,10 +11,7 @@ import ddd.darayo.festival.domain.service.mapper.PerformanceMapper;
 import ddd.darayo.festival.domain.service.mapper.ReservationInfoMapper;
 import ddd.darayo.festival.domain.service.mapper.TimetableMapper;
 import ddd.darayo.festival.domain.service.mapper.URLMapper;
-import ddd.darayo.festival.presentation.performance.exchanges.EditReservationInfoReq;
-import ddd.darayo.festival.presentation.performance.exchanges.PerformanceDetailRes;
-import ddd.darayo.festival.presentation.performance.exchanges.SavePerformanceReq;
-import ddd.darayo.festival.presentation.performance.exchanges.UserGetPerformanceInfo;
+import ddd.darayo.festival.presentation.performance.exchanges.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
@@ -75,6 +72,25 @@ public class  PerformanceManagement {
                 .stream()
                 .map(performanceMapper::toPerformanceDetailRes)
                 .toList();
+    }
+
+    public UserGetPerformanceInfo findPerformance(Long festivalId) {
+        Performance performance = performanceRepository.findPerformanceDetailById(festivalId)
+                .orElseThrow(PerformanceError.PERFORMANCE_NOT_EXIST::toException);
+
+        UserGetPerformanceInfo dto = performanceMapper.toUserGetPerformanceInfo(performance);
+        Set<UserGetPerformanceInfo.ArtistDetailRes> artistSet = new HashSet<>();
+        Set<Timetable> timetables = performance.getTimetables();
+
+        for (Timetable timetable : timetables) {
+            for (TimetableArtist timetableArtist : timetable.getArtists()) {
+                UserGetPerformanceInfo.ArtistDetailRes artist = timetableDetailMapper.toArtistDetail(timetableArtist);
+                artistSet.add(artist);
+            }
+        }
+
+        dto.artists().addAll(artistSet);
+        return dto;
     }
 
     public List<UserGetPerformanceInfo> findUserPerformance() {
