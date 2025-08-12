@@ -8,15 +8,20 @@ import java.util.Map;
 
 @Service
 public class AlarmMessageFormatter {
-    private static final String RESERVATION_DUE_ALARM_TITLE_FORMAT = "\uD83C\uDF9F\uFE0F %s 티켓 예매가 %s 잊지말고 준비하세요 \uD83D\uDD25";
-    private static final String DAY_MENTION_FORMAT = "%d일 남았어요!";
-    private static final String TODAY_MENTION_FORMAT = "오늘이에요!";
-    private static final String RESERVATION_INFO_UPDATE_FORMAT = "\uD83C\uDF9F\uFE0F %s 티켓 예매일이 오픈됐어요 ! 지금 바로 확인해보세요 \uD83C\uDFC3";
+    private static final String RESERVATION_INFO_UPDATE_FORMAT = "\uD83C\uDF9F\uFE0F 티켓 예매일 오픈 !";
+    private static final String RESERVATION_INFO_UPDATE_DESCRIPTION_FORMAT = "%s 지금 바로 확인해보세요 \uD83C\uDFC3";
 
-    private static final String PERFORMANCE_GUIDE_ALARM_TITLE_FORMAT = "%s이(가) 내일이에요! 반입물품과 교통편을 미리 확인하세요 \uD83D\uDCE2";
-    private static final String PERFORMANCE_TIMETABLE_ALARM_TITLE_FORMAT=  "%s이(가) 3일 남았어요! 타임테이블을 미리 확인해보세요 \uD83D\uDCC6";
 
-    private static final String CLICK_DESCRIPTION = "눌러서 자세한 내용을 확인해보세요.";
+    private static final String DAY_FORMAT = "D-%s";
+
+    private static final String RESERVATION_DUE_ALARM_TITLE_FORMAT = "\uD83C\uDF9F\uFE0F 티켓 예매 %s!";
+    private static final String RESERVATION_DUE_ALARM_DESCRIPTION_FORMAT = "%s 잊지말고 준비하세요 \uD83D\uDD25";
+
+    private static final String TIMETABLE_ALARM_TITLE = "페스티벌 D-3 !";
+    private static final String TIMETABLE_ALARM_DESCRIPTION_FORMAT = "%s 타임테이블을 미리 확인하세요 \uD83D\uDCC6";
+
+    private static final String BANNED_GOOD_AND_TRANSPORTATION_TITLE = "페스티벌 D-1 !";
+    private static final String BANNED_GOOD_AND_TRANSPORTATION_DESCRIPTION_FORMAT = "%s 반입물품과 교통편을 미리 확인하세요 \uD83D\uDCE2";
 
     public record MessageContent(
         String title,
@@ -24,39 +29,41 @@ public class AlarmMessageFormatter {
         Map<String, String> data
     ) {}
 
-    public MessageContent reservationDueDateAlarm(Performance p, int day) {
-        String dayMention = switch(day) {
-            case 0 -> TODAY_MENTION_FORMAT;
-            default -> String.format(DAY_MENTION_FORMAT, day);
-        };
-
+    public MessageContent reservationUpdateAlarm(ReservationInfo reservationInfo) {
         return new MessageContent(
-                String.format(RESERVATION_DUE_ALARM_TITLE_FORMAT, p.getName(), dayMention),
-                CLICK_DESCRIPTION,
+                RESERVATION_INFO_UPDATE_FORMAT,
+                String.format(RESERVATION_INFO_UPDATE_DESCRIPTION_FORMAT, reservationInfo.getPerformance().getName()),
                 Map.of()
         );
     }
 
-    public MessageContent performanceGuideAlarm(Performance p) {
+    public MessageContent reservationDueDateAlarm(Performance p, int day) {
+        String dayMention = switch (day) {
+            case 0 -> "DAY";
+            default -> String.valueOf(day);
+        };
+
+        String renderedDay = String.format(DAY_FORMAT, dayMention);
+
         return new MessageContent(
-                String.format(PERFORMANCE_GUIDE_ALARM_TITLE_FORMAT, p.getName()),
-                CLICK_DESCRIPTION,
+                String.format(RESERVATION_DUE_ALARM_TITLE_FORMAT, renderedDay),
+                String.format(RESERVATION_DUE_ALARM_DESCRIPTION_FORMAT, p.getName()),
                 Map.of()
         );
     }
 
     public MessageContent performanceTimetableAlarm(Performance p) {
         return new MessageContent(
-                String.format(PERFORMANCE_TIMETABLE_ALARM_TITLE_FORMAT, p.getName()),
-                CLICK_DESCRIPTION,
+                TIMETABLE_ALARM_TITLE,
+                String.format(TIMETABLE_ALARM_DESCRIPTION_FORMAT, p.getName()),
                 Map.of()
         );
     }
 
-    public MessageContent reservationUpdateAlarm(ReservationInfo reservationInfo) {
+    public MessageContent performanceGuideAlarm(Performance p) {
         return new MessageContent(
-                String.format(RESERVATION_INFO_UPDATE_FORMAT, reservationInfo.getPerformance().getName()),
-                CLICK_DESCRIPTION,
+                BANNED_GOOD_AND_TRANSPORTATION_TITLE,
+                String.format(BANNED_GOOD_AND_TRANSPORTATION_DESCRIPTION_FORMAT, p.getName()),
                 Map.of()
         );
     }
