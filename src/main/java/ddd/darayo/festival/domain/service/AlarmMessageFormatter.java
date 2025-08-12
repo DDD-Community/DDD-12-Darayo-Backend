@@ -1,5 +1,6 @@
 package ddd.darayo.festival.domain.service;
 
+import ddd.darayo.festival.domain.constant.AlarmConstant;
 import ddd.darayo.festival.domain.entity.Performance;
 import ddd.darayo.festival.domain.entity.ReservationInfo;
 import org.springframework.stereotype.Service;
@@ -33,7 +34,11 @@ public class AlarmMessageFormatter {
         return new MessageContent(
                 RESERVATION_INFO_UPDATE_FORMAT,
                 String.format(RESERVATION_INFO_UPDATE_DESCRIPTION_FORMAT, reservationInfo.getPerformance().getName()),
-                Map.of()
+                Map.of(
+
+                        AlarmConstant.TYPE_HEADER, "RESERVATION_UPDATE_ALARM",
+                        AlarmConstant.FESTIVAL_ID_HEADER, reservationInfo.getPerformance().getId().toString()
+                )
         );
     }
 
@@ -48,7 +53,10 @@ public class AlarmMessageFormatter {
         return new MessageContent(
                 String.format(RESERVATION_DUE_ALARM_TITLE_FORMAT, renderedDay),
                 String.format(RESERVATION_DUE_ALARM_DESCRIPTION_FORMAT, p.getName()),
-                Map.of()
+                Map.of(
+                        AlarmConstant.TYPE_HEADER, "RESERVATION_DUE_ALARM",
+                        AlarmConstant.FESTIVAL_ID_HEADER, p.getId().toString()
+                )
         );
     }
 
@@ -56,7 +64,10 @@ public class AlarmMessageFormatter {
         return new MessageContent(
                 TIMETABLE_ALARM_TITLE,
                 String.format(TIMETABLE_ALARM_DESCRIPTION_FORMAT, p.getName()),
-                Map.of()
+                Map.of(
+                        AlarmConstant.TYPE_HEADER, "TIMETABLE_ALARM",
+                        AlarmConstant.FESTIVAL_ID_HEADER, p.getId().toString()
+                )
         );
     }
 
@@ -64,7 +75,10 @@ public class AlarmMessageFormatter {
         return new MessageContent(
                 BANNED_GOOD_AND_TRANSPORTATION_TITLE,
                 String.format(BANNED_GOOD_AND_TRANSPORTATION_DESCRIPTION_FORMAT, p.getName()),
-                Map.of()
+                Map.of(
+                        AlarmConstant.TYPE_HEADER, "GUIDE_ALARM",
+                        AlarmConstant.FESTIVAL_ID_HEADER, p.getId().toString()
+                )
         );
     }
 }
