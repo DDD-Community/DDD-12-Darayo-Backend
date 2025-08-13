@@ -35,6 +35,7 @@ public record UserGetPerformanceInfo(
     public record ArtistDetailRes(
             Long artistId,
             String artistDisplayName,
+            String artistImageUrl,
             LocalDate performanceDate
     ) { }
 
