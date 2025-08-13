@@ -40,6 +40,7 @@ public interface TimetableMapper {
 
         @Mapping(target = "artistId", source = "artist.id")
         @Mapping(target = "artistDisplayName", source = "artist.displayName")
+        @Mapping(target = "artistImageUrl", source = "artist.imageUrl")
         @Mapping(target = "performanceDate", source = "timetable.performanceDate")
         UserGetPerformanceInfo.ArtistDetailRes toArtistDetail(TimetableArtist timetableArtist);
 
