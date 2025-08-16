@@ -1,10 +1,7 @@
 package ddd.darayo.festival.infra.alarm;
 
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.MulticastMessage;
-import com.google.firebase.messaging.Notification;
-import com.google.firebase.messaging.BatchResponse;
-import com.google.firebase.messaging.SendResponse;
+import com.google.firebase.messaging.*;
+import ddd.darayo.festival.domain.constant.AlarmConstant;
 import ddd.darayo.festival.domain.exception.constant.AlarmError;
 import ddd.darayo.festival.domain.service.PushAlarmService;
 import lombok.extern.slf4j.Slf4j;
@@ -43,8 +40,28 @@ public class FirebaseCloudMessagingService implements PushAlarmService {
                 .setBody(messageDTO.message())
                 .build();
 
+        ApsAlert apsAlert = ApsAlert.builder()
+                .setTitle(messageDTO.title())
+                .setBody(messageDTO.message())
+                .build();
+
+        Aps aps = Aps.builder()
+                .setAlert(apsAlert)
+                .setSound("default")   // 선택
+                .setBadge(1)           // 선택
+                .build();
+
+        ApnsConfig apns = ApnsConfig.builder()
+                .putHeader("apns-push-type", AlarmConstant.APNS_PUSH_TYPE)
+                .putHeader("apns-priority", AlarmConstant.APNS_PRIORITY)
+                .putHeader("apns-topic", AlarmConstant.BUNDLE_ID)
+                .setAps(aps)
+                .putAllHeaders(messageDTO.payload())
+                .build();
+
         return MulticastMessage.builder()
                 .setNotification(notification)
+                .setApnsConfig(apns)
                 .addAllTokens(messageDTO.receivers())
                 .putAllData(messageDTO.payload())
                 .build();
