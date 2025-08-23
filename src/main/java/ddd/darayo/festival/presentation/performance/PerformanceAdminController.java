@@ -1,12 +1,9 @@
 package ddd.darayo.festival.presentation.performance;
 
 import ddd.darayo.festival.domain.dto.EditPerformanceDTO;
-import ddd.darayo.festival.domain.dto.EditReservationInfoCommand;
 import ddd.darayo.festival.domain.entity.Performance;
-import ddd.darayo.festival.domain.entity.Timetable;
 import ddd.darayo.festival.domain.service.AuthService;
 import ddd.darayo.festival.domain.service.PerformanceManagement;
-import ddd.darayo.festival.domain.service.TimetableManagement;
 import ddd.darayo.festival.presentation.performance.exchanges.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,7 +21,6 @@ public class PerformanceAdminController {
     private final PerformanceManagement performanceManagement;
 
     private final AuthService authService;
-    private final TimetableManagement timetableManagement;
 
     @PostMapping
     public ResponseEntity<Long> createPerformance(@RequestBody SavePerformanceReq req) {
@@ -60,17 +56,6 @@ public class PerformanceAdminController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{performanceId}/reservation/{reservationInfoId}")
-    public ResponseEntity<Void> updateReservationInfo(
-            @PathVariable Long performanceId,
-            @PathVariable Long reservationInfoId,
-            @RequestBody EditReservationInfoCommand req
-    ) {
-        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
-        performanceManagement.updateReservationInfo(reservationInfoId, req, now);
-        return ResponseEntity.noContent().build();
-    }
-
     @DeleteMapping("/reservation/{reservationInfoId}")
     public ResponseEntity<Void> deleteReservation(
             @PathVariable Long reservationInfoId
@@ -82,24 +67,6 @@ public class PerformanceAdminController {
     @DeleteMapping("/{performanceId}")
     public ResponseEntity<Void> deletePerformance(@PathVariable Long performanceId) {
         performanceManagement.delete(performanceId);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PostMapping("/{performanceId}/timetable")
-    public ResponseEntity<Long> createTimetable(
-            @PathVariable Long performanceId,
-            @RequestBody AddTimetableReq req
-    ) {
-        Timetable timetable = timetableManagement.addTimetable(performanceId, req);
-        return ResponseEntity.ok(timetable.getId());
-    }
-
-    @DeleteMapping("/{performanceId}/performanceURL/{performanceURLId}")
-    public ResponseEntity<Void> deletePerformanceURL(
-            @PathVariable Long performanceId,
-            @PathVariable Long performanceURLId
-    ) {
-        performanceManagement.deletePerformanceURL(performanceURLId);
         return ResponseEntity.noContent().build();
     }
 }

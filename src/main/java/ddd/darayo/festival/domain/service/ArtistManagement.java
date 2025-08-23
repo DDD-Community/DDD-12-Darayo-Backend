@@ -25,11 +25,11 @@ public class ArtistManagement {
     private final ArtistAliasRepository artistAliasRepository;
 
     public Artist createArtist(SaveArtistReq dto) {
-        Artist artist = new Artist(dto.getName(), dto.getDescription(), dto.getImageUrl());
+        Artist artist = new Artist(dto.getContent().name(), dto.getContent().description(), dto.getContent().imageUrl());
 
         val aliasList = dto.getAliasList();
 
-        aliasList.add(dto.getName()); // 자기 자신은 반드시 별칭으로 추가
+        aliasList.add(dto.getContent().name()); // 자기 자신은 반드시 별칭으로 추가
 
         aliasList.stream()
                 .filter(Objects::nonNull) // null 방지
@@ -47,15 +47,21 @@ public class ArtistManagement {
         }
     }
 
+    public void addArtistAlias(Long artistId, String alias) {
+        Artist artist = artistRepository.findById(artistId)
+                .orElseThrow(ARTIST_NOT_EXISTS::toException);
+        artist.addAlias(new ArtistAlias(null, alias, null));
+    }
+
     public void editArtist(EditArtistReq req, long artistId) {
-        int result = artistRepository.updateArtistById(artistId, req.name(), req.description(), req.imageUrl());
+        int result = artistRepository.updateArtistById(artistId, req.content().name(), req.content().description(), req.content().imageUrl());
         if (result < 1) {
             throw ARTIST_NOT_EXISTS.toException();
         }
     }
 
     public void editArtistAlias(EditArtistAliasReq req, long aliasId) {
-        int result = artistAliasRepository.updateArtistAlias(req.alias(), aliasId);
+        int result = artistAliasRepository.updateArtistAlias(req.content().alias(), aliasId);
         if (result < 1) {
             throw ARTIST_ALIAS_NOT_EXISTS.toException();
         }

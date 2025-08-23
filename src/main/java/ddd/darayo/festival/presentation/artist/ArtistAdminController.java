@@ -20,6 +20,11 @@ public class ArtistAdminController {
     private final AuthService authService;
     private final ArtistManagement artistManagement;
 
+    @GetMapping
+    public ResponseEntity<List<ArtistDetailRes>> getArtists() {
+        return ResponseEntity.ok(artistManagement.findAllArtists());
+    }
+
     @PostMapping
     public ResponseEntity<Long> createArtist(@RequestBody SaveArtistReq req) {
         if (!authService.authenticate(req.getPassword())) {
@@ -28,6 +33,16 @@ public class ArtistAdminController {
         Artist artist = artistManagement.createArtist(req);
         return ResponseEntity.ok(artist.getId());
     }
+
+    @PutMapping("/{artistId}")
+    public ResponseEntity<Void> editArtist(
+        @PathVariable Long artistId,
+        @RequestBody EditArtistReq req
+    ) {
+        artistManagement.editArtist(req, artistId);
+        return ResponseEntity.ok().build();
+    }
+
 
     @PostMapping("/aliases")
     public ResponseEntity<Void> addArtistAlias(@RequestBody SaveArtistAliasesReq req) {
@@ -40,18 +55,6 @@ public class ArtistAdminController {
             throw new APIException(e, HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok().build();
-    }
-
-    @PutMapping("/{artistId}")
-    public ResponseEntity<Void> editArtist(
-            @RequestBody EditArtistReq req, @PathVariable Long artistId
-    ) {
-        try {
-            artistManagement.editArtist(req, artistId);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (DomainException e) {
-            throw new APIException(e, HttpStatus.NOT_FOUND);
-        }
     }
 
     @PutMapping("/aliases/{aliasId}")
@@ -76,10 +79,5 @@ public class ArtistAdminController {
         } catch (DomainException e) {
             throw new APIException(e, HttpStatus.NOT_FOUND);
         }
-    }
-
-    @GetMapping
-    public ResponseEntity<List<ArtistDetailRes>> getArtists() {
-        return ResponseEntity.ok(artistManagement.findAllArtists());
     }
 }

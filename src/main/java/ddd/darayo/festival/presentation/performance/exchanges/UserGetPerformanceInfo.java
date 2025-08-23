@@ -19,6 +19,7 @@ public record UserGetPerformanceInfo(
         String banGoods,
         String transportationInfo,
         String remark,
+        LocalDateTime updatedAt,
         List<ReservationInfoDetailRes> reservationInfos,
         List<ArtistDetailRes> artists,
         List<PerformanceURLRes> urlInfos

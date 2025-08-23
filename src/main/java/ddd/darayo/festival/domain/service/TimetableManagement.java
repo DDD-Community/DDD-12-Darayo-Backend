@@ -7,10 +7,12 @@ import ddd.darayo.festival.domain.exception.constant.PlaceError;
 import ddd.darayo.festival.domain.exception.constant.TimetableError;
 import ddd.darayo.festival.domain.repository.*;
 import ddd.darayo.festival.domain.service.mapper.TimetableMapper;
+import ddd.darayo.festival.infra.aop.TouchPerformanceUpdatedAt;
 import ddd.darayo.festival.presentation.performance.exchanges.AddTimetableReq;
 import ddd.darayo.festival.presentation.performance.exchanges.UserGetTimetableRes;
 import ddd.darayo.festival.presentation.timetable.exchanges.EditTimetableReq;
 import jakarta.transaction.Transactional;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,19 +31,18 @@ public class TimetableManagement {
 
     private final TimetableMapper timetableMapper;
 
+    @TouchPerformanceUpdatedAt(by = TouchPerformanceUpdatedAt.By.PERFORMANCE_ID, key = "#performanceId")
     public Timetable addTimetable(Long performanceId, AddTimetableReq req) {
         Performance performance = performanceRepository.findById(performanceId)
                 .orElseThrow(PerformanceError.PERFORMANCE_NOT_EXIST::toException);
 
-        // TODO: 같은 홀, 같은 시간 겹치는 경우
-        Timetable timetable = new Timetable(req.performanceDate(), req.startTime(), req.endTime(), req.hallId());
-
+        Timetable timetable = timetableMapper.toTimetableEntity(req.content());
         timetable.setPerformance(performance);
-
         return timetableRepository.save(timetable);
     }
 
 
+    @TouchPerformanceUpdatedAt(by = TouchPerformanceUpdatedAt.By.TIMETABLE_ID, key = "#timetableId")
     public void putTimetableArtist(Long timetableId, Long artistId, ParticipationType type) {
         Timetable timetable = timetableRepository.findById(timetableId)
                 .orElseThrow(TimetableError.TIMETABLE_NOT_EXISTS::toException);
@@ -55,20 +56,29 @@ public class TimetableManagement {
         }
     }
 
+    @TouchPerformanceUpdatedAt(by = TouchPerformanceUpdatedAt.By.TIMETABLE_ID, key = "#timetableId")
     public void editTimetable(Long timetableId, EditTimetableReq req) {
         Timetable timetable = timetableRepository.findById(timetableId)
                 .orElseThrow(TimetableError.TIMETABLE_NOT_EXISTS::toException);
-        if (req.hallId() != null && !performanceHallRepository.existsById(req.hallId())) {
+        if (req.content().hallId() != null && !performanceHallRepository.existsById(req.content().hallId())) {
             throw PlaceError.PLACE_HALL_NOT_EXIST.toException();
         }
-        timetable.update(req.performanceDate(), req.startTime(), req.endTime(), new PerformanceHall(req.hallId()));
+        timetable.update(
+                req.content().performanceDate(),
+                req.content().startTime(),
+                req.content().endTime(),
+                new PerformanceHall(req.content().hallId())
+        );
     }
 
+    @TouchPerformanceUpdatedAt(by = TouchPerformanceUpdatedAt.By.TIMETABLE_ID, key = "#timetableId")
     public void deleteTimetableArtist(Long timetableId, Long artistId) {
         int result = timetableArtistRepository.deleteTimetableArtist(timetableId, artistId);
         if (result < 1) {
             throw TimetableError.TIMETABLE_ARTIST_NOT_EXISTS.toException();
         }
+        Timetable timetable = timetableRepository.findById(timetableId)
+                .orElseThrow(TimetableError.TIMETABLE_NOT_EXISTS::toException);
     }
 
     public List<UserGetTimetableRes> getUserGetTimetables(Long festivalId) {
@@ -76,9 +86,11 @@ public class TimetableManagement {
         return timetables.stream().map(timetableMapper::toUserGetTimetable).toList();
     }
 
+    @TouchPerformanceUpdatedAt(by = TouchPerformanceUpdatedAt.By.TIMETABLE_ID, key = "#timetableId")
     public void deleteTimetable(Long timetableId) {
         Timetable timetable = timetableRepository.findById(timetableId)
                 .orElseThrow(TimetableError.TIMETABLE_NOT_EXISTS::toException);
+        Performance performance = timetable.getPerformance();
         timetableRepository.delete(timetable);
     }
 }
