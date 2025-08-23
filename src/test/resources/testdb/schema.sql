@@ -5,7 +5,8 @@ create table artist
     id           bigint auto_increment
         primary key,
     description  varchar(512) null,
-    display_name varchar(255) not null
+    display_name varchar(255) not null,
+    image_url   varchar(1024) null
 );
 
 create table artist_alias

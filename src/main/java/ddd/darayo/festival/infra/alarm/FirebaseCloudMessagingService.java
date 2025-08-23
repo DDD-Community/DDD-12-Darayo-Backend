@@ -46,6 +46,7 @@ public class FirebaseCloudMessagingService implements PushAlarmService {
         return MulticastMessage.builder()
                 .setNotification(notification)
                 .addAllTokens(messageDTO.receivers())
+                .putAllData(messageDTO.payload())
                 .build();
     }
     

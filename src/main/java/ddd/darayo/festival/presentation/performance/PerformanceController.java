@@ -45,6 +45,14 @@ public class PerformanceController {
         return ResponseEntity.ok(BaseResponse.success(result));
     }
 
+    @GetMapping("/{festivalId}")
+    public ResponseEntity<BaseResponse<UserGetPerformanceInfo>> getPerformance(
+            @PathVariable Long festivalId
+    ) {
+        UserGetPerformanceInfo performance = performanceManagement.findPerformance(festivalId);
+        return ResponseEntity.ok(BaseResponse.success(performance));
+    }
+
     @GetMapping("/{festivalId}/timetable")
     public ResponseEntity<BaseResponse<List<UserGetTimetableRes>>> getPerformancesForFestival(
             @PathVariable Long festivalId

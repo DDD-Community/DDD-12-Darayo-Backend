@@ -33,12 +33,11 @@ public class AppleMusicTokenProvider {
     public void init() throws Exception {
         try{
             generateAndCacheToken(); // 앱 시작 시 미리 생성
+            log.info("[AppleMusic] - 토큰 생성 완료");
         } catch (Exception e) {
             log.warn("[AppleMusic] - Apple Music Developer Token 초기화 실패.");
             log.warn("[AppleMusic] - 실패 원인 : ", e);
         }
-
-        log.info("[AppleMusic] - 토큰 생성 완료");
     }
 
     public synchronized String getDeveloperToken() throws Exception {

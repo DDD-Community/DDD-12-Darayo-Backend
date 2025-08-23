@@ -79,6 +79,25 @@ public class  PerformanceManagement {
                 .toList();
     }
 
+    public UserGetPerformanceInfo findPerformance(Long festivalId) {
+        Performance performance = performanceRepository.findPerformanceDetailById(festivalId)
+                .orElseThrow(PerformanceError.PERFORMANCE_NOT_EXIST::toException);
+
+        UserGetPerformanceInfo dto = performanceMapper.toUserGetPerformanceInfo(performance);
+        Set<UserGetPerformanceInfo.ArtistDetailRes> artistSet = new HashSet<>();
+        Set<Timetable> timetables = performance.getTimetables();
+
+        for (Timetable timetable : timetables) {
+            for (TimetableArtist timetableArtist : timetable.getArtists()) {
+                UserGetPerformanceInfo.ArtistDetailRes artist = timetableDetailMapper.toArtistDetail(timetableArtist);
+                artistSet.add(artist);
+            }
+        }
+
+        dto.artists().addAll(artistSet);
+        return dto;
+    }
+
     public List<UserGetPerformanceInfo> findUserPerformance() {
         List<Performance> performances = performanceRepository.findAllDetail();
         List<UserGetPerformanceInfo> userGetPerformanceInfos = new ArrayList<>();
@@ -129,7 +148,7 @@ public class  PerformanceManagement {
         PerformanceURL performanceURL = performanceURLRepository.findById(performanceURLId)
                 .orElseThrow(PerformanceError.PERFORMANCE_URL_NOT_EXIST::toException);
         performanceURL.update(dto.url(), dto.type());
-    } 
+    }
 
     @TouchPerformanceUpdatedAt(by = TouchPerformanceUpdatedAt.By.PERFORMANCE_ID, key = "#performanceId")
     public void updateReservationInfo(Long performanceId, List<EditReservationInfoReq> reqList, LocalDateTime now) {
