@@ -28,7 +28,8 @@ public record PerformanceDetailRes(
         String posterUrl,
         String banGoods,
         String transportationInfo,
-        String remark
+        String remark,
+        LocalDateTime updatedAt
     ) {}
 
     public record TimeTableDetailRes(
