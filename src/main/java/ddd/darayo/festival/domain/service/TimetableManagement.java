@@ -77,8 +77,6 @@ public class TimetableManagement {
         if (result < 1) {
             throw TimetableError.TIMETABLE_ARTIST_NOT_EXISTS.toException();
         }
-        Timetable timetable = timetableRepository.findById(timetableId)
-                .orElseThrow(TimetableError.TIMETABLE_NOT_EXISTS::toException);
     }
 
     public List<UserGetTimetableRes> getUserGetTimetables(Long festivalId) {

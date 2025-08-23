@@ -208,10 +208,9 @@ public class  PerformanceManagement {
 
     @TouchPerformanceUpdatedAt(by = TouchPerformanceUpdatedAt.By.PERFORMANCE_URL_ID, key = "#performanceURLId")
     public void deletePerformanceURL(Long performanceURLId) {
-        performanceURLRepository.findById(performanceURLId)
+        PerformanceURL url = performanceURLRepository.findById(performanceURLId)
                 .orElseThrow(PerformanceError.PERFORMANCE_URL_NOT_EXIST::toException);
 
-        PerformanceURL url = performanceURLRepository.getReferenceById(performanceURLId);
         performanceURLRepository.delete(url);
     }
 }
