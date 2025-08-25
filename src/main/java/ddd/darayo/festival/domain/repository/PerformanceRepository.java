@@ -21,6 +21,7 @@ public interface PerformanceRepository extends JpaRepository<Performance, Long> 
             LEFT JOIN FETCH ta.artist a
             LEFT JOIN FETCH p.place pp
             LEFT JOIN FETCH p.urls pu
+        ORDER BY p.startDate DESC
     """)
     List<Performance> findAllDetail();
 
