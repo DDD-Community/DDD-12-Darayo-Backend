@@ -26,7 +26,7 @@ public class PlaceManagement {
     public PerformancePlace createNewPlace(AddPlaceReq req) {
         PerformancePlace placeEntity = placeMapper.toPlaceEntity(req.content());
         for (var hallDto : req.placeHalls()) {
-            placeEntity.addHall(new PerformanceHall(null, hallDto.name(), null));
+            placeEntity.addHall(new PerformanceHall(null, hallDto, null));
         }
         return performancePlaceRepository.save(placeEntity);
     }
