@@ -33,11 +33,6 @@ public abstract class ContainerBaseTest {
         mysql.start();
     }
 
-    @AfterAll
-    static void stopContainer() {
-        mysql.stop();
-    }
-
     @DynamicPropertySource
     static void configureProperties(final DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.url", mysql::getJdbcUrl);

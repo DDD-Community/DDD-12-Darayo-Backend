@@ -14,3 +14,8 @@ firebase:
 jwt:
   secret-key: test-secret-key-for-jwt-token-signing-at-least-32-bytes
   expire-length: 86400000
+
+applemusic:
+  team-id: ${APPLE_TEAM_ID}
+  key-id: ${APPLE_KEY_ID}
+  private-key-path: ${APPLE_KEY_PATH}

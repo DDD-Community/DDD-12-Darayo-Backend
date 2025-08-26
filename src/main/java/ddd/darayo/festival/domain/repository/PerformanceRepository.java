@@ -68,4 +68,15 @@ public interface PerformanceRepository extends JpaRepository<Performance, Long> 
         WHERE p.startDate = :date
     """)
     List<Performance> findByDate(@Param("date") LocalDate date);
+
+    // 모든 공연장소(Place)에 연결된 공연 조회
+    List<Performance> findByPlace_Id(Long placeId);
+
+    @Query("""
+        SELECT DISTINCT p FROM Performance p
+            JOIN p.timetables t
+            JOIN t.hall h
+        WHERE h.id = :hallId
+    """)
+    List<Performance> findByHallId(@Param("hallId") Long hallId);
 }

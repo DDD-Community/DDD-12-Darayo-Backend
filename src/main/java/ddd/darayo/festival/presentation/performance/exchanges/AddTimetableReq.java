@@ -1,16 +1,9 @@
 package ddd.darayo.festival.presentation.performance.exchanges;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import ddd.darayo.festival.domain.dto.TimetableContentDTO;
 
 public record AddTimetableReq(
-    LocalDate performanceDate,
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    LocalTime startTime,
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    LocalTime endTime,
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    Long hallId
+        @JsonUnwrapped
+        TimetableContentDTO content
 ) { }

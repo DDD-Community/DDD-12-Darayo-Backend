@@ -1,8 +1,10 @@
 package ddd.darayo.festival.presentation.timetable.exchanges;
 
-import ddd.darayo.festival.domain.constant.ParticipationType;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import ddd.darayo.festival.domain.dto.TimetableArtistContentDTO;
 
 public record AddTimetableArtistReq(
         Long artistId,
-        ParticipationType participationType
+        @JsonUnwrapped
+        TimetableArtistContentDTO content
 ) { }

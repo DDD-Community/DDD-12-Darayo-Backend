@@ -38,6 +38,7 @@ create table performance
     place_id            bigint       null,
     poster_url          varchar(512) null,
     name                varchar(255) not null,
+    updated_at          datetime(6)  not null,
     ban_goods           tinytext     null,
     remark              tinytext     null,
     transportation_info tinytext     null,

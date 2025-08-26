@@ -1,10 +1,11 @@
 package ddd.darayo.festival.presentation.place.exchanges;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import ddd.darayo.festival.domain.dto.PerformancePlaceContentDTO;
 import java.util.List;
 
 public record AddPlaceReq(
-        String placeName,
-        String address,
+        @JsonUnwrapped
+        PerformancePlaceContentDTO content,
         List<String> placeHalls
-) {
-}
+) { }

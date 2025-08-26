@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -36,15 +37,6 @@ public class PlaceController {
     ) {
         placeManagement.editPlace(placeId, editPlaceReq);
         return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/{placeId}/hall")
-    public ResponseEntity<Long> addHall(
-            @PathVariable Long placeId,
-            @RequestBody AddPlaceHallReq addPlaceHallReq
-    ) {
-        PerformanceHall hall = placeManagement.addHall(placeId, addPlaceHallReq);
-        return ResponseEntity.ok(hall.getId());
     }
 
     @PutMapping("/hall/{hallId}")

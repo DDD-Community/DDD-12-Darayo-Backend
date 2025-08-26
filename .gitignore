@@ -41,3 +41,5 @@ out/
 .env.local
 
 .secret/
+.history/
+.DS_Store

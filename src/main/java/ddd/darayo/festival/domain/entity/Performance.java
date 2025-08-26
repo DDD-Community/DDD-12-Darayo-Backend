@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Builder
@@ -31,6 +32,9 @@ public class Performance {
 
     @Column(nullable = true, length = 512)
     private String posterUrl;
+
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
 
     @Lob
     @Column(nullable = true, columnDefinition = "TEXT")
@@ -86,5 +90,9 @@ public class Performance {
         this.transportationInfo = dto.transportationInfo();
         this.remark = dto.remark();
         this.posterUrl = dto.posterUrl();
+    }
+
+    public void touch(LocalDateTime now) {
+        this.updatedAt = now;
     }
 }

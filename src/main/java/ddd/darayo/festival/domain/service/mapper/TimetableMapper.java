@@ -1,5 +1,6 @@
 package ddd.darayo.festival.domain.service.mapper;
 
+import ddd.darayo.festival.domain.dto.TimetableContentDTO;
 import ddd.darayo.festival.domain.entity.Timetable;
 import ddd.darayo.festival.domain.entity.TimetableArtist;
 import ddd.darayo.festival.presentation.performance.exchanges.PerformanceDetailRes;
@@ -8,8 +9,6 @@ import ddd.darayo.festival.presentation.performance.exchanges.UserGetPerformance
 import ddd.darayo.festival.presentation.performance.exchanges.UserGetTimetableRes;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-
-import java.util.List;
 
 @Mapper(
     componentModel = "spring",
@@ -26,9 +25,9 @@ public interface TimetableMapper {
     @Mapping(target = "timetableId", source = "id")
     UserGetTimetableRes toUserGetTimetable(Timetable timetable);
 
-
     @Mapping(target = "hall", source = "hallId", qualifiedByName = "fromIdToPerformanceHall")
-    Timetable toTimetableEntity(SavePerformanceReq.TimeTableDTO timetableDTO);
+    Timetable toTimetableEntity(TimetableContentDTO timetableDTO);
+
 
     @Mapper(componentModel = "spring", uses = {MapperUtil.class})
     interface TimetableDetailMapper {

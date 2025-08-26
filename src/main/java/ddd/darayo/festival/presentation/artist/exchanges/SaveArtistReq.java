@@ -1,5 +1,9 @@
 package ddd.darayo.festival.presentation.artist.exchanges;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
+
+import ddd.darayo.festival.domain.dto.ArtistContentDTO;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,8 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 public class SaveArtistReq {
     private String password;
-    private String name;
-    private String description;
-    private String imageUrl;
+    @JsonUnwrapped
+    private ArtistContentDTO content;
     private List<String> aliasList;
 }

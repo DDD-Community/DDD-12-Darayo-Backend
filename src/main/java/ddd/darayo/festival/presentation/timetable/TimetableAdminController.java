@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+
 @RestController
 @RequestMapping("/api/admin/timetable")
 @RequiredArgsConstructor
@@ -27,7 +29,7 @@ public class TimetableAdminController {
             @PathVariable("timetableId") Long timetableId,
             @RequestBody AddTimetableArtistReq req
     ) {
-        timetableManagement.putTimetableArtist(timetableId, req.artistId(), req.participationType());
+        timetableManagement.putTimetableArtist(timetableId, req.artistId(), req.content().participationType());
         return ResponseEntity.ok().build();
     }
 
